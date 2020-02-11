@@ -1,0 +1,31 @@
+\chapter{几何驱动的用户目标区域提取与矫正方法}
+内容概括。
+
+\begin{algorithm}[h]
+	\SetAlgoLined
+	\caption{本文提出的网络结构的优化过程}
+	\label{alg:net}
+	%\KwIn{Sample normal images $x\in \mathbb{P}_n$, lesion images $z\in \mathbb{P}_l$.}
+	%\KwOut{$y$, the net activation}
+	%$y\leftarrow 0$\;
+	\SetKwInOut{Input}{Input}\SetKwInOut{Output}{output}
+	\Input{learning rate $\alpha$, batch size $m$, hyperparameters $\lambda _1$ and $\lambda _2$, encoder-decoder's parameters $\theta _g$, classifier's parameters $\theta _c$, discriminator's parameters $\theta _d$, maximum iterations $K$.}
+	\nl \For{$k\leftarrow 1$ \KwTo $K$}{
+		%reference: http://mlg.ulb.ac.be/files/algorithm2e.pdf
+		\nl
+		Sample a batch $\{x^{(i)}\}_{i=1}^{m}$ from the normal dataset, and a batch $\{z^{(i)}\}_{i=1}^{m}$ from the abnormal dataset; collect both to get batch $y=\{y^{(i)}\}_{i=1}^{2m}$.\\
+		\nl	$L_{u\_c}$ $\leftarrow \lambda _1$[$\frac{1}{2m}\sum_{i=1}^{2m}$$L_{CE}(C, G(y^{(i)}))$] + $\lambda _2[\frac{1}{2m}\sum_{i=1}^{2m}L_{ED}G(y^{(i)})]$  \\
+		\nl	$\theta _g$$\leftarrow Adam(\nabla _{\theta _g}  L_{u\_c}, \theta _g, \alpha)$ 
+		\tcp*{minimize G}
+		\nl	$\theta _c$$\leftarrow Adam(\nabla _{\theta _c} L_{u\_c}, \theta _c, \alpha)$  
+		\tcp*{minimize C}
+		\nl	$L_{u\_d}$ $\leftarrow $$\frac{1}{m}\sum_{i=1}^{m}$$L_{GAN}(D(G(z^{(i)}))-D(x^{(i)}))$ + $\lambda _2[\frac{1}{2m}\sum_{i=1}^{2m}L_{ED}(G(y^{(i)}))]$  \\
+		\nl	$\theta _d$$\leftarrow -Adam(\nabla _{\theta _d} L_{u\_d}, \theta _d, \alpha)$ 
+		\tcp*{maximize D}
+		\nl	$\theta _g$$\leftarrow Adam(\nabla _{\theta _g} L_{u\_d}, \theta _g, \alpha)$ 
+		\tcp*{minimize G}
+	}
+\end{algorithm}
+
+\section{本章小结}
+本章阐述了图像局部颜色编辑方法中图像目标区域提取的相关方法 ，……

@@ -1,0 +1,68 @@
+\documentclass{classes/sysuthesis}
+
+\input{docs/Information}     % 论文相关信息
+\input{docs/Abstract}     % 摘要内容
+
+\begin{document}
+    % 论文前置部分
+    \frontmatter
+        \pagenumbering{Roman}
+        \maketitle    % 扉页
+        \makedisclaim       % 原创性及学位论文使用授权声明 
+         
+	    \makeabstract       % 中英文摘要
+        \maketableofcontents        % 目录
+        
+        %缩略语
+        \include{docs/Acronym}
+        %\newclearpage
+        
+        %数学符号
+        \include{docs/Symbol}
+        %\newclearpage
+
+    % 论文主体部分
+    \mainmatter
+        % 引言
+
+        % 正文
+        \include{docs/Chapter_01}
+        % \newclearpage
+        \include{docs/Chapter_02}
+        % \newclearpage
+        \include{docs/Chapter_03}
+        %\newclearpage
+        %\include{docs/Chapter_04}
+        %\newclearpage
+        %\include{docs/Chapter_05}
+        %\newclearpage
+        % 结语
+
+    % 附录部分
+    \backmatter
+        % 参考文献
+        \makereferences
+        % \bibliographystyle{bibtex-style}
+        % \bibliography{Bibliography/Reference.bib}
+        %\newclearpage
+        
+        % 附录
+    \appendix
+        % \include{docs/Appendix1}
+        % \newclearpage
+        % \include{docs/Appendix2}
+        % \newclearpage
+        
+        %后记
+    \backmatter
+       % \include{docs/Achievement}    % 科研成果目录
+       % \newclearpage
+        
+       % \include{docs/Acknowledgements}    % 致谢
+       % \newclearpage
+        
+       % \include{docs/Postscript}    % 中山大学学位论文版权使用授权书
+       % \newclearpage
+
+\end{document}
+
