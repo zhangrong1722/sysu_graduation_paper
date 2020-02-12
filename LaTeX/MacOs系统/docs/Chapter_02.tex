@@ -76,8 +76,41 @@ ISIC2019数据集\footnote{https://challenge2019.isic-archive.com/}中有25,331�
 \section{基本知识要点}
 本小节主要是介绍生物标记物定位任务的概念和目前常用的模型方法。首先，我们会介绍生物标记物的概念，让读者对本文研究主题有清晰的认识。接着会介绍卷积神经网络、自动编码器-解码器等重要基本要点。下一步介绍目前已有的常用解决模型方法。最后介绍对各种模型方法性能比较的评价标准。
 \subsection{卷积神经网络}
-卷积神经网络，
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figure/popular_networks}
+	\caption{三种经典的卷积神经网络模型结构。从左到右，依次为AlexNet~\cite{krizhevsky2012imagenet}、ResNet~\cite{he2016deep, he2016identity}、DenseNet~\cite{huang2017densely}（图片均来自于原始论文）。注意，中间是ResNet的一个残差单元，ResNet实际上是由多个残差单元堆叠组成。} 
+	\label{fig:popular_networks}
+\end{figure}
+卷积神经网络最初是为了避免传统神经网络（多层感知机~\cite{gardner1998artificial}）在处理图像时的缺点而提出的。多层感知机在处理图像数据时，多层感知机对每张输入图像中的每个像素点都使用一个感知器。对于较大的图像，权重的数量很快就变得难以管理。例如，对于一个有3个彩色通道的224$\times$224像素图像，大约需要训练150,000个权值。此时，多层感知机的训练将变得十分困难。另外，多层感知机不具备平移不变性。例如，如果一张猫出现在一张图像的左上角和另一张图像的右下角，多层感知机将假设猫总是出现在图片的这个位置。再加上，多层感知机在处理图像时需要将二维图像数据将会以一维向量形式存在，因此无法利用二维空间的相对位置信息。
+
+卷积神经网络便可以很好避免多层感知机存在的问题，卷积操作可以很好的捕捉图像的空间信息。另外，卷机操作还具有平移不变性。权值共享机制可以大大降低参数量。随着计算机算力的快速提升，运用反向传播算法~\cite{hecht1992theory}，卷积神经网络的大规模训练变得切实可行。自Hinton等人利用两块GPU成功训练AlexNet~\cite{krizhevsky2012imagenet}后，很多优秀网络结构被提出，比如VGG~\cite{simonyan2014very}，ResNet~\cite{he2016deep, he2016identity}，DenseNet~\cite{huang2017densely}，Inception系列网络~\cite{szegedy2015going, szegedy2016rethinking, szegedy2017inception}。卷积神经网络除了在分类问题上取得出色性能外，还在自然语言处理~\cite{dos2014deep, mou2016convolutional, li2019knowledge}、无人驾驶~\cite{lee2017deep, csillik2018identification, tang2017vehicle}、语音识别~\cite{abdel2013exploring, swietojanski2014convolutional, robertson2019exploring}等领域表现不凡，越来越受到研究者们的青睐。
+
+三种经典的卷积神经网络的模型结构如图~\ref{fig:popular_networks}所示。可以看出，卷积神经网络都是由一系列卷积操作组成的，在卷积操作之后再接上激活函数以增强非线性表达能力。为了减少参数量，卷积神经网络还引入了池化操作，使得输入图像尺寸随着深度不断增加而减小。池化操作也起到过滤无用信息的的作用。最后，再接上全连接层对卷积神经网络提取到的特征进行分类（视不同任务而改变）。因此，卷积神经网络实际上充当特征提取器的角色。那么我们可以这样理解卷积神经的原理：单纯卷积操作提取的是图像的局部信息，随着一系列卷积操作的堆叠，卷积神经网络的感受野越来越大，比如两个3$\times$3的卷积核堆叠相当于一个5$\times$5卷积核的感受野，卷积神经网络便能提取到图像的全局信息。同时，随着深度增加，输入的尺寸大小变得越来越小，通常以2倍关系减小，卷积神经网络便会丢掉无用信息。因而卷积神经网络是一种层次化结构。再在损失函数，如交叉熵，的监督指导下，根据反向梯度传播算法更新网络参数，卷积神经网络便能被训练成一个优秀的特征提取器。
+
+以上便是卷积神经网络的一般结构和工作原理，下面详细介绍ResNet。随着VGG-19~\cite{simonyan2014very}的出现，一个卷积神经网络的深度越深，学出来的效果是否越好的问题摆在了研究者们的面前。由于卷积神经网络的深度越深，原本就存在的过拟合和梯度消失问题变得越严重。何凯明等人便设计了一种在深度远大于VGG-19，效果也由于VGG-19的网络模型。设$\mathcal{H}(x)$是卷积神经网络拟合的函数，$x$表示网络输入。如果假设多个非线性层可以渐近逼近复杂函数并且假设输入和输出尺寸相同，那么就可以假设它们可以渐近逼近残差函数$\mathcal{F}(x)$，即$\mathcal{F}(x)=\mathcal{H}(x)− x$。因此，ResNet没有让网络直接拟合$\mathcal{H}(x)$，而是明确地让这些层近似为残差函数$\mathcal{F}(x)=\mathcal{H}(x)-x$。 因此，原始函数变为$\mathcal{F}(x)+x$。尽管两种形式都应能够渐近地逼近所需的功能（如假设），但是近似拟合残差函数要容易得多。另外，为了表示加号，残差单元中通常加入跳接操作。
+
+设$x_l$表示第$l$个残差单元的输入，$\mathcal{W}_{l}=\{\mathcal{W}_{l,k}|_{1\leq k \leq K}\}$表示第$l$个残差单元的权重，$K$表示残差单元个数。则相邻的残差单元输入$x_{l+1}$可以表示为：
+\begin{gather}
+	y_{l}=x_l + \mathcal{F}(x_l, \mathcal{W}_l), \\
+	x_{l+1}=f(y_{l}).
+\end{gather}
+其中$f$表示激活函数，$\mathcal{F}(x_l, \mathcal{W}_l)$表示残差单元中的卷积操作。如果$f$表示恒等变换，则$x_{l+1}=y_{l}$，有：
+\begin{equation}
+	x_{l+1}=x_l + \mathcal{F}(x_l, \mathcal{W}_l).
+\end{equation}
+对于任意第$L(L\ge l)$个残差单元，其输入$x_{L}$，可写为：
+\begin{equation}\label{residual_block_compute}
+x_{L}=x_l + \sum_{i=l}^{L-1}\mathcal{F}(x_i, \mathcal{W}_i).
+\end{equation}
+设损失函数为$\varepsilon$，根据等式\ref{residual_block_compute}和反向梯度传播算法的链式求导法有：
+\begin{equation}\label{residual_block_gradient}
+\frac{\partial \varepsilon}{\partial x_l}=\frac{\partial \varepsilon}{\partial x_L}\frac{\partial x_L}{\partial x_l}=\frac{\partial \varepsilon}{\partial x_L}(1+\frac{\partial}{\partial x_l}\sum_{i=l}^{L-1}\mathcal{F}(x_i,\mathcal{W}_i)).
+\end{equation}
+等式\ref{residual_block_gradient}表明，梯度$\frac{\partial \varepsilon}{\partial x_l}$由$\frac{\partial \varepsilon}{\partial x_L}$和$\frac{\partial \varepsilon}{\partial x_L}\frac{\partial}{\partial x_l}\sum_{i=l}^{L-1}\mathcal{F}(x_i,\mathcal{W}_i)$两项组成。第一项在可直接传播信息而与任意残差单元无关。而第二项保证信息直接回传到上一个残差单元。由于第一项的存在，等式\ref{residual_block_gradient}还能保证每一层梯度不容易消失，即使在残差单元权重很小的情况下。而ResNet更是实现了在深度达到上千层的情况下，仍不会发生梯度消失现象。DenseNet更是将ResNet中提出的跳接扩展到了网络单元之间，正是由于ResNet的优异性能，本文卷积神经网络分类器使用ResNet-18。
 \subsection{自动编码器-解码器}
+自动编码-解码器~\cite{hinton2006reducing}，全卷积神经网络~\cite{long2015fully}，
+U-Net~\cite{ronneberger2015u}。
 \subsection{对抗生成网络}
 %	\section{生物标记物定位方法}
 %\subsection{多示例学习}
