@@ -1,6 +1,7 @@
 # .gitignore file for LyX and LaTeX projects 
 
 .DS_Store/*
+refs/*
 
 # Ignore everything in the tests and old  directories
 # where experimental and outdated stuff are storaged
