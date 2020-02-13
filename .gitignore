@@ -2,6 +2,8 @@
 
 .DS_Store/*
 refs/*
+*/main.pdf
+MICCAI2019-Biomarker Localization by Combining CNN Classifier and Generative Adversarial Network.pdf
 
 # Ignore everything in the tests and old  directories
 # where experimental and outdated stuff are storaged
