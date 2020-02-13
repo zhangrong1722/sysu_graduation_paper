@@ -164,11 +164,107 @@ D(\tilde{{x}})-D({x})+\lambda\left(\left\|\nabla_{\hat{x}} D(\hat{x})\right\|_{2
 \begin{equation}
 -D\left(G_{\theta}(z)\right).
 \end{equation}
-通过实验证明，WGAN-GP在训练过程中梯度较为稳定，不易发生梯度消失现象。另外，Wasserstein-1距离还能指示WGAN-GP训练效果的作用，Wasserstein-1距离越大，表示WGAN-GP训练得越好，使得训练过程易于理解。
+通过实验证明，WGAN-GP在训练过程中梯度较为稳定，不易发生梯度消失现象。另外，Wasserstein-1距离还有指示WGAN-GP训练效果的作用，Wasserstein-1距离越大，表示WGAN-GP训练得越好，使得训练过程易于理解。
 \section{生物标记物定位方法}
 随着计算机计算在医学影像领域的广泛应用，目前已有可用于生物标记物定位的模型提出，主要包括多示例学习~\cite{maron1998framework}和卷积神经网络的可视化方法~\cite{zhou2016learning, selvaraju2017grad}。本小节将对其中的经典方法进行详细介绍，并比较方法之间的优劣，以便于读者对这些方法有清晰的认识与理解。
 \subsection{多示例学习}
 多示例学习~\cite{maron1998framework}
 \subsection{卷积神经网络的可视化}\label{subsec:visulization_methods}
+卷积神经网络在从语音识别到自主系统的本地化和映射等大规模任务中的取得相当大的成就，使其成为先进的人工智能系统中最受欢迎的工具。尽管只能将成功的部分原因归功于这种网络的训练过程中算法的进步，但是学习过程和所学内容的内在性仍然很模糊，即卷积神经网络一直是个“黑匣子”，我们始终不知道其内部运行机制，更无法得知其作出判断的背后依据。然而，卷积神经网络所做决定的依据很多时候与所做决定同样重要，比如，在医学领域，如果专业医师看不到人工智能系统给出诊断方法，专业医师也就无法接受人工智能系统所给提出的对患者的治疗方案。因此，我们需要有一种方式了解导致卷积神经网络失败或成功的原因。如果我们无法解释模型的工作原理，我们如何信任模型的结果？这是一个合理的问题。更重要的是，较差的网络可解释性极大地阻碍了对各个网络层的鲁棒性评估，进一步优化网络结构，以及对不同应用的网络适应性和可移植性，这也是卷积神经网络的可视化需要回答的直接动力和实际意义。
+
+卷积神经网络的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，有很多研究者提出了解决方法。最简便也是最直接的方法是利用PyTorch\footnote{https://pytorch.org/}、TensorFlow\footnote{https://www.tensorflow.org/}等工具直接观察其网络结构可视化图，查看卷积核大小、输入和输出特征图尺寸、卷积层参数等相关信息。除此之外，还能通过t-SNE方法~\cite{maaten2008visualizing}对图像的特征向量进行降维操作，以在低维空间中查看数据的宏观分布。另一种可视化技术是获取大型数据集，通过网络输入图像，并跟踪哪些图像最大程度地激活了某些神经元。然后，我们可以将图像可视化，以了解神经元在其感受野中正在寻找什么。Girshick等人~\cite{girshick2014rich}提出了这样一种可视化技术，用于精确的对象检测和语义分割。这种方法的一个问题是ReLU神经元本身不一定具有任何语义，只有输入特征图沿着沿着与过滤器权重相对应轴方向的可视化结果。不需要专门去获取大型数据集，Zeiler等人提出的方法可以更为直接的了解到神经元真正感兴趣的区域或者物体，通过依次遮挡图像每一部分来绘制感兴趣类别的概率与遮挡物位置的关系图。以上可视化方法主要关注与低层特征。随着卷积神经网络的快速发展和实现，可视化已被扩展到解释卷积神经网络的整体工作机制。在表\ref{tab:typical_visualization_methods}中，回顾了四类有代表性的可视化方法如图\ref{tab:typical_visualization_methods}所示，下面再分别进行介绍。
+\begin{table}[h]
+	\centering
+	\caption{四类有代表性的卷积神经网络可视化方法。}		
+	\label{tab:typical_visualization_methods}
+	\begin{tabular}{c|c|c|c}
+		\toprule[2pt]
+		方法原理 & 解释粒度 & 代表工作 \\
+		\midrule[2pt]
+		激活最大化 & 神经元  & Simonyan等人~\cite{simonyan2013deep}  \\\hline
+		反卷积网络 & 网络层  & Zeiler等人~\cite{zeiler2014visualizing, zeiler2010deconvolutional, zeiler2011adaptive} \\\hline
+		基于梯度 &  神经元 & Selvaraju等人~\cite{selvaraju2017grad}，Springenberg等人~\cite{springenberg2014striving} \\  \hline
+		网络逆转 & 网络层 &Mahendran等人~\cite{mahendran2015understanding, mahendran2016visualizing}，Dosovitskiy等人~\cite{dosovitskiy2016inverting}\\
+		\bottomrule[2pt]
+	\end{tabular}
+	\label{tab:four_visulization_types}
+\end{table}
+\subsubsection{激活最大化方法}
+激活最大化（Activation Maximization）是一种通过合成特定输入图像，从而最大化特定神经元在任意层中的激活的方法。最初是由Erhan等人~\cite{erhan2009visualizing}提出的，被用于深度置信网络~\cite{hinton2006fast}高层神经元的可视化。设输入图像为$x$，模式图像为$x^*$，可形式化表示为：
+\begin{equation}
+x^{*}=\underset{x}{\operatorname{argmax}}\left(a_{i, l}(\theta, x)-\lambda(x)\right).
+\end{equation}
+其中，$\theta$表示网络参数，$\lambda(x)$表示正则项，正则项有多种选择，比如$l_2$和高斯模糊。前者通常会将图像平滑，而后者通常会抑制图像中的高频信息。随后，Simonyan等人~\cite{simonyan2013deep}将其扩展，用于解释卷积神经网络。在分类问题中，设$S_{c}(x)$表示为类别图像$I$被卷积神经网络分到类别$c$的分数，使用$l_2$作为正则化项，则激活最大化方法用于解释卷积神经网络可形式化为：
+\begin{equation}
+\arg \max _{x} S_{c}(x)-\lambda\|x\|_{2}^{2}.
+\end{equation}
+注意，$S_{c}(x)(0\leq S_{c}(x) \leq 1)$是经过Softmax激活函数得到的类别分数。
+
+当激活最大化从以下角度解释卷积神经网络时从神经元的角度来看，基于反卷积网络（DeconvNet）~\cite{zeiler2014visualizing, zeiler2010deconvolutional, zeiler2011adaptive}的卷积神经网络可视化从输入图像的角度解释了卷积神经网络。它从输入图像中找到激活卷积层中特定神经元的选择性模式。通过将低维神经元的特征图逐层映射回原始图像尺寸来重建图像。这个投影这个过程由反卷积网络实现，这种网络包含反卷积层、反池化层、反ReLU激活函数等逆运算。基于DeconvNet的可视化并不仅仅是分析神经元的兴趣，而是展示了一种直接的特征分析方法。DeconvNet模型结构图如图\ref{fig:deconvnet_architecture}所示，可以发现，DeconvNet是卷积神经网络网络的逆过程，卷积神经网络中存在的操作在DeconvNet均有对应逆操作。
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figure/deconvnet_architecture}
+	\caption{DeconvNet模型结构图（图片来自于原文）。}
+	\label{fig:deconvnet_architecture}
+\end{figure}
+\subsubsection{基于梯度的方法}
+梯度是卷积神经网络中非常重要的概念，卷积神经网络在前向传播阶段计算损失。回传的过程，实质上是梯度的计算和回传的过程，从而更新网络参数。不难理解，流过神经元的梯度越大，则代表前向传播时该神经元激活值越大，进而说明该神经元越重要。基于梯度的网络可视化方法就是充分利用卷积神经网络中流动的梯度，从梯度角度来解释每一个神经元在网络中所起到的作用，相对上述反卷积网络和激活最大化方法，基于梯度的方法可得到更为精细的可视化结果。另外，由于卷积神经网络每一层均有梯度，因而通常基于梯度的方法还更为灵活，可以实现位于任意层的任意神经元的可视化。在本小节，我们将介绍常见的两种方法：Guided-Backpropagation~\cite{springenberg2014striving}和Grad-CAM~\cite{selvaraju2017grad}。
+
+Guided-Backpropagation用带步长的卷积层（如步长为2，卷积核为$3\times 3$的卷积层也可达到输入尺寸减半的效果）代替池化操作。另外，对于ReLU反向传播，与一般梯度回传法则\footnote{https://en.wikipedia.org/wiki/Backpropagation}不同的是，Guided-Backpropagation组合了DeconvNet和一般梯度回传的ReLU函数梯度计算法则，使得Guided-Backpropagation不仅可以得到更为精细、细节更为丰富的可视化结果，还能可视化高层的特征（在这种情况下，DeconvNet可视化经常会失效）。
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{figure/cam_example}
+	\caption{CAM可视化效果图示例（图片来自于原文）。}
+	\label{fig:cam_example}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figure/cam_arichitecture}
+	\caption{CAM网络结构示意图（图片来自于原文）。}
+	\label{fig:cam_arichitecture}
+\end{figure}
+
+另外一种基于梯度，应用极为广泛的可视化方式是Grad-CAM，由于Grad-CAM是基于CAM的。在此，先来介绍CAM。如图\ref{fig:cam_arichitecture}所示，全局均值池化（Global Average Pooling，缩写为GAP）输出最后一个卷积层每个单元的特征图的空间平均值，这些值的加权和用于生成最终输出。同样，我们计算最后一个卷积层的特征图的加权和，便可以得到类激活图（Class Activation Map）。下面我们以分类问题为例进行更为详细的描述（假设最后一层激活函数Softmax）。对于给定的图像，令$f_k(x, y)$表示激活空间位置最后一个卷积层中第$k$个特征图的$(x,y)$位置的激活值。对于第$k$个特征图执行GAP，则GAP结果$F_k=\sum_{x, y} f_{k}(x,y)$。因此，对于类别$c$，被送到softmax激活函数的输入$S_c=\sum_{k} w_{k}^{c} F_{k}$，其中$w_k^c$是对应于第$k$个特征的类别$c$的权重。实质上，$w_{k}^{c}$表示第$k$个特征图对于类别$c$的重要性。故类别$c$经过Softmax激活函数输出$P_c$可定义为：
+\begin{eqnarray}
+P_c=\frac{\exp \left(S_{c}\right)}{\sum_{c} \exp \left(S_{c}\right)}.
+\end{eqnarray}
+根据以上定义，我们可以作出如下推导： 
+\begin{equation}
+S_{c}=\sum_{k} w_{k}^{c} \sum_{x, y} f_{k}(x, y)=\sum_{x, y} \sum_{k} w_{k}^{c} f_{k}(x, y).
+\end{equation}
+我们定义$M_c$为类别$c$的类激活图，则：
+\begin{equation}
+M_{c}(x, y)=\sum_{k} w_{k}^{c} f_{k}(x, y).
+\end{equation}
+故$S_{c}=\sum_{x,y} M_{c}(x, y)$。不难发现，$M_{c}(x, y)$直接表明了空间位置$(x,y)$处的激活值对于该图像被分为类别$c$的重要性程度。可视化效果图示例可参见图\ref{fig:cam_example}。CAM在网络最后一层是GAP的情况下方能使用，例如，CAM不能实现对VGG网络的可视化。为此，Grad-CAM计算类激活图的特征加权系数不是分类器的权值，而是通过反向传播计算的梯度得到的，从而将CAM扩展到任何卷积神经网络。Grad-CAM与CAM相比，它的优点是适用的范围更广，不像CAM要求最后一层是GAP，Grad-CAM对各类结构，各种任务都可以使用。这两种方法也可以应用于进行弱监督下的目标检测，而本文将用这两种方法完成弱监督下的生物标记物定位。另外，Grad-CAM还能与Guided-Backpropagation结合，相比于Guided-Backpropagation，可视化结果不仅更为准确，还更为精细（见图\ref{fig:grad_cam_architecture}最左侧Guided-Grad-CAM）。下面对Grad-CAM模型进行详细描述，其流程图如图\ref{fig:grad_cam_architecture}所示。
+%\begin{figure}[h!] % image examples & compare
+%	\begin{subfigure}{0.45\textwidth}
+%		\centering
+%		\includegraphics[width=0.5\textwidth]{figure/cam_example.png}
+%		\caption{子图1}
+%		\label{subfig1}
+%	\end{subfigure}
+%	\begin{subfigure}{0.45\textwidth}
+%		\centering
+%		\includegraphics[width=0.5\textwidth]{figure/grad_cam_example.png}
+%		\caption{子图2}
+%		\label{subfig2}
+%	\end{subfigure}
+%	\caption{多子图}
+%	\label{subfig}
+%\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{figure/grad_cam_architecture}
+	\caption{Grad-CAM流程图（图片来自于原文）。}
+	\label{fig:grad_cam_architecture}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{figure/grad_cam_example}
+	\caption{Grad-CAM可视化效果图示例（图片来自于原文）。} 
+	\label{fig:grad_cam_example}
+\end{figure}
 %\section{评价标准}
 %\section{本章小结}
