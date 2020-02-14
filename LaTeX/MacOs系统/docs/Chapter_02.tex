@@ -1,9 +1,9 @@
 \chapter{相关研究进展}
 \section{引言}
-自从计算机技术应用到医学影像分析以来，有许许多多医学影像分析难题因其具有的重大临床应用价值和实际意义而引起研究者的浓厚兴趣并为之投入大量时间和精力，生物标记物的精确定位便是其中之一。本章将会生物标记物精确定位任务的常用数据集进行介绍。接着将会介绍本文方法中涉及到的最为重要的基本知识点，包括卷积神经网络、对抗生成网络和自编码-解码器等。下一步，我们将对可用于完成生物标记物精确定位任务的已有解决方案进行详细（包括传统的多示例学习和当下流行的卷积神经网络方法）介绍，力求将相关方法阐述得清晰明了，突出比较各种方法在生物标记物的精确定位任务上的长处和不足。在本章最后，我们将给出实验结果的评判标准，并阐述选择这些比较标准的合理性。
+自从计算机技术应用到医学影像分析以来，有许许多多医学影像分析难题因其具有的重大临床应用价值和实际意义而引起研究者的浓厚兴趣并为之投入大量时间和精力，生物标记物的精确定位便是其中之一。本章将会生物标记物精确定位任务的常用数据集进行介绍。接着将会介绍本文方法中涉及到的最为重要的基本知识点，包括CNN、对抗生成网络和自编码-解码器等。下一步，我们将对可用于完成生物标记物精确定位任务的已有解决方案进行详细（包括传统的MIL和当下流行的CNN方法）介绍，力求将相关方法阐述得清晰明了，突出比较各种方法在生物标记物的精确定位任务上的长处和不足。在本章最后，我们将给出实验结果的评判标准，并阐述选择这些比较标准的合理性。
 
 \section{常用数据集}
-一旦展开对选取问题的具体研究，第一步便是选取实验所使用的数据集。尤其对于当下十分火热、有着数据驱动特性的卷积神经网络来说，选择一个合适的数据集的重要性更加不言而喻。再加上医学影像数据获取、标注成本更高，导致可用于生物标记物的精确定位测试的公开数据集较少。由于医学数据很可能会涉及到病人的隐私，为了尽可能保护病人权益，防止病人信息泄露，图像数量较多的、图像质量较高的数据集往往存于知名公立医院且未公开。在已然公开的数据集中，本文将选取一些知名度较高的、在学术界被研究者广泛接受的、图像质量相对较高的数据集进行介绍。
+一旦展开对选取问题的具体研究，第一步便是选取实验所使用的数据集。尤其对于当下十分火热、有着数据驱动特性的CNN来说，选择一个合适的数据集的重要性更加不言而喻。再加上医学影像数据获取、标注成本更高，导致可用于生物标记物的精确定位测试的公开数据集较少。由于医学数据很可能会涉及到病人的隐私，为了尽可能保护病人权益，防止病人信息泄露，图像数量较多的、图像质量较高的数据集往往存于知名公立医院且未公开。在已然公开的数据集中，本文将选取一些知名度较高的、在学术界被研究者广泛接受的、图像质量相对较高的数据集进行介绍。
 
 \subsection{眼底病变数据集}
 眼科学是临床医学的一个独特分支。眼科的影像学检查方法有眼底摄影、光学相干断层扫描、眼底荧光血管造影、扫描激光检眼镜等。一个明确的眼科疾病诊断需要结合几个不同的试验结果。在临床实践中，诊断和治疗策略的确定依赖于影像学资料的评价。目前眼底照片已广泛应用于青光眼和视网膜疾病等眼科疾病的诊断。然而，眼成像数据的解释需要大量的经验和时间。在这里，我们介绍部分具有良好注释和标签的数据集，扼要信息如表~\ref{tab:datasets_info}所示，下面分别进行简单介绍。
@@ -72,7 +72,7 @@ ISIC2019数据集\footnote{https://challenge2019.isic-archive.com/}中有25,331�
 与眼底病变类型不同的是，黑色素瘤的各种病变类型往往在皮肤镜上所占区域比较大，通常所占比例在$1/3$以上。各种病变类型之间的区别主要表现在病变区域细微纹理区间上。
 
 \section{基本知识要点}
-本小节主要是介绍生物标记物定位任务的概念和目前常用的模型方法。首先，我们会介绍生物标记物定位任务的概念，让读者对本文研究主题有清晰的认识。接着会介绍卷积神经网络、编码器-解码器等重要基本要点。下一步介绍目前已有的常用解决模型方法。最后介绍对各种模型方法性能比较的评价标准。
+本小节主要是介绍生物标记物定位任务的概念和目前常用的模型方法。首先，我们会介绍生物标记物定位任务的概念，让读者对本文研究主题有清晰的认识。接着会介绍CNN、编码器-解码器等重要基本要点。下一步介绍目前已有的常用解决模型方法。最后介绍对各种模型方法性能比较的评价标准。
 \subsection{生物标记物定位任务}
 \begin{figure}[h]
 	\centering
@@ -81,45 +81,45 @@ ISIC2019数据集\footnote{https://challenge2019.isic-archive.com/}中有25,331�
 		（Microaneurysms）、硬性渗出液（Hard Exudates）和出血（Hemorrhages）。} 
 	\label{fig:biomarker_localization_example}
 \end{figure}
-生物标志物是开发新疗法和辅助诊断的关键，受到研究人员的不断关注，其目标是为合适的病人开发合适的药物。随着计算机视觉技术不断应用到医学领域，生物标记物定位任务自然也变成了研究热点。在医学影像处理领域，一旦一张医学影像被诊断为某种特定疾病，生物标记物定位任务的目标便是寻找其患病区域，或者说在图像上找到诊断依据，该依据或者患病区域即可看作是生物标记物。如图\ref{fig:biomarker_localization_example}，该图像被诊断为患有糖尿病视网膜病变，生物标记物定位任务便是找到其异常表现，并给出其准确位置。可以发现，糖尿病视网膜病变有多种异常表现，生物标记物定位任务要求不能漏检。另外，可以发现从颜色特征上看，出血(图中黄色矩形框)异常和眼底血管非常相似，因而将微小血管看作异常表现的假阳现象也可能发现。以上均给生物标记物定位任务增加了不少难度。如果将卷积神经网络手段，根据以上介绍，生物标记物定位任务的目标是找出疾病诊断背后的诊断依据，这与卷积神经网络的可视化/可解释性的目标恰好一致，因此卷积神经网络的可视化/可解释性是生物标记物定位任务的主要解决方案之一。相关内容将会在\ref{subsec:visulization_methods}小节详细叙述。
+生物标志物是开发新疗法和辅助诊断的关键，受到研究人员的不断关注，其目标是为合适的病人开发合适的药物。随着计算机视觉技术不断应用到医学领域，生物标记物定位任务自然也变成了研究热点。在医学影像处理领域，一旦一张医学影像被诊断为某种特定疾病，生物标记物定位任务的目标便是寻找其患病区域，或者说在图像上找到诊断依据，该依据或者患病区域即可看作是生物标记物。如图\ref{fig:biomarker_localization_example}，该图像被诊断为患有糖尿病视网膜病变，生物标记物定位任务便是找到其异常表现，并给出其准确位置。可以发现，糖尿病视网膜病变有多种异常表现，生物标记物定位任务要求不能漏检。另外，可以发现从颜色特征上看，出血(图中黄色矩形框)异常和眼底血管非常相似，因而将微小血管看作异常表现的假阳现象也可能发现。以上均给生物标记物定位任务增加了不少难度。如果将CNN手段，根据以上介绍，生物标记物定位任务的目标是找出疾病诊断背后的诊断依据，这与CNN的可视化/可解释性的目标恰好一致，因此CNN的可视化/可解释性是生物标记物定位任务的主要解决方案之一。相关内容将会在\ref{subsec:visulization_methods}小节详细叙述。
 \subsection{卷积神经网络}
-卷积神经网络最初是为了避免传统神经网络（多层感知机~\cite{gardner1998artificial}）在处理图像时的缺点而提出的。多层感知机在处理图像数据时，多层感知机对每张输入图像中的每个像素点都使用一个感知器。对于较大的图像，权重的数量很快就变得难以管理。例如，对于一个有3个彩色通道的224$\times$224像素图像，大约需要训练150,000个权值。此时，多层感知机的训练将变得十分困难。另外，多层感知机不具备平移不变性。例如，如果一张猫出现在一张图像的左上角和另一张图像的右下角，多层感知机将假设猫总是出现在图片的这个位置。再加上，多层感知机在处理图像时需要将二维图像数据将会以一维向量形式存在，因此无法利用二维空间的相对位置信息。
+CNN最初是为了避免传统神经网络（多层感知机~\cite{gardner1998artificial}）在处理图像时的缺点而提出的。多层感知机在处理图像数据时，多层感知机对每张输入图像中的每个像素点都使用一个感知器。对于较大的图像，权重的数量很快就变得难以管理。例如，对于一个有3个彩色通道的224$\times$224像素图像，大约需要训练150,000个权值。此时，多层感知机的训练将变得十分困难。另外，多层感知机不具备平移不变性。例如，如果一张猫出现在一张图像的左上角和另一张图像的右下角，多层感知机将假设猫总是出现在图片的这个位置。再加上，多层感知机在处理图像时需要将二维图像数据将会以一维向量形式存在，因此无法利用二维空间的相对位置信息。
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/popular_networks}
-	\caption{三种经典的卷积神经网络模型结构。从左到右，依次为AlexNet~\cite{krizhevsky2012imagenet}、ResNet~\cite{he2016deep, he2016identity}、DenseNet~\cite{huang2017densely}（图片均来自于原始论文）。注意，中间是ResNet的一个残差单元，ResNet实际上是由多个残差单元堆叠组成。} 
+	\caption{三种经典的CNN模型结构。从左到右，依次为AlexNet~\cite{krizhevsky2012imagenet}、ResNet~\cite{he2016deep, he2016identity}、DenseNet~\cite{huang2017densely}（图片均来自于原始论文）。注意，中间是ResNet的一个残差单元，ResNet实际上是由多个残差单元堆叠组成。} 
 	\label{fig:popular_networks}
 \end{figure}
 
-卷积神经网络便可以很好避免多层感知机存在的问题，卷积操作可以很好的捕捉图像的空间信息。另外，卷机操作还具有平移不变性。权值共享机制可以大大降低参数量。随着计算机算力的快速提升，运用反向传播算法~\cite{hecht1992theory}，卷积神经网络的大规模训练变得切实可行。自Hinton等人利用两块GPU成功训练AlexNet~\cite{krizhevsky2012imagenet}后，很多优秀网络结构被提出，比如VGG~\cite{simonyan2014very}，ResNet~\cite{he2016deep, he2016identity}，DenseNet~\cite{huang2017densely}，Inception系列网络~\cite{szegedy2015going, szegedy2016rethinking, szegedy2017inception}。卷积神经网络除了在分类问题上取得出色性能外，还在自然语言处理~\cite{dos2014deep, mou2016convolutional, li2019knowledge}、无人驾驶~\cite{lee2017deep, csillik2018identification, tang2017vehicle}、语音识别~\cite{abdel2013exploring, swietojanski2014convolutional, robertson2019exploring}等领域表现不凡，越来越受到研究者们的青睐。
+CNN便可以很好避免多层感知机存在的问题，卷积操作可以很好的捕捉图像的空间信息。另外，卷机操作还具有平移不变性。权值共享机制可以大大降低参数量。随着计算机算力的快速提升，运用反向传播算法~\cite{hecht1992theory}，CNN的大规模训练变得切实可行。自Hinton等人利用两块GPU成功训练AlexNet~\cite{krizhevsky2012imagenet}后，很多优秀网络结构被提出，比如VGG~\cite{simonyan2014very}，ResNet~\cite{he2016deep, he2016identity}，DenseNet~\cite{huang2017densely}，Inception系列网络~\cite{szegedy2015going, szegedy2016rethinking, szegedy2017inception}。CNN除了在分类问题上取得出色性能外，还在自然语言处理~\cite{dos2014deep, mou2016convolutional, li2019knowledge}、无人驾驶~\cite{lee2017deep, csillik2018identification, tang2017vehicle}、语音识别~\cite{abdel2013exploring, swietojanski2014convolutional, robertson2019exploring}等领域表现不凡，越来越受到研究者们的青睐。
 
-三种经典的卷积神经网络的模型结构如图~\ref{fig:popular_networks}所示。可以看出，卷积神经网络都是由一系列卷积操作组成的，在卷积操作之后再接上激活函数以增强非线性表达能力。为了减少参数量，卷积神经网络还引入了池化操作，使得输入图像尺寸随着深度不断增加而减小。池化操作也起到过滤无用信息的的作用。最后，再接上全连接层对卷积神经网络提取到的特征进行分类（视不同任务而改变）。因此，卷积神经网络实际上充当特征提取器的角色。那么我们可以这样理解卷积神经的原理：单纯卷积操作提取的是图像的局部信息，随着一系列卷积操作的堆叠，卷积神经网络的感受野越来越大，比如两个3$\times$3的卷积核堆叠相当于一个5$\times$5卷积核的感受野，卷积神经网络便能提取到图像的全局信息。同时，随着深度增加，输入的尺寸大小变得越来越小，通常以2倍关系减小，卷积神经网络便会丢掉无用信息。因而卷积神经网络是一种层次化结构。再在损失函数，如交叉熵，的监督指导下，根据反向梯度传播算法更新网络参数，卷积神经网络便能被训练成一个优秀的特征提取器。
+三种经典的CNN的模型结构如图~\ref{fig:popular_networks}所示。可以看出，CNN都是由一系列卷积操作组成的，在卷积操作之后再接上激活函数以增强非线性表达能力。为了减少参数量，CNN还引入了池化操作，使得输入图像尺寸随着深度不断增加而减小。池化操作也起到过滤无用信息的的作用。最后，再接上全连接层对CNN提取到的特征进行分类（视不同任务而改变）。因此，CNN实际上充当特征提取器的角色。那么我们可以这样理解卷积神经的原理：单纯卷积操作提取的是图像的局部信息，随着一系列卷积操作的堆叠，CNN的感受野越来越大，比如两个3$\times$3的卷积核堆叠相当于一个5$\times$5卷积核的感受野，CNN便能提取到图像的全局信息。同时，随着深度增加，输入的尺寸大小变得越来越小，通常以2倍关系减小，CNN便会丢掉无用信息。因而CNN是一种层次化结构。再在损失函数，如交叉熵，的监督指导下，根据反向梯度传播算法更新网络参数，CNN便能被训练成一个优秀的特征提取器。
 
-以上便是卷积神经网络的一般结构和工作原理，下面详细介绍ResNet。随着VGG-19~\cite{simonyan2014very}的出现，一个卷积神经网络的深度越深，学出来的效果是否越好的问题摆在了研究者们的面前。由于卷积神经网络的深度越深，原本就存在的过拟合和梯度消失问题变得越严重。何凯明等人便设计了一种在深度远大于VGG-19，效果也由于VGG-19的网络模型。设$\mathcal{H}(x)$是卷积神经网络拟合的函数，$x$表示网络输入。如果假设多个非线性层可以渐近逼近复杂函数并且假设输入和输出尺寸相同，那么就可以假设它们可以渐近逼近残差函数$\mathcal{F}(x)$，即$\mathcal{F}(x)=\mathcal{H}(x)− x$。因此，ResNet没有让网络直接拟合$\mathcal{H}(x)$，而是明确地让这些层近似为残差函数$\mathcal{F}(x)=\mathcal{H}(x)-x$。 因此，原始函数变为$\mathcal{F}(x)+x$。尽管两种形式都应能够渐近地逼近所需的功能（如假设），但是近似拟合残差函数要容易得多。另外，为了表示加号，残差单元中通常加入跳接操作。
+以上便是CNN的一般结构和工作原理，下面详细介绍ResNet。随着VGG-19~\cite{simonyan2014very}的出现，一个CNN的深度越深，学出来的效果是否越好的问题摆在了研究者们的面前。由于CNN的深度越深，原本就存在的过拟合和梯度消失问题变得越严重。何凯明等人便设计了一种在深度远大于VGG-19，效果也由于VGG-19的网络模型。设$\mathcal{H}(x)$是CNN拟合的函数，$x$表示网络输入。如果假设多个非线性层可以渐近逼近复杂函数并且假设输入和输出尺寸相同，那么就可以假设它们可以渐近逼近残差函数$\mathcal{F}(x)$，即$\mathcal{F}(x)=\mathcal{H}(x)− x$。因此，ResNet没有让网络直接拟合$\mathcal{H}(x)$，而是明确地让这些层近似为残差函数$\mathcal{F}(x)=\mathcal{H}(x)-x$。 因此，原始函数变为$\mathcal{F}(x)+x$。尽管两种形式都应能够渐近地逼近所需的功能（如假设），但是近似拟合残差函数要容易得多。另外，为了表示加号，残差单元中通常加入跳接操作。
 
 设$x_l$表示第$l$个残差单元的输入，$\mathcal{W}_{l}=\{\mathcal{W}_{l,k}|_{1\leq k \leq K}\}$表示第$l$个残差单元的权重，$K$表示残差单元个数。则相邻的残差单元输入$x_{l+1}$可以表示为：
-\begin{gather}
+\begin{gather*}
 	y_{l}=x_l + \mathcal{F}(x_l, \mathcal{W}_l), \\
 	x_{l+1}=f(y_{l}).
-\end{gather}
+\end{gather*}
 其中$f$表示激活函数，$\mathcal{F}(x_l, \mathcal{W}_l)$表示残差单元中的卷积操作。如果$f$表示恒等变换，则$x_{l+1}=y_{l}$，有：
-\begin{equation}
+\begin{equation*}
 	x_{l+1}=x_l + \mathcal{F}(x_l, \mathcal{W}_l).
-\end{equation}
+\end{equation*}
 对于任意第$L(L\ge l)$个残差单元，其输入$x_{L}$，可写为：
-\begin{equation}\label{residual_block_compute}
+\begin{equation}\label{equ:residual_block_compute}
 x_{L}=x_l + \sum_{i=l}^{L-1}\mathcal{F}(x_i, \mathcal{W}_i).
 \end{equation}
-设损失函数为$\varepsilon$，根据等式\ref{residual_block_compute}和反向梯度传播算法的链式求导法有：
+设损失函数为$\varepsilon$，根据等式\ref{equ:residual_block_compute}和反向梯度传播算法的链式求导法有：
 \begin{equation}\label{residual_block_gradient}
 \frac{\partial \varepsilon}{\partial x_l}=\frac{\partial \varepsilon}{\partial x_L}\frac{\partial x_L}{\partial x_l}=\frac{\partial \varepsilon}{\partial x_L}(1+\frac{\partial}{\partial x_l}\sum_{i=l}^{L-1}\mathcal{F}(x_i,\mathcal{W}_i)).
 \end{equation}
-等式\ref{residual_block_gradient}表明，梯度$\frac{\partial \varepsilon}{\partial x_l}$由$\frac{\partial \varepsilon}{\partial x_L}$和$\frac{\partial \varepsilon}{\partial x_L}\frac{\partial}{\partial x_l}\sum_{i=l}^{L-1}\mathcal{F}(x_i,\mathcal{W}_i)$两项组成。第一项在可直接传播信息而与任意残差单元无关。而第二项保证信息直接回传到上一个残差单元。由于第一项的存在，等式\ref{residual_block_gradient}还能保证每一层梯度不容易消失，即使在残差单元权重很小的情况下。而ResNet更是实现了在深度达到上千层的情况下，仍不会发生梯度消失现象。DenseNet更是将ResNet中提出的跳接扩展到了网络单元之间，正是由于ResNet的优异性能，本文卷积神经网络分类器使用ResNet-18。
+等式\ref{residual_block_gradient}表明，梯度$\frac{\partial \varepsilon}{\partial x_l}$由$\frac{\partial \varepsilon}{\partial x_L}$和$\frac{\partial \varepsilon}{\partial x_L}\frac{\partial}{\partial x_l}\sum_{i=l}^{L-1}\mathcal{F}(x_i,\mathcal{W}_i)$两项组成。第一项在可直接传播信息而与任意残差单元无关。而第二项保证信息直接回传到上一个残差单元。由于第一项的存在，等式\ref{residual_block_gradient}还能保证每一层梯度不容易消失，即使在残差单元权重很小的情况下。而ResNet更是实现了在深度达到上千层的情况下，仍不会发生梯度消失现象。DenseNet更是将ResNet中提出的跳接扩展到了网络单元之间，正是由于ResNet的优异性能，本文CNN分类器使用ResNet-18。
 \subsection{编码器-解码器}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/popular_encoder_decoder}
-	\caption{三种经典的编码器-解码器模型结构。从左到右依次为编码器-解码器~\cite{hinton2006reducing}、全卷积神经网络~\cite{long2015fully}和U-Net~\cite{ronneberger2015u}（图片均来自于原文）。} 
+	\caption{三种经典的编码器-解码器模型结构。从左到右依次为编码器-解码器~\cite{hinton2006reducing}、全CNN~\cite{long2015fully}和U-Net~\cite{ronneberger2015u}（图片均来自于原文）。} 
 	\label{fig:popular_encoder_decoder}
 \end{figure}
 编码-解码器自Hinton等人~\cite{hinton2006reducing}提出以来被广泛应用。编码-解码器不是某一种网络，而是代表了一类网络。随后便有降噪编码器-解码器~\cite{vincent2008extracting}、稀疏编码器-解码器~\cite{coates2011analysis}、变分贝叶斯编码器-解码器~\cite{kingma2013auto}等变体。将卷积操作应用到编码器-解码器中，启发了FCN~\cite{long2015fully}、U-Net~\cite{ronneberger2015u}、FPN~\cite{lin2017feature}等经典网络结构。FCN和U-Net均是分割分割领域（包括自然图像和医学图像）最为基础的网络结构。为了读者对编码器-解码器模型结构由较为直观的认识，三种经典网络结构如图\ref{fig:popular_encoder_decoder}所示。
@@ -141,41 +141,51 @@ x_{L}=x_l + \sum_{i=l}^{L-1}\mathcal{F}(x_i, \mathcal{W}_i).
 我们对$D$进行训练，使其对$G$中的训练示例和样本分配正确标签的概率最大化。我们同时对$G$进行训练，使其对$log(1 - D(G(z))$最小化。换句话说，$D$和$G$玩了一个具有损失函数$V (G, D)$的二人极大极小博弈。在实际训练时，$D$和$G$先后交替训练。
 
 \noindent 固定$\theta_{g}$，优化$\theta_{d}$等价于用随机梯度上升算法最大化损失函数：
-\begin{equation}\label{equ:g_updated_loss_func}
+\begin{equation*}
 \log D\left(x\right)+\log \left(1-D\left(G\left(z\right)\right)\right).
-\end{equation}
+\end{equation*}
 
 \noindent 固定$\theta_{d}$，优化$\theta_{g}$等价于用随机梯度下降算法最小化损失函数：
-\begin{equation}
+\begin{equation*}
 \log \left(1-D\left(G\left(z\right)\right)\right).
-\end{equation}
-\noindent 在Goodfellol提出以上朴素GAN在生成网络和判别网络均是多层感知机。在实际训练过程中参数过大，训练难度较大的问题，因而训练不稳定，经常训练失败。各种改进模型相继提出，DCGAN~\cite{radford2015unsupervised}利用了卷积神经网络强大的拟合能力和容量。针对训练过程中存在的梯度消失问题，WGAN~\cite{gulrajani2017improved}使用Wasserstein-1距离代替GAN~\cite{goodfellow2014generative}中的Jensen-Shannon散度~\cite{arjovsky2017towards}。WGAN-GP~\cite{gulrajani2017improved}更是在WGAN基础上又在GAN损失函数（见等式\ref{equ:gan_loss_func}）中加入了梯度惩罚项（Gradient Penalty），这也是WGAN-GP名字的由来。由于WGAN-GP可以有效避免GAN训练过程中的梯度消失，本文网络模型中GAN采用的就是WGAN-GP，下面进行简单简单介绍。
+\end{equation*}
+\noindent 在Goodfellol提出以上朴素GAN在生成网络和判别网络均是多层感知机。在实际训练过程中参数过大，训练难度较大的问题，因而训练不稳定，经常训练失败。各种改进模型相继提出，DCGAN~\cite{radford2015unsupervised}利用了CNN强大的拟合能力和容量。针对训练过程中存在的梯度消失问题，WGAN~\cite{gulrajani2017improved}使用Wasserstein-1距离代替GAN~\cite{goodfellow2014generative}中的Jensen-Shannon散度~\cite{arjovsky2017towards}。WGAN-GP~\cite{gulrajani2017improved}更是在WGAN基础上又在GAN损失函数（见等式\ref{equ:gan_loss_func}）中加入了梯度惩罚项（Gradient Penalty），这也是WGAN-GP名字的由来。由于WGAN-GP可以有效避免GAN训练过程中的梯度消失，本文网络模型中GAN采用的就是WGAN-GP，下面进行简单简单介绍。
 
 与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作是二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此也会去掉朴素GAN中判别器最后一层的Sigmoid激活函数。设$p_g$表示给定噪音分布$z\sim p_z$时生成网络所代表的的分布。再加上梯度惩罚项，WGAN-GP的损失函数可写作：
 \begin{equation}\label{wgan_gp_loss_func}
 \min _{G} \max _{D} V(D, G)=E_{x \sim P_{d a t a}}[D(x)]-E_{x \sim p_{g}}[D(x)]+\lambda E_{\hat{x} \sim p_{\hat{x}}}\left[\left(\left\|\nabla_{\hat{x}} D(\hat{x})\right\|_{2}-1\right)^{2}\right].
 \end{equation}
 其中，$\lambda$为梯度惩罚项的权重，分布$p_{\hat{x}}$不是对整个样本空间采样，而只对分布$p_{data}$和分布$p_{g}$之间的空间采样。在训练时同样$D$和$G$先后交替训练。因此，固定$G$，更新$\theta_{d}$时，等效于最小化损失函数：
-\begin{gather}
+\begin{gather*}
 \tilde{{x}} = G_{}({z}), \\
 D(\tilde{{x}})-D({x})+\lambda\left(\left\|\nabla_{\hat{x}} D(\hat{x})\right\|_{2}-1\right)^{2}.
-\end{gather}
+\end{gather*}
 \noindent 固定$D$，更新$G$时，等效于最小化损失函数：
-\begin{equation}
+\begin{equation*}
 -D\left(G_{\theta}(z)\right).
-\end{equation}
+\end{equation*}
 通过实验证明，WGAN-GP在训练过程中梯度较为稳定，不易发生梯度消失现象。另外，Wasserstein-1距离还有指示WGAN-GP训练效果的作用，Wasserstein-1距离越大，表示WGAN-GP训练得越好，使得训练过程易于理解。
 \section{生物标记物定位方法}
-随着计算机计算在医学影像领域的广泛应用，目前已有可用于生物标记物定位的模型提出，主要包括多示例学习~\cite{maron1998framework}和卷积神经网络的可视化方法~\cite{zhou2016learning, selvaraju2017grad}。本小节将对其中的经典方法进行详细介绍，并比较方法之间的优劣，以便于读者对这些方法有清晰的认识与理解。
+随着计算机计算在医学影像领域的广泛应用，目前已有可用于生物标记物定位的模型提出，主要包括MIL~\cite{maron1998framework}和CNN的可视化方法~\cite{zhou2016learning, selvaraju2017grad}。本小节将对其中的经典方法进行详细介绍，并比较方法之间的优劣，以便于读者对这些方法有清晰的认识与理解。
 \subsection{多示例学习}
-多示例学习~\cite{maron1998framework}
-\subsection{卷积神经网络的可视化}\label{subsec:visulization_methods}
-卷积神经网络在从语音识别到自主系统的本地化和映射等大规模任务中的取得相当大的成就，使其成为先进的人工智能系统中最受欢迎的工具。尽管只能将成功的部分原因归功于这种网络的训练过程中算法的进步，但是学习过程和所学内容的内在性仍然很模糊，即卷积神经网络一直是个“黑匣子”，我们始终不知道其内部运行机制，更无法得知其作出判断的背后依据。然而，卷积神经网络所做决定的依据很多时候与所做决定同样重要，比如，在医学领域，如果专业医师看不到人工智能系统给出诊断方法，专业医师也就无法接受人工智能系统所给提出的对患者的治疗方案。因此，我们需要有一种方式了解导致卷积神经网络失败或成功的原因。如果我们无法解释模型的工作原理，我们如何信任模型的结果？这是一个合理的问题。更重要的是，较差的网络可解释性极大地阻碍了对各个网络层的鲁棒性评估，进一步优化网络结构，以及对不同应用的网络适应性和可移植性，这也是卷积神经网络的可视化需要回答的直接动力和实际意义。
+MIL由Maron由等人~\cite{maron1998framework}提出，是一种与监督学习、半监督学习和非监督学习有所不同的不确切监督，也可用于处理弱监督问题。在MIL中，是以多示例包（Bag）为训练单元，训练集由一组具有分类标签（Label）多示例包组成，每个多示例包含有若干个没有分类标签的示例（Instance）。如果多示例包至少含有一个正示例，则该包被标记为正类多示例包（正包）。如果多示例包的所有示例都是负示例，则该包被标记为负类多示例包（负包）。设$\boldsymbol{X}=\boldsymbol{\{x_1,x_2,...,x_N\}}$为示例$\boldsymbol{x_1}$，$\boldsymbol{x_2}$，...，$\boldsymbol{x_N}$的特征向量集合组成的包，记示例$\boldsymbol{x_1}$，$\boldsymbol{x_2}$，...，$\boldsymbol{x_N}$对应的标签为示例$\boldsymbol{y_1}$，$\boldsymbol{y_2}$，...，$\boldsymbol{y_N}$。则包$\boldsymbol{X}$的标签$\boldsymbol{Y}\in \{-1,+1\}$可用形式化语言定义为：
+\begin{equation}
+Y=\left\{\begin{array}{ll}
+{+1} & {\text { if } \quad \exists y_{i}: y_{i}=+1;} \\
+{-1} & {\text { if } \quad \forall y_{i}: y_{i}=-1.}
+\end{array}\right.
+\end{equation}
 
-卷积神经网络的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，有很多研究者提出了解决方法。最简便也是最直接的方法是利用PyTorch\footnote{https://pytorch.org/}、TensorFlow\footnote{https://www.tensorflow.org/}等工具直接观察其网络结构可视化图，查看卷积核大小、输入和输出特征图尺寸、卷积层参数等相关信息。除此之外，还能通过t-SNE方法~\cite{maaten2008visualizing}对图像的特征向量进行降维操作，以在低维空间中查看数据的宏观分布。另一种可视化技术是获取大型数据集，通过网络输入图像，并跟踪哪些图像最大程度地激活了某些神经元。然后，我们可以将图像可视化，以了解神经元在其感受野中正在寻找什么。Girshick等人~\cite{girshick2014rich}提出了这样一种可视化技术，用于精确的对象检测和语义分割。这种方法的一个问题是ReLU神经元本身不一定具有任何语义，只有输入特征图沿着沿着与过滤器权重相对应轴方向的可视化结果。不需要专门去获取大型数据集，Zeiler等人提出的方法可以更为直接的了解到神经元真正感兴趣的区域或者物体，通过依次遮挡图像每一部分来绘制感兴趣类别的概率与遮挡物位置的关系图。以上可视化方法主要关注与低层特征。随着卷积神经网络的快速发展和实现，可视化已被扩展到解释卷积神经网络的整体工作机制。在表\ref{tab:typical_visualization_methods}中，回顾了四类有代表性的可视化方法如图\ref{tab:typical_visualization_methods}所示，下面再分别进行介绍。
+\noindent 多示例学习的目的是，通过对具有分类标签的多示例包的学习，建立多示例分类器，并将该分类器应用于未知多示例包的预测。在图像处理问题中，可以从图像中提取许多小的图像块作为其示例，将整张图像看作包，这在诸如没有细粒度标记训练数据的感兴趣区域定位的任务中特别有用，比如本文研究的弱监督条件下的生物标记物定位任务。具体来说，可将标签为异常的图像记为正例，标签为正常的图像（Data Augmentation）记为负例，再利用数据增强来训练MIL二分类器，将细粒度的生物标记物定位任务转化为感兴趣区域定位任务。用MIL处理图像分割也是如此。尽管如此，与其在算法和应用上的繁荣发展相反，因为分析的难度太大以及示例标签的不稳定性，多示例学习的理论研究成果~\cite{gondra2014object, wu2015deep}非常少。
+
+\subsection{卷积神经网络的可视化}\label{subsec:visulization_methods}
+CNN在从语音识别到自主系统的本地化和映射等大规模任务中的取得相当大的成就，使其成为先进的人工智能系统中最受欢迎的工具。尽管只能将成功的部分原因归功于这种网络的训练过程中算法的进步，但是学习过程和所学内容的内在性仍然很模糊，即CNN一直是个“黑匣子”，我们始终不知道其内部运行机制，更无法得知其作出判断的背后依据。然而，CNN所做决定的依据很多时候与所做决定同样重要，比如，在医学领域，如果专业医师看不到人工智能系统给出诊断方法，专业医师也就无法接受人工智能系统所给提出的对患者的治疗方案。因此，我们需要有一种方式了解导致CNN失败或成功的原因。如果我们无法解释模型的工作原理，我们如何信任模型的结果？这是一个合理的问题。更重要的是，较差的网络可解释性极大地阻碍了对各个网络层的鲁棒性评估，进一步优化网络结构，以及对不同应用的网络适应性和可移植性，这也是CNN的可视化需要回答的直接动力和实际意义。
+
+CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，有很多研究者提出了解决方法。最简便也是最直接的方法是利用PyTorch\footnote{https://pytorch.org/}、TensorFlow\footnote{https://www.tensorflow.org/}等工具直接观察其网络结构可视化图，查看卷积核大小、输入和输出特征图尺寸、卷积层参数等相关信息。除此之外，还能通过t-SNE方法~\cite{maaten2008visualizing}对图像的特征向量进行降维操作，以在低维空间中查看数据的宏观分布。另一种可视化技术是获取大型数据集，通过网络输入图像，并跟踪哪些图像最大程度地激活了某些神经元。然后，我们可以将图像可视化，以了解神经元在其感受野中正在寻找什么。Girshick等人~\cite{girshick2014rich}提出了这样一种可视化技术，用于精确的对象检测和语义分割。这种方法的一个问题是ReLU神经元本身不一定具有任何语义，只有输入特征图沿着沿着与过滤器权重相对应轴方向的可视化结果。不需要专门去获取大型数据集，Zeiler等人提出的方法可以更为直接的了解到神经元真正感兴趣的区域或者物体，通过依次遮挡图像每一部分来绘制感兴趣类别的概率与遮挡物位置的关系图。以上可视化方法主要关注与低层特征。随着CNN的快速发展和实现，可视化已被扩展到解释CNN的整体工作机制。在表\ref{tab:typical_visualization_methods}中，回顾了四类有代表性的可视化方法如图\ref{tab:typical_visualization_methods}所示，下面再分别进行介绍。
 \begin{table}[h]
+	% reference: https://arxiv.org/pdf/1804.11191.pdf
 	\centering
-	\caption{四类有代表性的卷积神经网络可视化方法。}		
+	\caption{四类有代表性的CNN可视化方法。}		
 	\label{tab:typical_visualization_methods}
 	\begin{tabular}{c|c|c|c}
 		\toprule[2pt]
@@ -191,26 +201,34 @@ D(\tilde{{x}})-D({x})+\lambda\left(\left\|\nabla_{\hat{x}} D(\hat{x})\right\|_{2
 \end{table}
 \subsubsection{激活最大化方法}
 激活最大化（Activation Maximization）是一种通过合成特定输入图像，从而最大化特定神经元在任意层中的激活的方法。最初是由Erhan等人~\cite{erhan2009visualizing}提出的，被用于深度置信网络~\cite{hinton2006fast}高层神经元的可视化。设输入图像为$x$，模式图像为$x^*$，可形式化表示为：
-\begin{equation}
+\begin{equation*}
 x^{*}=\underset{x}{\operatorname{argmax}}\left(a_{i, l}(\theta, x)-\lambda(x)\right).
-\end{equation}
-其中，$\theta$表示网络参数，$\lambda(x)$表示正则项，正则项有多种选择，比如$l_2$和高斯模糊。前者通常会将图像平滑，而后者通常会抑制图像中的高频信息。随后，Simonyan等人~\cite{simonyan2013deep}将其扩展，用于解释卷积神经网络。在分类问题中，设$S_{c}(x)$表示为类别图像$I$被卷积神经网络分到类别$c$的分数，使用$l_2$作为正则化项，则激活最大化方法用于解释卷积神经网络可形式化为：
-\begin{equation}
+\end{equation*}
+其中，$\theta$表示网络参数，$\lambda(x)$表示正则项，正则项有多种选择，比如$l_2$和高斯模糊。前者通常会将图像平滑，而后者通常会抑制图像中的高频信息。随后，Simonyan等人~\cite{simonyan2013deep}将其扩展，用于解释CNN。在分类问题中，设$S_{c}(x)$表示为类别图像$x$被CNN分到类别$c$的分数，使用$l_2$作为正则化项，则激活最大化方法用于解释CNN可形式化为：
+\begin{equation*}
 \arg \max _{x} S_{c}(x)-\lambda\|x\|_{2}^{2}.
-\end{equation}
-注意，$S_{c}(x)(0\leq S_{c}(x) \leq 1)$是经过Softmax激活函数得到的类别分数。
-
-当激活最大化从以下角度解释卷积神经网络时从神经元的角度来看，基于反卷积网络（DeconvNet）~\cite{zeiler2014visualizing, zeiler2010deconvolutional, zeiler2011adaptive}的卷积神经网络可视化从输入图像的角度解释了卷积神经网络。它从输入图像中找到激活卷积层中特定神经元的选择性模式。通过将低维神经元的特征图逐层映射回原始图像尺寸来重建图像。这个投影这个过程由反卷积网络实现，这种网络包含反卷积层、反池化层、反ReLU激活函数等逆运算。基于DeconvNet的可视化并不仅仅是分析神经元的兴趣，而是展示了一种直接的特征分析方法。DeconvNet模型结构图如图\ref{fig:deconvnet_architecture}所示，可以发现，DeconvNet是卷积神经网络网络的逆过程，卷积神经网络中存在的操作在DeconvNet均有对应逆操作。
+\end{equation*}
+注意，$S_{c}(x)(0\leq S_{c}(x) \leq 1)$是经过Softmax激活函数得到的类别分数。此类方法通常都会固定网络参数，只是不断更新类别图像$x$，从而合成具有特定模式的输入图像，还能得到类别$c$的原型图。
+\subsubsection{反卷积网络}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/deconvnet_architecture}
 	\caption{DeconvNet模型结构图（图片来自于原文）。}
 	\label{fig:deconvnet_architecture}
 \end{figure}
+激活最大化方法从最大化特定神经元的激活来解释CNN。反卷积网络（DeconvNet）~\cite{zeiler2014visualizing, zeiler2010deconvolutional, zeiler2011adaptive}从输入图像的角度解释了CNN。它从输入图像中找到激活卷积层中特定神经元的选择性模式。通过将低维神经元的特征图逐层映射回原始图像尺寸来重建图像。这个投影这个过程由反卷积网络实现，这种网络包含反卷积层、反池化层、反ReLU激活函数等逆运算。基于DeconvNet的可视化并不仅仅是分析神经元的兴趣，而是展示了一种直接的特征分析方法。DeconvNet模型结构图如图\ref{fig:deconvnet_architecture}所示，可以发现，DeconvNet是CNN网络的逆过程，CNN中存在的操作在DeconvNet中均有对应逆操作。DeconvNet将图片特征从特征空间转化到像素空间，以发现是哪些像素激活了特定的特征，达到分析解释CNN的目的。另外，用DeconvNet还有可用于可视化一个已经训练好的网络模型，无须没有学习训练的优点。所以DeconvNet使用起来比较简单。
+
 \subsubsection{基于梯度的方法}
-梯度是卷积神经网络中非常重要的概念，卷积神经网络在前向传播阶段计算损失。回传的过程，实质上是梯度的计算和回传的过程，从而更新网络参数。不难理解，流过神经元的梯度越大，则代表前向传播时该神经元激活值越大，进而说明该神经元越重要。基于梯度的网络可视化方法就是充分利用卷积神经网络中流动的梯度，从梯度角度来解释每一个神经元在网络中所起到的作用，相对上述反卷积网络和激活最大化方法，基于梯度的方法可得到更为精细的可视化结果。另外，由于卷积神经网络每一层均有梯度，因而通常基于梯度的方法还更为灵活，可以实现位于任意层的任意神经元的可视化。在本小节，我们将介绍常见的两种方法：Guided-Backpropagation~\cite{springenberg2014striving}和Grad-CAM~\cite{selvaraju2017grad}。
+梯度是CNN中非常重要的概念，CNN在前向传播阶段计算损失。回传的过程，实质上是梯度的计算和回传的过程，从而更新网络参数。不难理解，流过神经元的梯度越大，则代表前向传播时该神经元激活值越大，进而说明该神经元越重要。基于梯度的网络可视化方法就是充分利用CNN中流动的梯度，从梯度角度来解释每一个神经元在网络中所起到的作用，相对上述反卷积网络和激活最大化方法，基于梯度的方法可得到更为精细的可视化结果。另外，由于CNN每一层均有梯度，因而通常基于梯度的方法还更为灵活，可以实现位于任意层的任意神经元的可视化。在本小节，我们将介绍常见的两种方法：Guided-Backpropagation~\cite{springenberg2014striving}和Grad-CAM~\cite{selvaraju2017grad}。
 
 Guided-Backpropagation用带步长的卷积层（如步长为2，卷积核为$3\times 3$的卷积层也可达到输入尺寸减半的效果）代替池化操作。另外，对于ReLU反向传播，与一般梯度回传法则\footnote{https://en.wikipedia.org/wiki/Backpropagation}不同的是，Guided-Backpropagation组合了DeconvNet和一般梯度回传的ReLU函数梯度计算法则，使得Guided-Backpropagation不仅可以得到更为精细、细节更为丰富的可视化结果，还能可视化高层的特征（在这种情况下，DeconvNet可视化经常会失效）。
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figure/cam_arichitecture}
+	\caption{CAM网络结构示意图（图片来自于原文）。}
+	\label{fig:cam_arichitecture}
+\end{figure}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\textwidth]{figure/cam_example}
@@ -219,24 +237,34 @@ Guided-Backpropagation用带步长的卷积层（如步长为2，卷积核为$3\
 \end{figure}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=1.0\textwidth]{figure/cam_arichitecture}
-	\caption{CAM网络结构示意图（图片来自于原文）。}
-	\label{fig:cam_arichitecture}
+	\includegraphics[width=0.8\textwidth]{figure/grad_cam_architecture}
+	\caption{Grad-CAM流程图（图片来自于原文）。}
+	\label{fig:grad_cam_architecture}
 \end{figure}
-
-另外一种基于梯度，应用极为广泛的可视化方式是Grad-CAM，由于Grad-CAM是基于CAM的。在此，先来介绍CAM。如图\ref{fig:cam_arichitecture}所示，全局均值池化（Global Average Pooling，缩写为GAP）输出最后一个卷积层每个单元的特征图的空间平均值，这些值的加权和用于生成最终输出。同样，我们计算最后一个卷积层的特征图的加权和，便可以得到类激活图（Class Activation Map）。下面我们以分类问题为例进行更为详细的描述（假设最后一层激活函数Softmax）。对于给定的图像，令$f_k(x, y)$表示激活空间位置最后一个卷积层中第$k$个特征图的$(x,y)$位置的激活值。对于第$k$个特征图执行GAP，则GAP结果$F_k=\sum_{x, y} f_{k}(x,y)$。因此，对于类别$c$，被送到softmax激活函数的输入$S_c=\sum_{k} w_{k}^{c} F_{k}$，其中$w_k^c$是对应于第$k$个特征的类别$c$的权重。实质上，$w_{k}^{c}$表示第$k$个特征图对于类别$c$的重要性。故类别$c$经过Softmax激活函数输出$P_c$可定义为：
-\begin{eqnarray}
-P_c=\frac{\exp \left(S_{c}\right)}{\sum_{c} \exp \left(S_{c}\right)}.
-\end{eqnarray}
-根据以上定义，我们可以作出如下推导： 
-\begin{equation}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{figure/grad_cam_example}
+	\caption{Grad-CAM可视化效果图示例（图片来自于原文）。} 
+	\label{fig:grad_cam_example}
+\end{figure}
+另外一种基于梯度，应用极为广泛的可视化方式是Grad-CAM，由于Grad-CAM是基于CAM的。在此，先来介绍CAM。如图\ref{fig:cam_arichitecture}所示，全局均值池化（Global Average Pooling，缩写为GAP）输出最后一个卷积层每个单元的特征图的空间平均值，这些值的加权和用于生成最终输出。同样，我们计算最后一个卷积层的特征图的加权和，便可以得到类激活图（Class Activation Map）。下面我们以分类问题为例进行更为详细的描述（假设最后一层激活函数Softmax）。对于给定的图像，令$f_k(x, y)$表示激活空间位置最后一个卷积层中第$k$个特征图的$(x,y)$位置的激活值。对于第$k$个特征图执行GAP，则GAP结果$F_k=\sum_{x, y} f_{k}(x,y)$。因此，对于类别$c$，被送到softmax激活函数的输入$S_c=\sum_{k} w_{k}^{c} F_{k}$，其中$w_k^c$是对应于第$k$个特征的类别$c$的权重。实质上，$w_{k}^{c}$表示第$k$个特征图对于类别$c$的重要性。故类别$c$经过Softmax激活函数输出$P_c$可定义为$
+P_c=\frac{\exp \left(S_{c}\right)}{\sum_{c} \exp \left(S_{c}\right)}$。根据以上定义，我们可以作出如下推导： 
+\begin{equation*}
 S_{c}=\sum_{k} w_{k}^{c} \sum_{x, y} f_{k}(x, y)=\sum_{x, y} \sum_{k} w_{k}^{c} f_{k}(x, y).
-\end{equation}
+\end{equation*}
 我们定义$M_c$为类别$c$的类激活图，则：
-\begin{equation}
+\begin{equation}\label{equ:cam_heatmap_compute}
 M_{c}(x, y)=\sum_{k} w_{k}^{c} f_{k}(x, y).
 \end{equation}
-故$S_{c}=\sum_{x,y} M_{c}(x, y)$。不难发现，$M_{c}(x, y)$直接表明了空间位置$(x,y)$处的激活值对于该图像被分为类别$c$的重要性程度。可视化效果图示例可参见图\ref{fig:cam_example}。CAM在网络最后一层是GAP的情况下方能使用，例如，CAM不能实现对VGG网络的可视化。为此，Grad-CAM计算类激活图的特征加权系数不是分类器的权值，而是通过反向传播计算的梯度得到的，从而将CAM扩展到任何卷积神经网络。Grad-CAM与CAM相比，它的优点是适用的范围更广，不像CAM要求最后一层是GAP，Grad-CAM对各类结构，各种任务都可以使用。这两种方法也可以应用于进行弱监督下的目标检测，而本文将用这两种方法完成弱监督下的生物标记物定位。另外，Grad-CAM还能与Guided-Backpropagation结合，相比于Guided-Backpropagation，可视化结果不仅更为准确，还更为精细（见图\ref{fig:grad_cam_architecture}最左侧Guided-Grad-CAM）。下面对Grad-CAM模型进行详细描述，其流程图如图\ref{fig:grad_cam_architecture}所示。
+故$S_{c}=\sum_{x,y} M_{c}(x, y)$。不难发现，$M_{c}(x, y)$直接表明了空间位置$(x,y)$处的激活值对于该图像被分为类别$c$的重要性程度。可视化效果图示例可参见图\ref{fig:cam_example}。CAM在网络最后一层是GAP的情况下方能使用，例如，CAM不能实现对VGG网络的可视化。为此，Grad-CAM计算类激活图的特征加权系数不是分类器的权值，而是通过反向传播计算的梯度得到的，从而将CAM扩展到任何CNN。Grad-CAM与CAM相比，它的优点是适用的范围更广，不像CAM要求最后一层是GAP，Grad-CAM对各类结构，各种任务都可以使用。这两种方法也可以应用于进行弱监督下的目标检测，而本文将用这两种方法完成弱监督下的生物标记物定位。另外，Grad-CAM还能与Guided-Backpropagation结合，相比于Guided-Backpropagation，可视化结果不仅更为准确，还更为精细（见图\ref{fig:grad_cam_architecture}最左侧Guided-Grad-CAM）。下面对Grad-CAM模型进行详细描述，其流程图如图\ref{fig:grad_cam_architecture}所示。设CNN输出类别$c$的分数为$y_c$（在送入Softmax激活函数之前）。假设网络最后一层卷积层后是GAP。设$\frac{\partial y^{c}}{\partial A^{k}}$为$y_c$回传到特征激活图$A^{k}$处的梯度，设$A^{k}$的宽为$w$，高为$h$。则在特征激活图$A^{k}$的重要性权重$\alpha_{k}^{c}$可定义为：
+\begin{equation}
+\alpha_{k}^{c}=\quad \frac{1}{w·h} \sum_{i}^{w} \sum_{j}^{h} \frac{\partial y^{c}}{\partial A_{i j}^{k}}.
+\end{equation}
+与CAM一样，我们同样可以计算类别$c$的类激活图在位置$(x,y)$处像素对于决策类别$c$的重要性程度$M_c(x, y)$（参看等式\ref{equ:cam_heatmap_compute}）：
+\begin{equation}\label{equ:grad_cam_heatmap_compute}
+M_{c}(x, y)=\sum_{k} w_{k}^{c} \alpha_{k}^c(x, y).
+\end{equation}
+由于在梯度回传阶段，梯度可以回传到任意层，故Grad-CAM可适用于任意层，任意网络结构，比如VGG。另外，从等式\ref{equ:grad_cam_heatmap_compute}可以看出，Grad-CAM是CAM的泛化和推广。因为梯度可以回传到网络浅层（特征图尺寸相对较大），上采样倍数相对较小，所以一般来说，Grad-CAM可视化相较于CAM可视化效果在热图上更为准确（参见图\ref{fig:grad_cam_example}：Grad-CAM可视化效果图示例）。
 %\begin{figure}[h!] % image examples & compare
 %	\begin{subfigure}{0.45\textwidth}
 %		\centering
@@ -253,18 +281,14 @@ M_{c}(x, y)=\sum_{k} w_{k}^{c} f_{k}(x, y).
 %	\caption{多子图}
 %	\label{subfig}
 %\end{figure}
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.8\textwidth]{figure/grad_cam_architecture}
-	\caption{Grad-CAM流程图（图片来自于原文）。}
-	\label{fig:grad_cam_architecture}
-\end{figure}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.8\textwidth]{figure/grad_cam_example}
-	\caption{Grad-CAM可视化效果图示例（图片来自于原文）。} 
-	\label{fig:grad_cam_example}
-\end{figure}
-%\section{评价标准}
+\subsubsection{网络逆转}
+网络逆转方法会根据任意层中所有神经元的特征图重建图像，从而揭示该图层中保留了哪些图像信息，也是从网络层角度来解释CNN。网络逆转方法最先用于传统计算机视觉领域，如方向梯度直方图（Histogram of Oriented Gradients）~\cite{dalal2005histograms}。随着CNN的提出与发展，其变体方法开始用于解释CNN~\cite{mahendran2015understanding, mahendran2016visualizing, dosovitskiy2016inverting}。不同的是，Mahendran等人~\cite{mahendran2015understanding, mahendran2016visualizing}通过使用梯度下降方法和正则项从每一层重建图像，而Dosovitskiy等人~\cite{dosovitskiy2016inverting}通过训练专用的向上卷积神经网络（UpconvNet）来重建图像。前者更易于实现，因为它不需要训练额外的专用网络。后者可以通过额外的专用网络可视化更高层的更多现有信息，但是计算成本显著提高。总而言之，这两种算法的主要目标都是从网络层特征图的特定激活中重建原始输入图像。由于基于正则项的网络逆转方法实现相对容易，在此进行更深入的介绍。设给定原始图像$x_0$和输入图像$x$，基于正则项的网络逆转方法的目标在于重建最优输入图像$x^*$，使得损失函数最小，形式化表达为：
+\begin{equation*}
+x^{*}=\underset{x}{\operatorname{argmin}}\left(C \cdot \mathcal{L}\left(A(x), A\left(x_{0}\right)\right)-\lambda(x)\right).
+\end{equation*}
+其中，$\mathcal{L}$是计算输入特定层前后的特征图$A(x_0)$和$A(x)$的损失函数，$\lambda(x)$是正则项，$C$是调节损失函数和正则项的超参数。为了让重建图像更像自然图像，$\lambda(x)$可取$2$2-范数、全变差范数（Total Variation Norm）~\cite{rudin1992nonlinear}等。其中，全变差范数可让重建图像更为平滑，较低的锐度。与激活最大化方法~\cite{simonyan2013deep}相同的是，网络逆转方法也是通过重建输入图像来查看网络层对那些像素或者图像模式更为敏感，但是网络逆转方法可应用到网络任意层，而不限于网络第一层，因而泛化性更强。
+\section{评价标准}
+本文使用的主要评价标注有
+\subsection{Precision-Recall曲线}
+\subsection{ROC曲线}
 %\section{本章小结}
