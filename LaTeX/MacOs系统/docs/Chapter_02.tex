@@ -288,7 +288,32 @@ x^{*}=\underset{x}{\operatorname{argmin}}\left(C \cdot \mathcal{L}\left(A(x), A\
 \end{equation*}
 其中，$\mathcal{L}$是计算输入特定层前后的特征图$A(x_0)$和$A(x)$的损失函数，$\lambda(x)$是正则项，$C$是调节损失函数和正则项的超参数。为了让重建图像更像自然图像，$\lambda(x)$可取$2$2-范数、全变差范数（Total Variation Norm）~\cite{rudin1992nonlinear}等。其中，全变差范数可让重建图像更为平滑，较低的锐度。与激活最大化方法~\cite{simonyan2013deep}相同的是，网络逆转方法也是通过重建输入图像来查看网络层对那些像素或者图像模式更为敏感，但是网络逆转方法可应用到网络任意层，而不限于网络第一层，因而泛化性更强。
 \section{评价标准}
-本文使用的主要评价标注有
-\subsection{Precision-Recall曲线}
-\subsection{ROC曲线}
+本文衡量实验结果分为定性分析和定量分析，前者主要以可视化方式比较各种方法定位结果和标签，后者主要引入精确率-召回率曲线（Precision-Recall Curve）和受试者工作特征曲线（Receiver Operating Characteristic Curve）以及对应曲线下的面积（Area Under Curve）作为评价标准。下面分别进行介绍。
+\subsection{受试者工作特征曲线}\label{subsec:roc_curve}
+受试者工作特征曲线或者ROC曲线\footnote{https://en.wikipedia.org/wiki/Receiver\_operating\_characteristic}是一个可以说明二元分类器系统的鉴别阈值变化时的诊断能力的图形。通过绘制各种阈值设置下的真阳率（True Positive Rate，缩写为TPR）与假阳率（False Positive Rate，缩写为FPR）来创建ROC曲线。真阳率在机器学习中也称为灵敏度（Sensitivity）。假阳率也称为假警报的概率，可以计算为（1-特异性（Specificity））。ROC曲线是TPR作为衰减的函数。换句话说，ROC曲线横轴是FPR或者（1-Specificity），纵轴是TPR或者Sensitivity。下面给出TPR、FPR、Sensitivity和Specificity的数学定义。
+
+考虑两类预测问题（二分类），其中标签被标记为正（p）或负（n）。二分类器有四个可能的结果。如果预测的结果为p，而实际值也为p，则称为真正（True Positive，缩写为TP）。但是，如果实际值为n，则称其为误报（False Positive，缩写为FP）。相反，当预测结果和实际值均为n时，则为“真”（True Negative，缩写为TN），而当预测结果和实际值均为p时，为“假”（False Negative，缩写为FN）。可用表\ref{tab:confusion_mateix}表示以上关系：
+\begin{table}[h]
+	\centering
+	\caption{TP、TN、FP和FN概念定义。}
+	\label{tab:confusion_mateix}
+	\begin{tabular}{c|c|c|c|}
+		\toprule[2pt]
+		&                    & \multicolumn{2}{c|}{True condition}     \\ \hline
+		&                    & Condition Positive & Condition Negative \\ \hline
+		\multirow{2}{*}{Predicted} & Predicted Positive & TP  & FP \\ \cline{2-4} 
+		& Predicted Negative & FN & TN  \\ 
+		\bottomrule[2pt]
+	\end{tabular}
+\end{table}
+
+\noindent 表\ref{tab:confusion_mateix}也叫混淆矩阵（Confusion Matrix）\footnote{https://en.wikipedia.org/wiki/Confusion\_matrix}。由此我们可以定义TPR、FPR等概念：
+\begin{gather}
+	\mathrm{TPR}=\mathrm{Sensitivity}=\frac{\mathrm{TP}}{\mathrm{P}}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}},\\
+	\mathrm{FPR}=\frac{\mathrm{FP}}{\mathrm{N}}=\frac{\mathrm{FP}}{\mathrm{FP}+\mathrm{TN}},\\
+	\mathrm{Specificity}=\frac{\mathrm{TN}}{\mathrm{FP}+\mathrm{TN}}=1-\mathrm{FPR}.
+\end{gather}
+根据以上定义，便可以画出ROC曲线，设。
+\subsection{精确率-召回率曲线}
+精确率-召回率曲线。根据\ref{subsec:roc_curve}小节中有关定义，
 %\section{本章小结}
