@@ -73,7 +73,7 @@ ISIC2019数据集\footnote{https://challenge2019.isic-archive.com/}中有25,331�
 
 \section{基本知识要点}
 本小节主要是介绍生物标记物定位任务的概念和目前常用的模型方法。首先，我们会介绍生物标记物定位任务的概念，让读者对本文研究主题有清晰的认识。接着会介绍CNN、编码器-解码器等重要基本要点。下一步介绍目前已有的常用解决模型方法。最后介绍对各种模型方法性能比较的评价标准。
-\subsection{生物标记物定位任务}
+\subsection{生物标记物定位任务}\label{subsec:bio_loc_task_definition}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/biomarker_localization_example}
@@ -288,9 +288,9 @@ x^{*}=\underset{x}{\operatorname{argmin}}\left(C \cdot \mathcal{L}\left(A(x), A\
 \end{equation*}
 其中，$\mathcal{L}$是计算输入特定层前后的特征图$A(x_0)$和$A(x)$的损失函数，$\lambda(x)$是正则项，$C$是调节损失函数和正则项的超参数。为了让重建图像更像自然图像，$\lambda(x)$可取$2$2-范数、全变差范数（Total Variation Norm）~\cite{rudin1992nonlinear}等。其中，全变差范数可让重建图像更为平滑，较低的锐度。与激活最大化方法~\cite{simonyan2013deep}相同的是，网络逆转方法也是通过重建输入图像来查看网络层对那些像素或者图像模式更为敏感，但是网络逆转方法可应用到网络任意层，而不限于网络第一层，因而泛化性更强。
 \section{评价标准}
-本文衡量实验结果分为定性分析和定量分析，前者主要以可视化方式比较各种方法定位结果和标签，后者主要引入精确率-召回率曲线（Precision-Recall Curve）和受试者工作特征曲线（Receiver Operating Characteristic Curve）以及对应曲线下的面积（Area Under Curve）作为评价标准。下面分别进行介绍。
+本文衡量实验结果分为定性分析和定量分析，前者主要以可视化方式比较各种方法定位结果和标签，后者主要引入精确率-召回率曲线（Precision-Recall Curve，缩写为P-R Curve）和受试者工作特征曲线（Receiver Operating Characteristic Curve，缩写为ROC Curve）以及对应曲线下的面积（Area Under Curve）作为评价标准。下面分别进行介绍。
 \subsection{受试者工作特征曲线}\label{subsec:roc_curve}
-受试者工作特征曲线或者ROC曲线\footnote{https://en.wikipedia.org/wiki/Receiver\_operating\_characteristic}是一个可以说明二元分类器系统的鉴别阈值变化时的诊断能力的图形。通过绘制各种阈值设置下的真阳率（True Positive Rate，缩写为TPR）与假阳率（False Positive Rate，缩写为FPR）来创建ROC曲线。真阳率在机器学习中也称为灵敏度（Sensitivity）。假阳率也称为假警报的概率，可以计算为（1-特异性（Specificity））。ROC曲线是TPR作为衰减的函数。换句话说，ROC曲线横轴是FPR或者（1-Specificity），纵轴是TPR或者Sensitivity。下面给出TPR、FPR、Sensitivity和Specificity的数学定义。
+受试者工作特征曲线或者ROC曲线\footnote{https://en.wikipedia.org/wiki/Receiver\_operating\_characteristic}是一个可以说明二元分类器系统的鉴别阈值变化时的诊断能力的图形。通过绘制各种阈值设置下的真阳率（True Positive Rate，缩写为TPR）与假阳率（False Positive Rate，缩写为FPR）来创建ROC曲线。真阳率在机器学习中也称为灵敏度（Sensitivity），表示模型预测的真正类个数占所有真实正例的比例。假阳率也称为假警报的概率，也可计算为（1-特异性（Specificity）），表示模型预测的假正类（实际为负例）个数占所有真实负例的比例。ROC曲线是以TPR作为衰减的函数。换句话说，ROC曲线的横轴是FPR或者（1-Specificity），纵轴是TPR或者Sensitivity。下面给出TPR、FPR、Sensitivity和Specificity的数学定义。
 
 考虑两类预测问题（二分类），其中标签被标记为正（p）或负（n）。二分类器有四个可能的结果。如果预测的结果为p，而实际值也为p，则称为真正（True Positive，缩写为TP）。但是，如果实际值为n，则称其为误报（False Positive，缩写为FP）。相反，当预测结果和实际值均为n时，则为“真”（True Negative，缩写为TN），而当预测结果和实际值均为p时，为“假”（False Negative，缩写为FN）。可用表\ref{tab:confusion_mateix}表示以上关系：
 \begin{table}[h]
@@ -313,7 +313,19 @@ x^{*}=\underset{x}{\operatorname{argmin}}\left(C \cdot \mathcal{L}\left(A(x), A\
 	\mathrm{FPR}=\frac{\mathrm{FP}}{\mathrm{N}}=\frac{\mathrm{FP}}{\mathrm{FP}+\mathrm{TN}},\\
 	\mathrm{Specificity}=\frac{\mathrm{TN}}{\mathrm{FP}+\mathrm{TN}}=1-\mathrm{FPR}.
 \end{gather}
-根据以上定义，便可以画出ROC曲线，设。
+根据以上定义，便可以画出ROC曲线。在二分类系统中，设$\boldsymbol{p}(0\leq \boldsymbol{p}\in \mathbb{R} \leq 1)$表示样本被分为正样本的概率。给定$N$个样本，该分类系统给出的预测值为$x=\{p_1,p_2,...,p_N
+\}$，设这些样本的真实标签为$y=\{y_1,y_2,...,y_N\}(\text{对于索引}\, i(0\leq i \le N)\text{，}y_i\in \{0,1\})$。由于ROC曲线只需要FPR和TPR，可说明分类系统随着鉴别阈值变化时的判断能力，因此，可将二分类系统给出的预测值作为阈值，当测试样本属于正样本的概率大于或等于阈值$T(0\leq T\in \mathbb{R} \leq 1)$时，我们认为它为正样本，否则为负样本。对于不同的阈值，我们可以得到一组FPR和TPR，从而画出ROC曲线，此时ROC曲线时呈阶梯型。当然，随着$T$取值组数不断增加，ROC曲线也会越来越逼近一条曲线。
+
+我们将ROC曲线右下方的面积成为AUC，AUC的值介于0.5与1之间。前者表示分类系统在对样本随机判断情况下的结果，后者表示分类系统对样本判断完全正确，预测值与真实标签相同。由于所取阈值$T$组数有限，可依次计算每个小矩形面积即可。如果ROC曲线是一条曲线，曲线函数沿着FPR在$[0,1]$上的积分即为AUC。一般来说，如果一条ROC曲线$f_1$在另外一条ROC曲线$f_2$上方，我们称ROC曲线$f_1$“包围”ROC曲线$f_2$，说明$f_1$代表的分类系统性能优于$f_2$代表的分类系统。
 \subsection{精确率-召回率曲线}
-精确率-召回率曲线。根据\ref{subsec:roc_curve}小节中有关定义，
-%\section{本章小结}
+精确率-召回率曲线或者P-R曲线显示了不同阈值时精确率和召回率之间的权衡，是以精确率（Precision）为横轴，召回率（Recall）为纵轴的一条曲线。精确率也叫准确率，表示真正样本在被模型识别的正样本中的比例，反映了模型识别正样本的准确性。召回率也叫检出率，表示被正确识别的正样本占所有正样本的比例，反映了模型对正样本的检索能力。根据\ref{subsec:roc_curve}小节中相关定义，精确率和召回率可定义为：
+\begin{gather}
+	\mathrm{Precision}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FP}},\\
+	\mathrm{Recall}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}}.
+\end{gather}
+
+P-R曲线是一条以Precision为纵轴，Recall为横轴的曲线。其画法与ROC曲线非常相似，均需要取一组阈值。与ROC曲线的画法不同的是，P-R曲线需要计算Precision和Recall。在ROC曲线中，TPR（纵轴）随着FPR（横轴）的增大而增大，即ROC曲线呈现一种单调增加趋势。而在P-R曲线中，Precision（纵轴）随着Recall（横轴）的增大而减小，即P-R曲线呈现一种单调减小趋势。这种差异主要是Precision和Recall之间的“矛盾”关系造成的。以挑选“好”西瓜为例，极端情况下，可以认为所有西瓜都是“好”瓜，则所有“好”瓜都能选出来，不难想象，此时Precision=0，Recall=1;反之，认为所有西瓜都不是“好”瓜，则所有“好”瓜都不能选出来，不难想象，此时Recall=0，Precision$\to 1$。故P-R曲线能反应模型平衡准确率和检出率的能力。直观上来看，如果一条P-R曲线在另外一条P-R曲线上方，说明前者代表的模型性能优于后者，这一点是与ROC曲线的；另外，P-R曲线的AUC定义与表达意义也与ROC曲线一致，AUC越大表示其模型性能越优。
+
+注意，当测试集中的正负样本的分布变化的时候，ROC曲线能够保持稳定，这是ROC曲线一个重要特征。因此，对于正负样本分布大致均匀的问题，ROC曲线作为性能指标更加鲁邦、效果表现更为优异。反之，在正负样本分布得极不均匀，负例远大于正例时，P-R曲线比ROC曲线能更有效地反应分类器的好坏，也就是说P-R曲线对于类别不平衡现象更为敏感，即P-R曲线在正负样本比例悬殊较大时更能反映分类的真实性能。
+\section{本章小结}
+本章主要先介绍了与生物标记物任务相关的医学数据集和本文涉及到的基本知识要点。接着介绍了生物标记物定位任务相关的研究进展，并详细介绍了在深度学习领域内的相关方法，例如，CAM和Grad-CAM。另外，也定义了本文要解决的问题（见\ref{subsec:bio_loc_task_definition}小节）和实验相关评价标准（ROC曲线及其AUC和P-R曲线及其AUC）。针对生物标记物定位任务中存在的难点（见\ref{sec:existing_diffcuities}小节），我们提出了一种新的网络模型，该模型极具创新性的将对抗生成网络和CNN组合训练，既发挥了CNN在模式识别方面的优势，又充分利用了对抗生成网络在图像生成方面的长处，避免了CAM和Grad-CAM处理生物标记物定位时不够精确的问题，也填补了直接用深度学习方法处理生物标记物定位问题的空白，本文将在第\ref{sec:method}章详细介绍我们解决生物标记物的方法和原理。随后，为了验证模型在生物标记物定位任务上的有效性和鲁棒性，我们在二类问题和多类问题上均进行了相关实验，从P-R曲线和AUC等评价标准上来看，远远超过了CAM和Grad-CAM，验证了我们的模型的先进水平。相关内容我们将会在第\ref{sec:experiments}章进行阐述。
