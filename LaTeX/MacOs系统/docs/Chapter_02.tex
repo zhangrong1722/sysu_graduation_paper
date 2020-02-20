@@ -82,7 +82,7 @@ ISIC2019数据集\footnote{https://challenge2019.isic-archive.com/}中有25,331�
 	\label{fig:biomarker_localization_example}
 \end{figure}
 生物标志物是开发新疗法和辅助诊断的关键，受到研究人员的不断关注，其目标是为合适的病人开发合适的药物。随着计算机视觉技术不断应用到医学领域，生物标记物定位任务自然也变成了研究热点。在医学影像处理领域，一旦一张医学影像被诊断为某种特定疾病，生物标记物定位任务的目标便是寻找其患病区域，或者说在图像上找到诊断依据，该依据或者患病区域即可看作是生物标记物。如图\ref{fig:biomarker_localization_example}，该图像被诊断为患有糖尿病视网膜病变，生物标记物定位任务便是找到其异常表现，并给出其准确位置。可以发现，糖尿病视网膜病变有多种异常表现，生物标记物定位任务要求不能漏检。另外，可以发现从颜色特征上看，出血(图中黄色矩形框)异常和眼底血管非常相似，因而将微小血管看作异常表现的假阳现象也可能发现。以上均给生物标记物定位任务增加了不少难度。如果将CNN手段，根据以上介绍，生物标记物定位任务的目标是找出疾病诊断背后的诊断依据，这与CNN的可视化/可解释性的目标恰好一致，因此CNN的可视化/可解释性是生物标记物定位任务的主要解决方案之一。相关内容将会在\ref{subsec:visulization_methods}小节详细叙述。
-\subsection{卷积神经网络}
+\subsection{卷积神经网络}\label{subsec:cnn_introduction}
 CNN最初是为了避免传统神经网络（多层感知机~\cite{gardner1998artificial}）在处理图像时的缺点而提出的。多层感知机在处理图像数据时，多层感知机对每张输入图像中的每个像素点都使用一个感知器。对于较大的图像，权重的数量很快就变得难以管理。例如，对于一个有3个彩色通道的224$\times$224像素图像，大约需要训练150,000个权值。此时，多层感知机的训练将变得十分困难。另外，多层感知机不具备平移不变性。例如，如果一张猫出现在一张图像的左上角和另一张图像的右下角，多层感知机将假设猫总是出现在图片的这个位置。再加上，多层感知机在处理图像时需要将二维图像数据将会以一维向量形式存在，因此无法利用二维空间的相对位置信息。
 \begin{figure}[h]
 	\centering
@@ -131,7 +131,7 @@ x_{L}=x_l + \sum_{i=l}^{L-1}\mathcal{F}(x_i, \mathcal{W}_i).
 2)解码器：解码器和编码器相反，是将特征不断扩大，最终恢复到原图像大小的过程。通常会使用上采样或者反卷积~\cite{zeiler2010deconvolutional}操作以2倍关系逐步扩大，从而达到融合不同层次、不同尺寸的特征的目的。
 
 由于本文使用到了U-Net~\cite{ronneberger2015u}，故同时简单介绍U-Net。除了以上特点之外，U-Net中还存在从编码器直接到解码器的跨层连接，这些跨层连接使网络可以将上下文信息传播到更高分辨率的层，从而使得特征融合更加充分。在网络可视化图上（见图\ref{fig:popular_encoder_decoder}右子图），由于编码器和解码器相互对称，形成一个U型结构。U-Net中只含有卷积层，不含任何全连接层，最后视不同任务而接上不同激活函数。U-Net作为一种巧妙的网络模型，被广泛应用于医学影像处理领域~\cite{cciccek20163d, han2018framing, dong2017automatic, sevastopolsky2017optic, zhang2018ct}，更多启发了诸多优秀网络模型~\cite{zhou2018unet++, oktay2018attention, ibtehaz2020multiresunet, alom2019recurrent, milletari2016v}。
-\subsection{对抗生成网络}
+\subsection{对抗生成网络}\label{subsec:gan_introduction}
 对抗生成网络（Generative Adversarial Networks，缩写为GAN）最初于2014年由Goodfellow等人~\cite{goodfellow2014generative}提出，就越来越受到学术界和工业界的重视。而随着GAN在理论与模型上的高速发展，它在计算机视觉~\cite{zhu2017unpaired, isola2017image}、自然语言处理~\cite{qin2018dsgan, guimaraes2017objective}、人机交互~\cite{qiao2018emotional, sahu2018enhancing}等领域有着越来越深入的应用，在医学影像领域更是大放异彩~\cite{yang2017dagan, yang2018low, shin2018medical, onishi2020multiplanar, bhadra2020medical}。GAN是生成式模型，受博弈论中的零和博弈启发，将生成问题视作判别网络和生成网络这两个网络的对抗和博弈。生成网络努力生成新数据，判别器努力区分生成网络生成的数据（一般记为“假”）和真实数据（一般记为“真”）。生成网络尽量产生更真实的数据，而判别器尽量更完美地把真实数据与生成数据区分开来。由此，生成网络和判别器形成对抗关系，彼此进步。在不断的迭代训练过程中，生成网络生成的数据也就越来越逼近真实数据，即生成网络学到的分布越来越接近真实数据代表的分布。在理想情况下，判别器无法区分生成的数据和真实的数据。
 
 设真实数据为$x\sim p_{data}(x)$，噪音为$z\sim p_z(z)$，生成网络和判别网络分别用$G$和$D$表示。$\theta_{g}$和$\theta_{d}$分表表示$G$和$D$的训练参数。则$G(z;\theta_{g})$表示生成网络生成的函数映射。$D(x;\theta_{d})$将会输出一个数值。可将$D$看做一个二类分类器。不妨将交叉熵当做损失函数。因此，可用$D(x)(0\leq D(x)\leq 1)$表示数据$x$来自于真实数据的概率。运用极大极小优化理论，GAN的损失函数可写成：
@@ -155,16 +155,16 @@ x_{L}=x_l + \sum_{i=l}^{L-1}\mathcal{F}(x_i, \mathcal{W}_i).
 \begin{equation}\label{wgan_gp_loss_func}
 \min _{G} \max _{D} V(D, G)=E_{x \sim P_{d a t a}}[D(x)]-E_{x \sim p_{g}}[D(x)]+\lambda E_{\hat{x} \sim p_{\hat{x}}}\left[\left(\left\|\nabla_{\hat{x}} D(\hat{x})\right\|_{2}-1\right)^{2}\right].
 \end{equation}
-其中，$\lambda$为梯度惩罚项的权重，分布$p_{\hat{x}}$不是对整个样本空间采样，而只对分布$p_{data}$和分布$p_{g}$之间的空间采样。在训练时同样$D$和$G$先后交替训练。因此，固定$G$，更新$\theta_{d}$时，等效于最小化损失函数：
+其中，$\lambda$为梯度惩罚项的权重，分布$p_{\hat{x}}$不是对整个样本空间采样，而只对分布$p_{data}$和分布$p_{g}$之间的空间采样。与朴素GAN的损失函数相比（见等式\ref{equ:gan_loss_func}）,判别器的损失函数不再取$\log$，这是因为WGAN-GP中不再使用Kullback-Leibler散度和Jensen-Shannon散度。在训练WGAN-GP时，同样$D$和$G$先后交替训练。因此，固定$G$，更新$D$时，等效于最小化损失函数：
 \begin{gather*}
 \tilde{{x}} = G_{}({z}), \\
 D(\tilde{{x}})-D({x})+\lambda\left(\left\|\nabla_{\hat{x}} D(\hat{x})\right\|_{2}-1\right)^{2}.
 \end{gather*}
 \noindent 固定$D$，更新$G$时，等效于最小化损失函数：
 \begin{equation*}
--D\left(G_{\theta}(z)\right).
+-D\left(G(z)\right).
 \end{equation*}
-通过实验证明，WGAN-GP在训练过程中梯度较为稳定，不易发生梯度消失现象。另外，Wasserstein-1距离还有指示WGAN-GP训练效果的作用，Wasserstein-1距离越大，表示WGAN-GP训练得越好，使得训练过程易于理解。
+通过实验证明，WGAN-GP在训练过程中不仅梯度较为稳定，不易发生梯度消失现象。另外，Wasserstein-1距离还有指示WGAN-GP训练效果的作用，Wasserstein-1距离越大，表示WGAN-GP训练得越好，使得训练过程易于理解。
 \section{生物标记物定位方法}
 随着计算机计算在医学影像领域的广泛应用，目前已有可用于生物标记物定位的模型提出，主要包括MIL~\cite{maron1998framework}和CNN的可视化方法~\cite{zhou2016learning, selvaraju2017grad}。本小节将对其中的经典方法进行详细介绍，并比较方法之间的优劣，以便于读者对这些方法有清晰的认识与理解。
 \subsection{多示例学习}
@@ -231,19 +231,19 @@ Guided-Backpropagation用带步长的卷积层（如步长为2，卷积核为$3\
 \end{figure}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.8\textwidth]{figure/cam_example}
+	\includegraphics[width=1.0\textwidth]{figure/cam_example}
 	\caption{CAM可视化效果图示例（图片来自于原文）。}
 	\label{fig:cam_example}
 \end{figure}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.8\textwidth]{figure/grad_cam_architecture}
+	\includegraphics[width=1.0\textwidth]{figure/grad_cam_architecture}
 	\caption{Grad-CAM流程图（图片来自于原文）。}
 	\label{fig:grad_cam_architecture}
 \end{figure}
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.8\textwidth]{figure/grad_cam_example}
+	\includegraphics[width=1.0\textwidth]{figure/grad_cam_example}
 	\caption{Grad-CAM可视化效果图示例（图片来自于原文）。} 
 	\label{fig:grad_cam_example}
 \end{figure}
