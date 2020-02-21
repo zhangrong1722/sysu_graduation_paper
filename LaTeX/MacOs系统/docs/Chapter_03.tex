@@ -140,10 +140,10 @@ CNN分类器主要考虑的问题是如何选择一个较为优秀的分类网�
 \end{equation}
 其中，$L_{GAN}(D, G)$表示对抗生成网络的损失函数（本文使用WGAN-GP），$L_{CE}(C, G)$表示CNN分类器的交叉熵损失函数，$L_{E D}(G)$是约束编码器-解码器的损失函数（本文使用L1损失函数），用于强调输入和输出之间的相似性，$\lambda{1}$和$\lambda_{2}$是两个超参数，用于平衡各个损失函数之间的权重。
 
-接下来，本文将给出每个步骤训练时的损失函数。根据等式\ref{equ:model_loss_func}和\ref{item:training_steps}小节中的两个步骤设计，本文可进一步给出本文两步训练的损失函数。设分布$x\sim p_{all}$表示整个样本空间（包括正常图像和异常图像）所代表的的分布，则第一步的训练目标可表示为最小化目标函数：
+接下来，本文将给出每个步骤训练时的损失函数。根据等式\ref{equ:model_loss_func}和\ref{item:training_steps}小节中的两个步骤设计，本文可进一步给出本文两步训练的损失函数。设分布$y\sim p_{all}$表示整个样本空间（包括正常图像和异常图像）所代表的的分布，则第一步的训练目标可表示为最小化目标函数：
 
 \begin{equation}
- L_{ED}(G(x), x) + \lambda_{1} L_{CE}(G(x)-x).
+ \lambda_{1} L_{CE}(G(y)-y) + \lambda_{2}L_{ED}(G(y), y).
 \end{equation}
 \noindent 设分布$x\sim p_n$表示给定的正常图像数据的分布，$z\sim p_l$表示给定的异常图像数据的分布。则第二步训练由编码器-解码器和判别器组成的对抗生成网络（以下简称“对抗生成网络”）的目标可表示为最小化损失函数：
 \begin{equation}\label{equ:training_gan_loss}
@@ -153,7 +153,7 @@ L_{GAN}(G, D)=D(G(z))-D(x)+\lambda \left[\left(\left\|\nabla_{\hat{x}} D(\hat{x}
 \begin{equation*}
 	-D\left(G(z)\right) + \lambda_{2}\left[L_{ED}(G(z), z) + L_{ED}(G(x), x)\right].
 \end{equation*}
-\noindent 到这里，本文将模型方法相关内容都已描述完毕。为了更为清晰表示其训练过程及其损失函数，与之对应的算法描述如算法\ref{alg:net}所示。
+\noindent 到这里，本文将模型方法相关内容叙述都已描述完毕。为了更为清晰表示其训练过程及其损失函数，与之对应的算法过程描述如算法\ref{alg:net}所示。
 \begin{algorithm}[h]
 	\SetAlgoLined
 	\caption{本文提出的新型网络模型训练过程描述图。}
@@ -172,12 +172,17 @@ L_{GAN}(G, D)=D(G(z))-D(x)+\lambda \left[\left(\left\|\nabla_{\hat{x}} D(\hat{x}
 		\tcp*{minimize G}
 		\nl	$\theta _c$$\leftarrow Adam(\nabla _{\theta _c} L_{u\_c}, \theta _c, \alpha)$  
 		\tcp*{minimize C}
-		\nl	$L_{u\_d}$ $\leftarrow $$\frac{1}{m}\sum_{i=1}^{m}$$L_{GAN}(D(G(z^{(i)}))-D(x^{(i)}))$ + $\lambda _2[\frac{1}{2m}\sum_{i=1}^{2m}L_{ED}(G(y^{(i)}))]$  \\
+		\nl	$\hat{x}^{(i)}\leftarrow \eta x^{(i)} + (1-\eta)z^{(i)}$, $\eta\sim U(0, 1)$ ;\\
+		$L_{u\_d}$ $\leftarrow $$\frac{1}{m}\sum_{i=1}^{m}$$L_{GAN}(D(G(z^{(i)}))-D(x^{(i)})+\left(\left\|\nabla_{\hat{x}^{(i)}} D(\hat{x}^{(i)})\right\|_{2}-1\right)^{2})$ + \\
+		\quad \qquad $\lambda _2[\frac{1}{2m}\sum_{i=1}^{2m}L_{ED}(G(y^{(i)}))]$  \\
 		\nl	$\theta _d$$\leftarrow -Adam(\nabla _{\theta _d} L_{u\_d}, \theta _d, \alpha)$ 
 		\tcp*{maximize D}
 		\nl	$\theta _g$$\leftarrow Adam(\nabla _{\theta _g} L_{u\_d}, \theta _g, \alpha)$ 
 		\tcp*{minimize G}
 	}
 \end{algorithm}
+
+\noindent 从算法\ref{alg:net}可以看出，本文模型训练的难点在于编码器-解码器和判别器组成的对抗生成网络，本文模型最终选用的是WGAN-GP。
 \section{本章小结}\label{sec:chapter3_summary}
+本章内容主要围绕介绍本文提出的模型方法结构而展开。首先在\ref{sec:idea_thinking}小节介绍了本文提出新型方法的背后思考、相关模型分析以及引入各个子模块的必要性和重要性。简单来说，本文提出的模型共包括三个子模块：编码器-解码器、CNN分类器和判别器。该模型以编码器-解码器为骨架网络，以CNN分类器和判别器为辅助角色来指导编码器-解码器，使其具备识别生物标记物的能力。另外，编码器-解码器和判别器组成了对抗生成网络。与传统的CAM和Grad-CAM等方法不同的是，本文从图像生成的角度来完成生物标记物精确定位任务，给定任意一张输入图像，希望通过CNN分类器给出其类别（正常/异常），如果是异常，通过编码器-解码器的输出和输入之差来给出生物标记物的精确位置。随后，本文在\ref{sec:model_architecture_intro}小节给出模型结构图，并详细介绍了三个子模块的模型结构示意图（相关内容参见\ref{subsec:encoder_decoder_model}小节、\ref{subsec:cnn_classifier_model}小节和\ref{subsec:discrimintor_model}小节），以期读者不仅能对本文提出的模型有宏观上的理解，还不缺对各个子模块细节上的详实说明。最后，本文在\ref{sec:loss_func_training_stragies}小节中给出了模型训练的两步训练策略（见\ref{item:training_steps}小节）和模型训练的损失函数（见等式\ref{equ:model_loss_func}）。为了方便读者进一步理解本文提出的训练策略，在算法\ref{alg:net}中，本文还用形式化语言描述了模型训练过程以及每一步的损失函数。到此，本文提出的模型方法的相关介绍结束，接下来将在第\ref{sec:experiments}章和第\ref{sec:multi_classes}章中介绍相关实验。
 
