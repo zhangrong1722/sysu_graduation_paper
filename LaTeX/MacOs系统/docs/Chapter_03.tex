@@ -72,7 +72,7 @@ Y=|I'-I|=|H(I) - I|.
 \ref{subsec:model_architecture}小节中阐述了整体模型及各个子模块各自的作用，接下来进行子模块的介绍。本文决定选用在U-Net的基础上进行结构或者模块的微调，进而将U-Net迁移到本任务上来。原因主要有以下三点：
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=1.0\textwidth]{figure/auto_encoder_architecture.png}
+	\includegraphics[width=1.0\textwidth]{figure/auto_encoder_architecture}
 	\caption{本文采用的编码器-解码器模型结构示意图。原则上编码器-解码器是全卷积神经网络，可以允许任意尺寸大小作为输入。上图表示将尺寸为$128\times 128$的图像送入深度为5的编码器-解码器。}
 	\label{fig:auto_encoder_architecture}
 \end{figure}

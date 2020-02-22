@@ -2,10 +2,10 @@
 \section{引言}
 自从计算机技术应用到医学影像分析以来，有许许多多医学影像分析难题因其具有的重大临床应用价值和实际意义而引起研究者的浓厚兴趣并为之投入大量时间和精力，生物标记物的精确定位便是其中之一。本章将会生物标记物精确定位任务的常用数据集进行介绍。接着将会介绍本文方法中涉及到的最为重要的基本知识点，包括CNN、对抗生成网络和自编码-解码器等。下一步，我们将对可用于完成生物标记物精确定位任务的已有解决方案进行详细（包括传统的MIL和当下流行的CNN方法）介绍，力求将相关方法阐述得清晰明了，突出比较各种方法在生物标记物的精确定位任务上的长处和不足。在本章最后，我们将给出实验结果的评判标准，并阐述选择这些比较标准的合理性。
 
-\section{常用数据集}
+\section{常用数据集}\label{sec:usually_ds_intro}
 一旦展开对选取问题的具体研究，第一步便是选取实验所使用的数据集。尤其对于当下十分火热、有着数据驱动特性的CNN来说，选择一个合适的数据集的重要性更加不言而喻。再加上医学影像数据获取、标注成本更高，导致可用于生物标记物的精确定位测试的公开数据集较少。由于医学数据很可能会涉及到病人的隐私，为了尽可能保护病人权益，防止病人信息泄露，图像数量较多的、图像质量较高的数据集往往存于知名公立医院且未公开。在已然公开的数据集中，本文将选取一些知名度较高的、在学术界被研究者广泛接受的、图像质量相对较高的数据集进行介绍。
 
-\subsection{眼底病变数据集}
+\subsection{眼底病变数据集}\label{subsec:original_dr_dataset_intro}
 眼科学是临床医学的一个独特分支。眼科的影像学检查方法有眼底摄影、光学相干断层扫描、眼底荧光血管造影、扫描激光检眼镜等。一个明确的眼科疾病诊断需要结合几个不同的试验结果。在临床实践中，诊断和治疗策略的确定依赖于影像学资料的评价。目前眼底照片已广泛应用于青光眼和视网膜疾病等眼科疾病的诊断。然而，眼成像数据的解释需要大量的经验和时间。在这里，我们介绍部分具有良好注释和标签的数据集，扼要信息如表~\ref{tab:datasets_info}所示，下面分别进行简单介绍。
 \begin{table}[h]
 	\centering
@@ -43,7 +43,7 @@ IDRiD\footnote{https://idrid.grand-challenge.org/Data/}眼底图像是由印度�
 
 眼底病变往往有病变区域较小，病变区域数量较多，病变区域分布较分散的特点。因此，眼底有些病变区域容易混淆，比较难发现。另外，眼底图像较为精细，各种细节纹理丰富，故发现眼底病变的生物标记物通常极具挑战性。
 
-\subsection{黑色素瘤皮肤病变图像}
+\subsection{黑色素瘤皮肤病变数据集}\label{subsec:original_dermatoscope_ds_intro}
 黑色素瘤是多种皮肤癌中最致命的一种。黑色素瘤是发生在皮肤表面的色素性病变，可以通过专业医师的视觉检查早期发现。黑色素瘤也适用于自动检测与图像分析。皮肤镜检查是一种皮肤成像方法，与无辅助的视觉检查相比，已证明可改善皮肤癌的诊断。为了更广泛地提供专业知识，国际皮肤成像协作组织开发了专门档案，这是一个国际皮肤镜图像库，可用于皮肤科专业医师的临床培训，也能用于举办比赛，寻求计算机算法解决临床问题。在这里，我们介绍三个图像质量较高，可用于生物标记物定位的黑色素瘤病变数据集。数据集名称、图像数量等基本信息如表~\ref{tab:skin_datasets_info}所示。
 
 
@@ -55,7 +55,6 @@ IDRiD\footnote{https://idrid.grand-challenge.org/Data/}眼底图像是由印度�
 		\toprule[2pt]
 		数据集名称 & 图像数量 & 类别 & 标注 \\
 		\midrule[2pt]
-		
 		International Skin Imaging Collaboration (ISIC) 2017 &  $\sim 2,300$ & 3 & 部分像素级 \\ \hline
 		International Skin Imaging Collaboration (ISIC) 2018 & $\geq 12,500$ & 7  & 部分像素级 \\ \hline
 		International Skin Imaging Collaboration (ISIC) 2019 & 25,331 & 8  & 图像级  \\ 
@@ -187,10 +186,9 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 	\centering
 	\caption{四类有代表性的CNN可视化方法。}		
 	\label{tab:typical_visualization_methods}
-	\begin{tabular}{c|c|c|c}
+	\begin{tabular}{c|c|c}
 		\toprule[2pt]
-		方法原理 & 解释粒度 & 代表工作 \\
-		\midrule[2pt]
+		方法原理 & 解释粒度 & 代表工作 \\ \midrule[2pt]
 		激活最大化 & 神经元  & Simonyan等人~\cite{simonyan2013deep}  \\\hline
 		反卷积网络 & 网络层  & Zeiler等人~\cite{zeiler2014visualizing, zeiler2010deconvolutional, zeiler2011adaptive} \\\hline
 		基于梯度 &  神经元 & Selvaraju等人~\cite{selvaraju2017grad}，Springenberg等人~\cite{springenberg2014striving} \\  \hline
@@ -300,10 +298,12 @@ x^{*}=\underset{x}{\operatorname{argmin}}\left(C \cdot \mathcal{L}\left(A(x), A\
 	\centering
 	\caption{TP、TN、FP和FN概念定义。}
 	\label{tab:confusion_mateix}
-	\begin{tabular}{c|c|c|c|}
+	\begin{tabular}{c|c|c|c}
 		\toprule[2pt]
-		&                    & \multicolumn{2}{c|}{True condition}     \\ \hline
-		&                    & Condition Positive & Condition Negative \\ \hline
+		&                   & \multicolumn{2}{c}{True condition}     \\ 
+				\midrule[2pt]
+		
+		&  & Condition Positive & Condition Negative \\ \hline
 		\multirow{2}{*}{Predicted} & Predicted Positive & TP  & FP \\ \cline{2-4} 
 		& Predicted Negative & FN & TN  \\ 
 		\bottomrule[2pt]
@@ -320,7 +320,7 @@ x^{*}=\underset{x}{\operatorname{argmin}}\left(C \cdot \mathcal{L}\left(A(x), A\
 \}$，设这些样本的真实标签为$y=\{y_1,y_2,...,y_N\}(\text{对于索引}\, i(0\leq i \le N)\text{，}y_i\in \{0,1\})$。由于ROC曲线只需要FPR和TPR，可说明分类系统随着鉴别阈值变化时的判断能力，因此，可将二分类系统给出的预测值作为阈值，当测试样本属于正样本的概率大于或等于阈值$T(0\leq T\in \mathbb{R} \leq 1)$时，我们认为它为正样本，否则为负样本。对于不同的阈值，我们可以得到一组FPR和TPR，从而画出ROC曲线，此时ROC曲线时呈阶梯型。当然，随着$T$取值组数不断增加，ROC曲线也会越来越逼近一条曲线。
 
 我们将ROC曲线右下方的面积成为AUC，AUC的值介于0.5与1之间。前者表示分类系统在对样本随机判断情况下的结果，后者表示分类系统对样本判断完全正确，预测值与真实标签相同。由于所取阈值$T$组数有限，可依次计算每个小矩形面积即可。如果ROC曲线是一条曲线，曲线函数沿着FPR在$[0,1]$上的积分即为AUC。一般来说，如果一条ROC曲线$f_1$在另外一条ROC曲线$f_2$上方，我们称ROC曲线$f_1$“包围”ROC曲线$f_2$，说明$f_1$代表的分类系统性能优于$f_2$代表的分类系统。
-\subsection{精确率-召回率曲线}
+\subsection{精确率-召回率曲线}\label{subsec:pr_curve}
 精确率-召回率曲线或者P-R曲线显示了不同阈值时精确率和召回率之间的权衡，是以精确率（Precision）为横轴，召回率（Recall）为纵轴的一条曲线。精确率也叫准确率，表示真正样本在被模型识别的正样本中的比例，反映了模型识别正样本的准确性。召回率也叫检出率，表示被正确识别的正样本占所有正样本的比例，反映了模型对正样本的检索能力。根据\ref{subsec:roc_curve}小节中相关定义，精确率和召回率可定义为：
 \begin{gather}
 	\mathrm{Precision}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FP}},\\
