@@ -216,7 +216,7 @@ x^{*}=\underset{x}{\operatorname{argmax}}\left(a_{i, l}(\theta, x)-\lambda(x)\ri
 \end{figure}
 激活最大化方法从最大化特定神经元的激活来解释CNN。反卷积网络（DeconvNet）~\cite{zeiler2014visualizing, zeiler2010deconvolutional, zeiler2011adaptive}从输入图像的角度解释了CNN。它从输入图像中找到激活卷积层中特定神经元的选择性模式。通过将低维神经元的特征图逐层映射回原始图像尺寸来重建图像。这个投影这个过程由反卷积网络实现，这种网络包含反卷积层、反池化层、反ReLU激活函数等逆运算。基于DeconvNet的可视化并不仅仅是分析神经元的兴趣，而是展示了一种直接的特征分析方法。DeconvNet模型结构图如图\ref{fig:deconvnet_architecture}所示，可以发现，DeconvNet是CNN网络的逆过程，CNN中存在的操作在DeconvNet中均有对应逆操作。DeconvNet将图片特征从特征空间转化到像素空间，以发现是哪些像素激活了特定的特征，达到分析解释CNN的目的。另外，用DeconvNet还有可用于可视化一个已经训练好的网络模型，无须没有学习训练的优点。所以DeconvNet使用起来比较简单。
 
-\subsubsection{基于梯度的方法}
+\subsubsection{基于梯度的方法}\label{subsec:gradient_based_methods}
 梯度是CNN中非常重要的概念，CNN在前向传播阶段计算损失。回传的过程，实质上是梯度的计算和回传的过程，从而更新网络参数。不难理解，流过神经元的梯度越大，则代表前向传播时该神经元激活值越大，进而说明该神经元越重要。基于梯度的网络可视化方法就是充分利用CNN中流动的梯度，从梯度角度来解释每一个神经元在网络中所起到的作用，相对上述反卷积网络和激活最大化方法，基于梯度的方法可得到更为精细的可视化结果。另外，由于CNN每一层均有梯度，因而通常基于梯度的方法还更为灵活，可以实现位于任意层的任意神经元的可视化。在本小节，我们将介绍常见的两种方法：Guided-Backpropagation~\cite{springenberg2014striving}和Grad-CAM~\cite{selvaraju2017grad}。
 
 Guided-Backpropagation用带步长的卷积层（如步长为2，卷积核为$3\times 3$的卷积层也可达到输入尺寸减半的效果）代替池化操作。另外，对于ReLU反向传播，与一般梯度回传法则\footnote{https://en.wikipedia.org/wiki/Backpropagation}不同的是，Guided-Backpropagation组合了DeconvNet和一般梯度回传的ReLU函数梯度计算法则，使得Guided-Backpropagation不仅可以得到更为精细、细节更为丰富的可视化结果，还能可视化高层的特征（在这种情况下，DeconvNet可视化经常会失效）。
