@@ -1,14 +1,27 @@
 \chapter{补充更多细节}\label{chapter:append1}
-对于一些不宜放在正文中的重要支撑材料，可编入毕业论文的附录中。包括某些重要的原始数据、详细数学推导、程序全文及其说明、复杂的图表、设计图纸等一系列需要补充提供的说明材料。如果毕业设计(论文)中引用的实例、数据资料，实验结果等符号较多时，为了节约篇幅，便于读者查阅，可以编写一个符号说明，注明符号代表的意义。附录的篇幅不宜太多，一般不超过正文。
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figure/ROC_cam_grad_cam_our_diabetic_retinopathy}
+	\caption{各种方法根据二类视网膜糖尿病病变数据集绘制的ROC曲线。ROC曲线是根据数据集中$40$张像素级标注图像绘制。在ROC曲线产生之前，先将各种方法的定位结果的热图归一化到$[0, 1]$。} 
+	\label{fig:roc_cam_grad_cam_our_diabetic_retinopathy}
+\end{figure}
 
-\section{附录里的图}
+从图\ref{fig:roc_cam_grad_cam_our_diabetic_retinopathy}可以看出，
 
-\subsection{单张图片}
-\subsection{多张子图}
 
-\section{附录里的表格}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figure/ROC_cam_grad_cam_our_simulated_skin_datasets}
+	\caption{} 
+	\label{fig:roc_cam_grad_cam_our_simulated_skin_datasets}
+\end{figure}
 
-\section{附录里的公式}
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figure/ROC_u_d_u_c_u_d_c_components}
+	\caption{G-D模型、G-C模型和G-D-C模型根据二类视网膜糖尿病病变数据集中标注的部分图像绘制的P-R曲线。三条曲线各自对应的AUC见右上角图例。} 
+	\label{fig:roc_u_d_u_c_u_d_c_components}
+\end{figure}
 
 \endinput
