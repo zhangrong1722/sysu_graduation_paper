@@ -1,4 +1,4 @@
-\chapter{二类生物标记物定位问题实验评估}\label{sec:experiments}
+\chapter{二类生物标记物定位问题的实验评估}\label{sec:experiments}
 \section{前言}
 在第\ref{sec:method}章中，本文详细介绍了所提出模型的结构、背后的原理、损失函数等内容。接下来，本文将进行相关实验评估。在本章中，文本将展示本文提出的模型在二类视网膜糖尿病病变数据集和二类模拟皮肤病病变数据集上的相关实验结果，并对其展开分析。首先在\ref{sec:exper_ds_intro}小节中介绍以上两个用于生物标记物定位的数据集，包括数据量、类别数量、生物标记物特点等信息。在\ref{sec:exper_evaluation_metrics}小节中，本文将介绍本章实验所选择的实验评价标准（P-R曲线及其AUC）及其原因。\ref{sec:exper_setting}小节将会介绍本章的实验设置，包括学习率、超参数、数据预处理、训练集/验证集划分等相关信息。从\ref{sec:bin_dr_ds_experiment}小节开始，本章将展示本文提出的模型在以上两个数据集上的实验结果，包括与CAM和Grad-CAM进行的对比实验和针对本文提出的模型的消融实验。具体来说，在\ref{sec:bin_dr_ds_experiment}小节和\ref{sec:bin_simulated_ds_experiment}小节中，本章将本文提出的方法和CAM以及Grad-CAM进行在两个数据集上的对比实验，通过P-R曲线及其AUC来比较各方法模型的性能表现。在\ref{sec:g_c_g_d_g_d_c_comparsion}小节中，利用二类视网膜糖尿病病变数据集，本章通过分别去掉CNN分类器模块和判别器模块的方式设计消融实验来探究本文提出的模型中的各个子模块所扮演的角色。在\ref{sec:indirect_quantitative_evaluation}小节中，本章基于在理想情况下，将异常图像作为输入，经过编码器-解码器之后的输出图像将极少甚至不再包含生物标记物，那么这些输出图像将会被分类器分类为正常的设想，通过对比二类视网膜糖尿病病变数据集和经过编码器-解码器的该数据集的分类情况来间接定量评估本文提出的模型的性能表现。\ref{sec:hyper_paras}小节将设置不同的超参数组合，来探究本文提出的模型的鲁棒性。在\ref{sec:dis_arch}小节中，本章将探究不同的判别器网络结构下，本文提出的模型的性能表现，以期读者能对判别器模块更为深刻的认识。接下来，本章将进行以上内容的具体阐述。
 \section{数据集介绍}\label{sec:exper_ds_intro}

@@ -1,9 +1,9 @@
-\chapter{多类生物标记物定位问题实验评估}\label{sec:multi_classes}
+\chapter{多类生物标记物定位问题的实验评估}\label{sec:multi_classes}
 \section{前言}
-在上一章中，与包括CAM和Grad-CAM在内的两种可视化方法相比，本文介绍了我们提出的模型在处理二类生物标记物定位问题的优异表现。与上一章内容安排一样，在本章中，我们将本文提出的模型由二类问题推广到多类问题，并展示相关实验结果与分析。首先在\ref{sec:mul_classes_ds_intro}小节中，本文将会介绍实验数据集的相关信息。在\ref{sec:multi_classes_experiment_setting}小节中，本文将会说明实验相关设置，包括学习率、优化器等信息。从\ref{sec:multi_classes_experiments_res}小节开始，本文将展示本文提出的模型在处理多类生物标记物定位问题上的相关实验结果，包括与CAM和Grad-CAM的相关对比实验和与判别器网络结构相关的消融实验，并会在\ref{sec:multi_classes_hyper_paras}小节中对超参数组合进行相关测试。注意，由于本章实验相关评价标准与上一章完全一样，所以本章不再作相关赘述。下面展开本章内容的具体阐述。
+在上一章中，与包括CAM和Grad-CAM在内的两种可视化方法相比，本文介绍了我们提出的模型在处理二类生物标记物定位问题的优异表现。与上一章内容安排一样，在本章中，我们将本文提出的模型由二类问题推广到多类问题，并展示相关实验结果与分析。首先在\ref{sec:mul_classes_ds_intro}小节中，本文将会介绍实验数据集的相关信息。在\ref{sec:multi_classes_experiment_setting}小节中，本文将会说明实验相关设置，包括学习率、实验超参数、优化器等信息。从\ref{sec:multi_classes_experiments_res}小节开始，本文将展示本文提出的模型在处理多类生物标记物定位问题上的相关实验结果，同样包括与CAM和Grad-CAM的相关对比实验和与判别器网络结构相关的消融实验，随后本文会在\ref{sec:multi_classes_hyper_paras}小节中对超参数组合进行相关测试。注意，由于本章实验相关评价标准与上一章完全一样，所以本章不再作相关赘述。下面展开本章内容的具体阐述。
 \section{数据集介绍}\label{sec:mul_classes_ds_intro}
 \subsection{多类模拟皮肤病病变数据集}
-多类模拟皮肤病病变数据集同样是包含带有人工生物标记物的皮肤图像，图像尺寸大小均为$128\times 128$，图像均以PNG格式存储，每张图像不仅有图像级标注，还有像素级标注，可用于定量分析有关的实验评估。在\ref{subsec:bin_simulated_skin_ds}小节中用到的二类模拟皮肤病病变数据集基础上额外增加了两类，故多类模拟皮肤病病变数据集中一共有$4$类，其中$3$类异常，$1$类正常。正常类图像是从ISIC2018~\cite{codella2019skin, tschandl2018ham10000}分类任务中的图像\footnote{https://challenge2018.isic-archive.com/task3/}通过滑动窗口方式收集$922$张正常皮肤图像（实际上是图像块）。第一类异常与二类模拟皮肤病病变数据集中的异常类一样，生成过程也相同（相关介绍参见\ref{subsec:bin_simulated_skin_ds}小节）。第二类异常图像中的生物标记物是黑色素瘤病变区域，为了生成这个数据集，我们首先从ISIC2018的分类任务（注意没有重复使用图像）提取了图像大小为$128\times 128$的正常图像（同样通过滑动窗口方式）。同时，我们根据ISIC2018的分割任务\footnote{https://challenge2018.isic-archive.com/task1/}中的黑素瘤区域的像素级标签，将其中的黑素瘤像素提取出来并嵌入到正常图像中。在此过程中，为了模拟真实皮肤图像中生物标志物的数量、大小和所在位置的随机变化，我们通过随机参数控制，在每个模拟皮肤图像的一定范围内随机生成这些参数的值。具体来说，黑色素瘤病变区域尺寸大小为$8\times 8$、$10\times 10$、$15\times 15$、$20\times 20$或者$25\times 25$。另外，为了产生不规则形状的生物标记物，对于每个缩略图的每个像素，以$1/3$概率不填充黑色素瘤像素。另外，我们还设置每张正常图像中嵌入的缩略图的数量不同（$1$到$3$张）。第三类异常图像与第一类异常图像生成方法相同，只是第三类异常图像中的生物标记物不再是Image-Net图像的缩略图，而是圆环。最终，正常类、第一、二、三类异常中分别有$922$、$1,310$、$1,051$、$1,062$张样本。该数据集中的部分图像示例如图\ref{fig:mul_classes_simulated_ds}所示。
+多类模拟皮肤病病变数据集同样是包含带有人工生物标记物的皮肤图像，图像尺寸大小均为$128\times 128$，图像均以PNG格式存储，每张图像不仅有图像级标注，还有像素级标注，故可用于定量分析有关的实验评估。在\ref{subsec:bin_simulated_skin_ds}小节中用到的二类模拟皮肤病病变数据集基础上额外增加了两类，故多类模拟皮肤病病变数据集中一共有$4$类，其中$3$类异常，$1$类正常。正常类图像是从ISIC2018~\cite{codella2019skin, tschandl2018ham10000}分类任务中的图像\footnote{https://challenge2018.isic-archive.com/task3/}通过滑动窗口方式收集$922$张正常皮肤图像（实际上是图像块）。第一类异常与二类模拟皮肤病病变数据集中的异常类一样，生成过程也相同（相关介绍参见\ref{subsec:bin_simulated_skin_ds}小节）。第二类异常图像中的生物标记物是黑色素瘤病变区域，为了生成这个数据集，我们首先从ISIC2018的分类任务（注意没有重复使用图像）提取了图像大小为$128\times 128$的正常图像（同样通过滑动窗口方式）。同时，我们根据ISIC2018的分割任务\footnote{https://challenge2018.isic-archive.com/task1/}中的黑素瘤区域的像素级标签，将其中的黑素瘤像素提取出来并嵌入到正常图像中。在此过程中，为了模拟真实皮肤图像中生物标志物的数量、大小和所在位置的随机变化，我们通过随机参数控制，在每个模拟皮肤图像的一定范围内随机生成这些参数的值。具体来说，黑色素瘤病变区域尺寸大小为$8\times 8$、$10\times 10$、$15\times 15$、$20\times 20$或者$25\times 25$。另外，为了产生不规则形状的生物标记物，对于每个缩略图的每个像素，以$1/3$概率不填充黑色素瘤像素。另外，我们还设置每张正常图像中嵌入的缩略图的数量不同（$1$到$3$张不等）。第三类异常图像与第一类异常图像生成方法相同，只是第三类异常图像中的生物标记物不再是Image-Net图像的缩略图，而是圆环。注意，为了让三类模拟生物标记物的真实性，我们同样对第三类异常图像进行局部模糊。最终，正常类、第一、二、三类异常中分别有$922$、$1,310$、$1,051$、$1,062$张样本。该数据集中的部分图像示例如图\ref{fig:mul_classes_simulated_ds}所示。
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/multi_classes_simulated_skin.pdf}
@@ -12,7 +12,7 @@
 \end{figure}
 
 \section{实验设置}\label{sec:multi_classes_experiment_setting}
-与上一章中二类问题所采用的相关实验设置相比，除超参数取值（$\lambda_{1}=0.8,\lambda_{2}=10$）不同外，其他设置均相同。评价标准也与上一章相同（参见\ref{sec:exper_evaluation_metrics}小节），采用P-R曲线（多类模拟皮肤病病变数据集中三个异常类的像素数量统计表如\ref{tab:multi_ds_pixel_freqs}所示）、特异性和召回率作为实验评价标准。
+与上一章中二类问题所采用的相关实验设置相比，除超参数取值（$\lambda_{1}=0.8,\lambda_{2}=10$）不同外，其他设置均相同。评价标准也与上一章相同（参见\ref{sec:exper_evaluation_metrics}小节），采用P-R曲线（多类模拟皮肤病病变数据集中三个异常类的像素数量统计表如\ref{tab:multi_ds_pixel_freqs}所示）作为实验评价标准。
 
 如\ref{sec:difficulties}小节中所描述的那样，由于对抗生成网络中只有两个语义输入端（真/假），与二类问题不同的是，多类问题有多个异常类。为了解决这个多类异常与对抗生成网络本身性质的矛盾，我们将所有异常类看做一类，而正常类本身就作为另一类，从而将正常类看做对抗生成网络语义上的真，将所有异常图像看做对抗生成网络语义上的假。同时，取样时保持所有异常类之间的样本数量相等。在CNN分类器方面，我们直接将原来的二分类扩展到多分类，增加CNN分类器最后一个全连接层的输出维度，同时在训练CNN分类器时用多类交叉熵取代原来的二类交叉熵损失函数。本文提出模型的其他结构均与上一章相同。
 
@@ -44,65 +44,63 @@
 
 如图\ref{fig:multi_simulated_skin_res}所示，第$3$的定位结果标出的异常区域最多，虽然也包括了潜在的生物标记物，但是同时也将周边大量正常区域也误认作生物标记物。Grad-CAM作为CAM的扩展，对可视化层的选择更为灵活。如图中第$4$列和第$5$列分别选取中间卷积层和最后一层卷积层。可以发现，Grad-CAM-1取得了较为精确的结果，证明了其优于CAM的性能。另外，可以发现Grad-CAM-2给出的定位结果（第$5$列）与CAM（第$3$行）相差不大。与以上结果相比较，对于分散、形状各异的生物标记物，相比于CAM和Grad-CAM，本文提出的模型给出了更为精确的定位结果（第$6$行），从而从定性分析角度证明了本文提出的方法的性能优越性。
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin/IMAGE_NET_pr_curve.png}
 	\caption{CAM、Grad-CAM-1、本文提出的模型和Grad-CAM-2在多类模拟皮肤病病变数据集的第一类异常上画出的P-R曲线及其各自曲线下的面积（AUC，见右上角图例）。} 
 	\label{fig:multi_simulate_pr_curve_image_net}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin/SKIN_pr_curve.png}
-	\caption{CAM、Grad-CAM-1、本文提出的模型和Grad-CAM-2在多类模拟皮肤病病变数据集的第二类异上常画出的P-R曲线及其各自曲线下的面积（AUC，见右上角图例）。} 
+	\caption{CAM、Grad-CAM-1、本文提出的模型和Grad-CAM-2在多类模拟皮肤病病变数据集的第二类异常上画出的P-R曲线及其各自曲线下的面积（AUC，见右上角图例）。} 
 	\label{fig:multi_simulate_pr_curve_skin}
 \end{figure}
 
-\begin{figure}[h!]
+另外，由于多类模拟皮肤病病变数据集中的所有图像均存在像素级标注，本文还从定量角度对实验结果进行相关分析。由此，对于本文提出的模型、CAM、Grad-CAM-1和Grad-CAM-2，根据该数据集中的三类异常图像所绘制P-R曲线分别如图\ref{fig:multi_simulate_pr_curve_image_net}、图\ref{fig:multi_simulate_pr_curve_skin}和图\ref{fig:multi_simulate_pr_curve_circle}所示。不难发现，绿色P-R曲线（本文提出的方法）在其他三条曲线的上方，且与下侧横轴和左侧纵轴围成的封闭区域面积显然最大。在第一类异常、第二类异常和第三类异常上，本文提出的方法均取得了最高的AUC分数，在三类异常上计算得到的AUC分数分别为$0.250$（见图\ref{fig:multi_simulate_pr_curve_image_net}）、$0.870$（见图\ref{fig:multi_simulate_pr_curve_skin}）和$0.609$（见图\ref{fig:multi_simulate_pr_curve_circle}），从而从定量角度说明本文提出的方法相较于CAM和Grad-CAM具有更为出色的性能表现。以上四种方法更为直观的AUC分数如表\ref{tab:multi_ds_auc_scores}所示。
+
+\begin{figure}[!htbp]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin/CIRCLE_pr_curve.png}
 	\caption{CAM、Grad-CAM-1、本文提出的模型和Grad-CAM-2在多类模拟皮肤病病变数据集的第三类异常上画出的P-R曲线及其各自曲线下的面积（AUC，见右上角图例）。} 
 	\label{fig:multi_simulate_pr_curve_circle}
 \end{figure}
 
-另外，由于多类模拟皮肤病病变数据集中的所有图像均存在像素级标注，本文还从定量角度对实验结果进行相关分析。由此，对于本文提出的模型、CAM、Grad-CAM-1和Grad-CAM-2，根据该数据集中的三类异常图像所绘制P-R曲线分别如图\ref{fig:multi_simulate_pr_curve_image_net}、图\ref{fig:multi_simulate_pr_curve_skin}和图\ref{fig:multi_simulate_pr_curve_circle}所示。不难发现，绿色P-R曲线（本文提出的方法）在其他三条曲线的上方，且与下侧横轴和左侧纵轴围成的封闭区域面积显然最大。在第一类异常、第二类异常和第三类异常上，本文提出的方法均取得了最高的AUC分数，在三类异常上计算得到的AUC分数分别为$xxx$（见图\ref{fig:multi_simulate_pr_curve_image_net}）、$xxx$（见图\ref{fig:multi_simulate_pr_curve_skin}）和$xxx$（见图\ref{fig:multi_simulate_pr_curve_circle}），从而从定量角度说明本文提出的方法相较于CAM和Grad-CAM具有更为出色的性能表现。以上四种方法更为直观的AUC分数如表\ref{tab:multi_ds_auc_scores}所示。
-
-\begin{table}[h!]
+\begin{table}[!htbp]
 	\centering
-	\caption{本文提出的方法、CAM、Grad-CAM-1和Grad-CAM-2在三类异常图像上计算得到的AUC分数。}
+	\caption{本文提出的方法、CAM、Grad-CAM-1和Grad-CAM-2在三类异常图像上计算得到的AUC分数及其平均。}
 	\label{tab:multi_ds_auc_scores}
 	\begin{tabular}{c|c|c|c|c}
 		\toprule[2pt]
-		 & 本文提出的方法 & CAM & Grad-CAM-1 & Grad-CAM-2 \\
+		& CAM & Grad-CAM-1 & Grad-CAM-2 & 本文提出的方法 \\
 		\midrule[2pt]
-		第一类异常&$0.187$ & $0.069$ &  $0.181$ & $0.069$ \\ \hline
-		第二类异常&  $0.547$ &$0.077$ & $0.013$ & $0.079$ \\ \hline
-		第三类异常 & $0.378$ & $0.002$ & $0.001$ & $0.002$ \\ \hline
-		AUC均值 & $$ & $$ & $$ & $$ \\ 
+		第一类异常&$0.098$ & $0.224$ &  $0.098$ & $\textbf{0.250}$ \\ \hline
+		第二类异常&  $0.108$ &$0.186$ & $0.109$ & $\textbf{0.870}$ \\ \hline
+		第三类异常 & $0.003$ & $0.003$ & $0.003$ & $\textbf{0.609}$ \\ \hline
+		Average AUC & $0.070$ & $0.138$ & $0.070$ & $\textbf{0.576}$ \\ 
 		\bottomrule[2pt]
 	\end{tabular}
 \end{table}
 
 \section{对于经过编码器-解码器的多类模拟皮肤病病变图像的定量分析}
-在本节中，本文将
+与\ref{sec:indirect_quantitative_evaluation}小节类似，在本节中，本文同样
 
 \begin{table}[h!]
-
-\centering
-\caption{原始多类模拟皮肤病病变数据集和“正常”数据集在ResNet-18分类器上的分类结果。前两列表示在原始数据集上的实验结果，后两列表示“正常”数据集上的实验结果。} 
-\label{tab:quantitative_simulated_skin}
-\begin{tabular}{c|cc|cc}
-	\toprule[2pt]
-	& \multicolumn{2}{c|}{\shortstack{原始数据集\\\scriptsize{（分类正确率）}}} &\multicolumn{2}{c}{\shortstack{“正常”数据集\\\scriptsize{（转化率）}}} \\
-	&  训练集 & 验证集 & 训练集 & 验证集\\
-	\midrule[2pt]
-	正常类 & $0.992$ & $0.989$ & $0.233$ & $0.319$\\ \hline
-	第一类异常 & $0.985$ & $0.981$ & $0.753$ & $0.741$\\ \hline
-	第二类异常 & $0.999$ & $0.986$ & $0.976$ & $0.981$\\ \hline
-	第三类异常 & $1.000$ & $1.000$ & $0.856$ & $0.840$\\
-	\bottomrule[2pt]
-\end{tabular}
-
+	\centering
+	\caption{原始多类模拟皮肤病病变数据集和“正常”数据集在ResNet-18分类器上的分类结果。前两列表示在原始数据集上的实验结果，后两列表示“正常”数据集上的实验结果。} 
+	\label{tab:quantitative_simulated_skin}
+	\begin{tabular}{c|cc|cc}
+		\toprule[2pt]
+		& \multicolumn{2}{c|}{\shortstack{原始数据集\\\scriptsize{（分类正确率）}}} &\multicolumn{2}{c}{\shortstack{“正常”数据集\\\scriptsize{（转化率）}}} \\
+		&  训练集 & 验证集 & 训练集 & 验证集\\
+		\midrule[2pt]
+		正常类 & $0.992$ & $0.989$ & $0.233$ & $0.319$\\ \hline
+		第一类异常 & $0.985$ & $0.981$ & $0.753$ & $0.741$\\ \hline
+		第二类异常 & $0.999$ & $0.986$ & $0.976$ & $0.981$\\ \hline
+		第三类异常 & $1.000$ & $1.000$ & $0.856$ & $0.840$\\
+		\bottomrule[2pt]
+	\end{tabular}
 \end{table}
 
 
@@ -112,6 +110,7 @@
 	\caption{将原始数据集中的正常图像和“正常”数据集中的“正常”图像分别送入到判别器之后，根据输出分数绘制的频率分布直方图。黄色柱子表示判别器真图像输入端的输出分数，紫色柱子表示判别器假图像输入端的输出分数，灰色柱子表示以上两者的重叠部分。}
 	\label{fig:simulated_skin_hist_freq}
 \end{figure}
+
 $1.3 $和$1.2$
 
 $2.5$ $-0.5$
