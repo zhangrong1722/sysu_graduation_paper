@@ -32,7 +32,29 @@
 \end{table}
 
 \section{在多类模拟皮肤病病变数据集上的实验评估}\label{sec:multi_classes_experiments_res}
-本文将展示本文提出模型在多类模拟皮肤病病变数据集上的实验结果，本文提出的模型同样将与CAM和Grad-CAM共计两种用于卷积神经网络的可视化方法作定性分析和定量分析。下面展开相关内容的具体阐述。
+本文将展示本文提出模型在多类模拟皮肤病病变数据集上的实验结果，本文提出的模型同样将与CAM和Grad-CAM共计两种用于卷积神经网络可视化方法作定性分析和定量分析。下面展开相关内容的具体阐述。
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin/IMAGE_NET_pr_curve.png}
+	\caption{CAM、Grad-CAM-1、本文提出的模型和Grad-CAM-2在多类模拟皮肤病病变数据集的第一类异常上画出的P-R曲线及其各自曲线下的面积（AUC，见右上角图例）。} 
+	\label{fig:multi_simulate_pr_curve_image_net}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth]{figure/pr_curve_multi_skin/SKIN_pr_curve.png}
+	\caption{CAM、Grad-CAM-1、本文提出的模型和Grad-CAM-2在多类模拟皮肤病病变数据集的第二类异常上画出的P-R曲线及其各自曲线下的面积（AUC，见右上角图例）。} 
+	\label{fig:multi_simulate_pr_curve_skin}
+\end{figure}
+\vspace{-1.8cm}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\textwidth]{figure/pr_curve_multi_skin/CIRCLE_pr_curve.png}
+	\caption{CAM、Grad-CAM-1、本文提出的模型和Grad-CAM-2在多类模拟皮肤病病变数据集的第三类异常上画出的P-R曲线及其各自曲线下的面积（AUC，见右上角图例）。} 
+	\label{fig:multi_simulate_pr_curve_circle}
+\end{figure}
+
 
 我们同样先训练得到了一个ResNet-18分类器，分类器最终的分类准确率达到了$99.9\%$，从而保证ResNet-18本身良好的分类性能。随后，与\ref{sec:bin_dr_ds_experiment}小节一样，我们分别使用CAM（见图\ref{fig:multi_simulated_skin_res}第$3$行）、Grad-CAM（见图\ref{fig:multi_simulated_skin_res}第$4$行和第$5$行）在多类模拟皮肤病病变数据集上完成了生物标记物的定位任务。
 \begin{figure}[h]
@@ -44,28 +66,9 @@
 
 如图\ref{fig:multi_simulated_skin_res}所示，第$3$的定位结果标出的异常区域最多，虽然也包括了潜在的生物标记物，但是同时也将周边大量正常区域也误认作生物标记物。Grad-CAM作为CAM的扩展，对可视化层的选择更为灵活。如图中第$4$列和第$5$列分别选取中间卷积层和最后一层卷积层。可以发现，Grad-CAM-1取得了较为精确的结果，证明了其优于CAM的性能。另外，可以发现Grad-CAM-2给出的定位结果（第$5$列）与CAM（第$3$行）相差不大。与以上结果相比较，对于分散、形状各异的生物标记物，相比于CAM和Grad-CAM，本文提出的模型给出了更为精确的定位结果（第$6$行），从而从定性分析角度证明了本文提出的方法的性能优越性。
 
-\begin{figure}[!htbp]
-	\centering
-	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin/IMAGE_NET_pr_curve.png}
-	\caption{CAM、Grad-CAM-1、本文提出的模型和Grad-CAM-2在多类模拟皮肤病病变数据集的第一类异常上画出的P-R曲线及其各自曲线下的面积（AUC，见右上角图例）。} 
-	\label{fig:multi_simulate_pr_curve_image_net}
-\end{figure}
-
-\begin{figure}[!htbp]
-	\centering
-	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin/SKIN_pr_curve.png}
-	\caption{CAM、Grad-CAM-1、本文提出的模型和Grad-CAM-2在多类模拟皮肤病病变数据集的第二类异常上画出的P-R曲线及其各自曲线下的面积（AUC，见右上角图例）。} 
-	\label{fig:multi_simulate_pr_curve_skin}
-\end{figure}
 
 另外，由于多类模拟皮肤病病变数据集中的所有图像均存在像素级标注，本文还从定量角度对实验结果进行相关分析。由此，对于本文提出的模型、CAM、Grad-CAM-1和Grad-CAM-2，根据该数据集中的三类异常图像所绘制P-R曲线分别如图\ref{fig:multi_simulate_pr_curve_image_net}、图\ref{fig:multi_simulate_pr_curve_skin}和图\ref{fig:multi_simulate_pr_curve_circle}所示。不难发现，绿色P-R曲线（本文提出的方法）在其他三条曲线的上方，且与下侧横轴和左侧纵轴围成的封闭区域面积显然最大。在第一类异常、第二类异常和第三类异常上，本文提出的方法均取得了最高的AUC分数，在三类异常上计算得到的AUC分数分别为$0.250$（见图\ref{fig:multi_simulate_pr_curve_image_net}）、$0.870$（见图\ref{fig:multi_simulate_pr_curve_skin}）和$0.609$（见图\ref{fig:multi_simulate_pr_curve_circle}），从而从定量角度说明本文提出的方法相较于CAM和Grad-CAM具有更为出色的性能表现。以上四种方法更为直观的AUC分数如表\ref{tab:multi_ds_auc_scores}所示。
 
-\begin{figure}[!htbp]
-	\centering
-	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin/CIRCLE_pr_curve.png}
-	\caption{CAM、Grad-CAM-1、本文提出的模型和Grad-CAM-2在多类模拟皮肤病病变数据集的第三类异常上画出的P-R曲线及其各自曲线下的面积（AUC，见右上角图例）。} 
-	\label{fig:multi_simulate_pr_curve_circle}
-\end{figure}
 
 \begin{table}[!htbp]
 	\centering
@@ -107,7 +110,7 @@
 		& \multicolumn{2}{c|}{\shortstack{原始四类数据集\\\scriptsize{（分类正确率）}}} &\multicolumn{2}{c}{\shortstack{“正常”四类数据集\\\scriptsize{（保持率）}}} \\
 		&  训练集 & 验证集 & 训练集 & 验证集\\
 		\midrule[2pt]
-		正常类 & $0.992$ & $0.989$ & $0.233$ & $0.319$\\ \hline
+		正常类 & $0.992$ & $0.989$ & $0.094$ & $0.097$\\ \hline
 		第一类异常 & $0.985$ & $0.981$ & $0.753$ & $0.741$\\ \hline
 		第二类异常 & $0.999$ & $0.986$ & $0.976$ & $0.981$\\ \hline
 		第三类异常 & $1.000$ & $1.000$ & $0.856$ & $0.840$\\
@@ -115,7 +118,7 @@
 	\end{tabular}
 \end{table}
 
-我们可以从表\ref{tab:quantitative_simulated_skin}中前两列看出，对于原始四类数据集，无论是正常类还是三个异常类，训练集和测试集上分类正确率均达到了$98\%$，这表明ResNet-18四类分类器可以很好学习到生物标记物的相关特征。而在该表的后两列中，我们可以发现，对于三个异常类，异常图像的转化率都比较高（第一类异常，训练集和测试集上的转化率分别为$75.3\%$和$74.1\%$），尤其是第二类异常，训练集和测试集上的转化率分别达到了$97.6\%$和$98.1\%$，以上结果可表明编码器-解码器对于异常图像输入有较好的转化能力，可以很好的定位并去除生物标记物。相比之下，正常类的转化率要低得多，在训练集和测试集上的转化率分别为$23.3\%$和$31.9\%$，这可以说明编码器-解码器对于正常图像输入有较好的保持能力。
+我们可以从表\ref{tab:quantitative_simulated_skin}中前两列看出，对于原始四类数据集，无论是正常类还是三个异常类，训练集和测试集上分类正确率均达到了$98\%$，这表明ResNet-18四类分类器可以很好学习到生物标记物的相关特征。而在该表的后两列中，我们可以发现，对于三个异常类，异常图像的转化率都比较高（第一类异常，训练集和测试集上的转化率分别为$75.3\%$和$74.1\%$），尤其是第二类异常，训练集和测试集上的转化率分别达到了$97.6\%$和$98.1\%$，以上结果可表明编码器-解码器对于异常图像输入有较好的转化能力，可以很好的定位并去除生物标记物。相比之下，正常类的转化率要低得多，在训练集和测试集上的转化率分别为$9.40\%$和$9.70\%$，这可以说明编码器-解码器对于正常图像输入有较好的保持能力。
 
 \begin{figure}[h]
 	\centering
@@ -126,8 +129,32 @@
 
 以上实验从额外训练的ResNet分类器简介说明本文提出的模型在定位并去除生物标记物方面具有较强能力。在本小节中，我们还将“正常”四类数据集中的正常图像和异常图像均送入判别器，从而从判别器角度再次验证上述结论，判别器输出分数的频率分布直方图如图\ref{fig:simulated_skin_hist_freq}所示。从图\ref{fig:simulated_skin_hist_freq}中我们可以发现根据判别器两端输出分数所绘制的频率直方图中有较大重叠面积。另外，根据以上频率直方图，我们计算得到判别器两端输出分数的平均数分别为$1.3 $和$1.2$。而初试参数下，我们计算得到判别器两端输出的平均分数分别为$2.5$和$-0.5$，这说明在训练结束后，判别器输出两端输入图像的相似性得到了极大提升（平均分数差距：$3.0\rightarrow 0.1$），进一步说明判别器很难分辨输入图像的真/假，从而证明编码器-解码器的异常图像输出已经十分接近正常图像输出，由此我们可以推断出编码器-解码器已经很好的定位并去除了异常图像中的生物标记物。
 
-\section{不同超参数下的实验结果分析}\label{sec:multi_classes_dis_score_hist}
+\section{不同超参数下的实验结果分析}\label{sec:multi_classes_hyper_paras}
 在本小节中，本文将探究。
+
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin_hyper_paras/IMAGE_NET_pr_curve.png}
+	\caption{CAM、Grad-CAM-1、本文提出的模型和Grad-CAM-2在多类模拟皮肤病病变数据集的第一类异常上画出的P-R曲线及其各自曲线下的面积（AUC，见右上角图例）。} 
+	\label{fig:multi_simulate_pr_curve_image_net_hyper_paras}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin_hyper_paras/SKIN_pr_curve.png}
+	\caption{CAM、Grad-CAM-1、本文提出的模型和Grad-CAM-2在多类模拟皮肤病病变数据集的第一类异常上画出的P-R曲线及其各自曲线下的面积（AUC，见右上角图例）。} 
+	\label{fig:multi_simulate_pr_curve_skin_hyper_paras}
+\end{figure}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin_hyper_paras/CIRCLE_pr_curve.png}
+	\caption{CAM、Grad-CAM-1、本文提出的模型和Grad-CAM-2在多类模拟皮肤病病变数据集的第一类异常上画出的P-R曲线及其各自曲线下的面积（AUC，见右上角图例）。} 
+	\label{fig:multi_simulate_pr_curve_circle_hyper_paras}
+\end{figure}
+
+
 \begin{table}[h]
 	\centering
 	\caption{不同超参数组合下，本文提出的模型在二类视网膜糖尿病病变数据集上计算得到的AUC分数列表。}		
@@ -137,13 +164,13 @@
 			\toprule[2pt]
 			& $\lambda_{1}=0.8,\lambda_{2}=10$ & $\lambda_{1}=4, \lambda_{2}=10$& $\lambda_{1}=0.1, \lambda_{2}=10$&
 			
-			 $\lambda_{1}=0.8,\lambda_{2}=20$ & $\lambda_{1}=0.8,\lambda_{2}=50$ &
-			 $\lambda_{1}=0,\lambda_{2}=10$ &
-			 $\lambda_{1}=0.8, \lambda_{2}=0$\\
+			$\lambda_{1}=0.8,\lambda_{2}=20$ & $\lambda_{1}=0.8,\lambda_{2}=50$ &
+			$\lambda_{1}=0,\lambda_{2}=10$ &
+			$\lambda_{1}=0.8, \lambda_{2}=0$\\
 			\midrule[2pt]
-			第一类异常	& $\textbf{0.481}$ &	$0.421 $ & $0.433$ & $0.056$ & $0.085$& $0.012$ &	 \\\hline
+			第一类异常	& $0.250$ &	$0.421 $ & $0.433$ & $0.056$ & $0.085$& $0.012$ &	 \\\hline
 			
-			第二类异常	& $\textbf{0.481}$ &	$0.421 $ & $0.433$ & $0.056$ & $0.085$& $0.012$ &	 \\\hline
+			第二类异常	& $$ &	$0.421 $ & $0.433$ & $0.056$ & $0.085$& $0.012$ &	 \\\hline
 			
 			第三类异常	& $\textbf{0.481}$ &	$0.421 $ & $0.433$ & $0.056$ & $0.085$& $0.012$ &	 \\\hline
 			
@@ -152,6 +179,8 @@
 		\end{tabular}
 	}
 \end{table}
-
 %\section{对判别器模型结构的探究}
+
 \section{本章小结}
+本章主要将本文提出的方法由二类问题推广到多类问题，在此过程中，本文对原始二类模型进行了相关改进，比如，将二类交叉熵损失函数替换成多类交叉熵损失函数、将所有异常类看成判别器的假图像输入端等，以最小的代价实现二类问题到多类问题的扩展，并在多类模拟皮肤病病变数据集上进行了相关实验评估，与CAM和Grad-CAM相比，分别从定性分析（热图）和定量分析（P-R曲线及其AUC）两个角度直接说明本文提出的模型能够更准确地定位到生物标记物的位置，具有更加优异的性能。除此之外，本文还分别从额外训练的CNN分类器的角度和判别器的角度再次证明了上述结论。最后，为了说明本文提出的方法的超参数鲁棒性，本文还对不同超参数$\lambda_{1}$和$\lambda_{2}$组合进行了测试。到此，本文所有实验内容叙述完毕。在接下来一章中，我们将对本文工作进行总结，并对将来的研究方向进行展望。
+
