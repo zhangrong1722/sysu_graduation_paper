@@ -3,24 +3,26 @@
 % 摘要内容应概括地反映出本论文的主要内容，主要说明本论文的研究目的、内容、方法、成果和结论。要突出本论文的创造性成果或新见解，不要与引言相 混淆。语言力求精练、准确，以 300—500 字为宜。
 % 关键词是供检索用的主题词条，应采用能覆盖论文主要内容的通用技术词条(参照相应的技术术语 标准)。按词条的外延层次排列（外延大的排在前面）。
 \cabstract{
-近些年来，随着深度学习的高速发展以及广泛应用，生物标记物定位算法无论是在精确性还是在应用广泛性上都取得了喜人的进步。在临床情况下，对于专业医师，标出生物标记物的大概位置（例如，矩形边界框）通常相对容易，但是标出生物标记物的精确位置（像素级）对于专业医生是非常困难甚至不可能的，尤其在生物标记物在医学图像中分布广泛，大小各异，边界模糊的情况下。另外，医学图像领域中，像素级别图像标注（如医学分割任务）获取代价高昂，不仅需要大量经验丰富的专业医师，而且数据获取-数据标注周期较长，对于某些特定疾病的标注还十分困难（例如糖尿病型视网膜病变）。幸运的是，图像级别的图像标注（类别标签）相对简单，获取较为容易。因而在弱监督条件下（提供图像级别标签，给出像素级别结果）完成生物标记物精确定位任务也显得非常有必要。鉴于以上情况，本文提出一种组合卷积神经网络和对抗生成网络的新型网络结构来完成弱监督条件下的生物标记物精确定位任务，本文主要贡献如下：
+近些年来，随着深度学习的高速发展以及广泛应用，生物标记物定位算法无论是在精确性还是在应用广泛性上都取得了喜人的进步。在临床情况下，对于专业医师，标出生物标记物的大概位置（例如，矩形边界框）通常相对容易，但是标出生物标记物的精确位置（像素级）是非常困难甚至不可能的，尤其在生物标记物分布广泛、大小各异、边界模糊的情况下。另外，医学图像领域中，像素级别图像标注获取代价高昂（如医学分割任务），不仅需要大量经验丰富的专业医师，而且数据标注周期较长，对于某些特定疾病的标注还十分困难（例如糖尿病型视网膜病变）。而图像级别的图像标注（类别标签）相对简单，获取较为容易。因而在弱监督条件下（提供图像级别标签，给出像素级别结果）完成生物标记物精确定位任务极具必要性。鉴于以上情况，本文提出一种组合卷积神经网络和对抗生成网络来完成弱监督条件下的生物标记物精确定位任务，本文主要贡献如下：
 	
-1）在方法创新性方面，到目前为止，在弱监督条件下，还没有深度学习方法可较好地直接完成生物标记物精确定位任务，本文极具创造性地组合了卷积神经网络和对抗生成网络，其中对抗生成网络由生成器和判别器组成，卷积神经网络充当分类器角色，填补弱监督条件下生物标记物精确定位任务的空白。而对于生物标记物的准确位置，从图像生成的角度，生成器输出减去输入即可获得。
+1）在方法创新性方面，到目前为止，在弱监督条件下，还没有深度学习方法可较好地直接完成生物标记物精确定位任务，本文极具创造性地组合了卷积神经网络和对抗生成网络，其中对抗生成网络由生成器和判别器组成，卷积神经网络充当分类器角色。而生物标记物的准确位置，从图像生成的角度，生成器输出减去输入即可获得。
 	
-2）在模型训练方面，本文提出了一种CNN分类网络和对抗生成网络交替训练的方式，CNN分类网络精确定位并尽量去除生物标记物，对抗生成网络进一步完全去除生物标记物，较好地发挥出了两个网络模块各自的作用。
+2）在模型训练方面，本文提出了一种交替训练CNN分类网络和对抗生成网络的策略，CNN分类网络精确定位并尽量去除生物标记物，对抗生成网络进一步完全去除生物标记物，这种交替训练方法可以较好地发挥出了两个网络模块的作用。
 	
-3）在方法的应用广泛性和鲁棒性方面，我们不仅将本文提出的模型应用于处理二类问题，还将其推广到处理多类问题，从而比较全面地评估了本文提出的模型的性能表现。与当下流行的卷积神经网络可视化方法相比，本文提出的方法在给出生物标记物的准确位置的同时还不会漏掉极其微小、分布广泛、难以察觉的生物标记物。
+3）在方法的应用广泛性和鲁棒性方面，我们不仅将本文提出的模型应用于处理二类问题（一类正常和一类异常），还将其推广到处理多类问题（一类正常和多类异常）。与当下流行的卷积神经网络可视化方法相比，本文提出的方法在给出生物标记物的准确位置的同时还不会漏掉极其微小、分布广泛、难以察觉的生物标记物，表现出了目前最佳的性能。
 }
 % 中文关键词(每个关键词之间用“;”分开,最后一个关键词不打标点符号。)
 \ckeywords{生物标记物定位；编码器-解码器；对抗生成网络；弱监督 }
 \eabstract{
-In recent years, with the rapid development and wide application of deep learning, the algorithms of localizating biomarkers have made satisfactory progress in both accuracy and application. In clinical situations, it is usually relatively easy to label the approximate location of biomarkers, but it is very difficult even impossible to label its exact location especially when biomarkers are widely distributed in medical images, with varied sizes and blurred borders. In addition, pixel-level annotation is expensive to acquire, not only requires a large number of experienced professional physicians, but also this processing will last a long time, and it is very difficult to label certain specific diseases. Fortunately, image-level annotation is relatively simple and easy to obtain. Therefore, it is very necessary to complete the accurate localization of biomarkers under weak supervision conditions (providing image-level labels and outputting pixel-level results). In view of the above, this paper proposes a new network structure by combining convolutional neural networks and adversarial generative networks to complete the precise localization of biomarkers under weak-supervised conditions. The main contributions of this paper are as follows:
 
-1) So far, there is no relevant algorithms to directly complete the precise positioning of biomarkers. This paper innovatively combines a convolutional neural network and an adversarial generation network. The adversarial network consists of a generator and a discriminator, and the convolutional neural network acts as a classifier.
+In recent years, with the rapid development and wide application of deep learning, biomarkers localization methods have made satisfying progress in both accuracy and application. In clinical situations, it is usually relatively easy for physician to approximately label locations of biomarkers (for example, bounding boxes), but it is difficult even impossible to label exact locations of biomarkers, especially when biomarkers are widely distributed, with various sizes and blurred borders. In addition, in the medical imaging field, pixel-level annotations tasks are expensive to acquire such as medical segmentation. Fortunately, image-level annotations (category labels) are relatively simple and easy to obtain. Therefore, it is necessary to accurately localize biomarkers under weak-supervised condition. In view of the above, this paper proposes a new framework by combining convolutional neural networks (CNNs) and adversarial generative networks (GAN). The main contributions of this paper are as follows:
 
-2) Our proposed method can be not only used to deal with the second type of problems, but we also extended it to deal with the problem of multiple classes. On the one hand, it fills the gap of directly completing the task of precisely locating biomarkers under weak-supervised conditions. On the other hand, compared with other indirect methods, our proposed method can remove biomarkers through the generator, so that the precise position of biomarkers can be required by
-the generator's output subtracting its input. And only image-level labels are required to obtain biomarkers, eliminating the high-cost labeling.
+1) So far, under the condition of weak supervision, there is no deep learning methods that can directly localize biomarkers accurately. This paper novelly combines a CNN and GAN, where the generator and discriminator form GAN together, and the CNN acts as a classifier. For the exact locations of biomarkers, from the perspective of image generation, the generator output is subtracted from the input to obtain it easily.
+
+2) In terms of training our proposed framework, this paper proposes a method of training CNN classification network and GAN alternately. The CNN classification network accurately locates and removes biomarkers as much as possible, and the adversarial generation network further completely removes biomarkers. Such alternate strategy can make better use of this two sub-modules.
+
+3) In terms of the wide application and robustness of our proposed method, we not only apply the model proposed to deal with two-classes problem (one normal class and one abnormal class), but also generalize it to handle multiple-classes problem (one normal class and multiple abnormal classes), then evaluating the performances of our proposed method via qualitative analysis and quantitative analysis. Compared with the currently popular methods of visualizing CNNs, our proposed method realizes state-of-art performances.
 
 }
 % 英文文关键词（关键词之间用逗号隔开，最后一个关键词不打标点符号。）
-\ekeywords{Biomarker Localization, Encoder-Decoder, Generative Adversarial Networks, Weak supervision}
+\ekeywords{Biomarkers Localization, Encoder-Decoder, Generative Adversarial Networks, Weak supervision}
