@@ -1,5 +1,5 @@
 \chapter{相关研究基础}
-\section{前言}
+
 自从计算机技术应用到医学影像分析以来，有许许多多医学影像分析难题因其具有的重大临床应用价值和实际意义而引起研究者的浓厚兴趣并为之投入大量时间和精力，疾病标记物的精确定位便是其中之一。本章将会疾病标记物精确定位任务的常用数据集进行介绍。接着将会介绍本文方法中涉及到的最为重要的基本知识点，包括CNN、对抗生成网络和自编码-解码器等。下一步，我们将对可用于完成疾病标记物精确定位任务的已有解决方案进行详细介绍，力求将相关方法阐述得清晰明了，突出比较各种方法在疾病标记物的精确定位任务上的长处和不足。在本章最后，我们将给出实验结果的评判标准，并阐述选择这些比较标准的合理性。
 
 \section{相关基础}
@@ -29,26 +29,26 @@ CNN便可以很好避免多层感知机存在的问题，卷积操作可以很�
 
 三种经典的CNN的模型结构如图~\ref{fig:popular_networks}所示。可以看出，CNN都是由一系列卷积操作组成的，在卷积操作之后再接上激活函数以增强非线性表达能力。为了减少参数量，CNN还引入了池化操作，使得输入图像尺寸随着深度不断增加而减小。池化操作也起到过滤无用信息的的作用。最后，再接上全连接层对CNN提取到的特征进行分类（视不同任务而改变）。因此，CNN实际上充当特征提取器的角色。那么我们可以这样理解卷积神经的原理：单纯卷积操作提取的是图像的局部信息，随着一系列卷积操作的堆叠，CNN的感受野越来越大，比如两个3$\times$3的卷积核堆叠相当于一个5$\times$5卷积核的感受野，CNN便能提取到图像的全局信息。同时，随着深度增加，输入的尺寸大小变得越来越小，通常以2倍关系减小，CNN便会丢掉无用信息。因而CNN是一种层次化结构。再在损失函数，如交叉熵，的监督指导下，根据反向梯度传播算法更新网络参数，CNN便能被训练成一个优秀的特征提取器。
 
-以上便是CNN的一般结构和工作原理，由于ResNet-18在本文提出的方法充当重要角色，下面将详细介绍ResNet模型。随着VGG-19~\cite{simonyan2014very}的出现，一个CNN的深度越深，学出来的效果是否越好的问题摆在了研究者们的面前。由于CNN的深度越深，原本就存在的过拟合和梯度消失问题变得越严重。何凯明等人便设计了一种在深度远大于VGG-19，效果也由于VGG-19的网络模型。设$\mathcal{H}(x)$是CNN拟合的函数，$x$表示网络输入。如果假设多个非线性层可以渐近逼近复杂函数并且假设输入和输出尺寸相同，那么就可以假设它们可以渐近逼近残差函数$\mathcal{F}(x)$，即$\mathcal{F}(x)=\mathcal{H}(x)− x$。因此，ResNet没有让网络直接拟合$\mathcal{H}(x)$，而是明确地让这些层近似为残差函数$\mathcal{F}(x)=\mathcal{H}(x)-x$。 因此，原始函数变为$\mathcal{F}(x)+x$。尽管两种形式都应能够渐近地逼近所需的功能（如假设），但是近似拟合残差函数要容易得多。另外，为了表示加号，残差单元中通常加入跳接操作。
+%以上便是CNN的一般结构和工作原理，由于ResNet-18在本文提出的方法充当重要角色，下面将详细介绍ResNet模型。随着VGG-19~\cite{simonyan2014very}的出现，一个CNN的深度越深，学出来的效果是否越好的问题摆在了研究者们的面前。由于CNN的深度越深，原本就存在的过拟合和梯度消失问题变得越严重。何凯明等人便设计了一种在深度远大于VGG-19，效果也由于VGG-19的网络模型。设$\mathcal{H}(x)$是CNN拟合的函数，$x$表示网络输入。如果假设多个非线性层可以渐近逼近复杂函数并且假设输入和输出尺寸相同，那么就可以假设它们可以渐近逼近残差函数$\mathcal{F}(x)$，即$\mathcal{F}(x)=\mathcal{H}(x)− x$。因此，ResNet没有让网络直接拟合$\mathcal{H}(x)$，而是明确地让这些层近似为残差函数$\mathcal{F}(x)=\mathcal{H}(x)-x$。 因此，原始函数变为$\mathcal{F}(x)+x$。尽管两种形式都应能够渐近地逼近所需的功能（如假设），但是近似拟合残差函数要容易得多。另外，为了表示加号，残差单元中通常加入跳接操作。
 
-设$\boldsymbol{X}_l$表示第$l$个残差单元的输入，$\boldsymbol{W}_{l}=\{\boldsymbol{W}_{l,k}|_{1\leq k \leq K}\}$表示第$l$个残差单元的权重，$K$表示残差单元个数。则相邻的残差单元输入$\boldsymbol{X}_{l+1}$可以表示为：
-\begin{gather*}
-	\boldsymbol{Y}_{l}=\boldsymbol{X}_l + \mathcal{F}(\boldsymbol{X}_l, \boldsymbol{W}_l), \\
-	\boldsymbol{X}_{l+1}=f(\boldsymbol{Y}_{l}).
-\end{gather*}
-其中$f$表示激活函数，$\mathcal{F}(\boldsymbol{X}_l, \boldsymbol{W}_l)$表示残差单元中的卷积操作。如果$f$表示恒等变换，则$\boldsymbol{X}_{l+1}=\boldsymbol{Y}_{l}$，有：
-\begin{equation*}
-	\boldsymbol{X}_{l+1}=\boldsymbol{X}_l + \mathcal{F}(\boldsymbol{X}_l, \boldsymbol{W}_l).
-\end{equation*}
-对于任意第$L(L\ge l)$个残差单元，其输入$\boldsymbol{X}_{L}$，可写为：
-\begin{equation}\label{equ:residual_block_compute}
-\boldsymbol{X}_{L}=\boldsymbol{X}_l + \sum_{i=l}^{L-1}\mathcal{F}(\boldsymbol{X}_i, \boldsymbol{W}_i).
-\end{equation}
-设损失函数为$\boldsymbol{\varepsilon}$，根据等式\ref{equ:residual_block_compute}和反向梯度传播算法的链式求导法有：
-\begin{equation}\label{residual_block_gradient}
-\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_l}=\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}\frac{\partial \boldsymbol{X}_L}{\partial \boldsymbol{X}_l}=\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}(1+\frac{\partial}{\partial \boldsymbol{X}_l}\sum_{i=l}^{L-1}\mathcal{F}(\boldsymbol{X}_i,\boldsymbol{W}_i)).
-\end{equation}
-等式\ref{residual_block_gradient}表明，梯度$\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_l}$由$\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}$和$\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}\frac{\partial}{\partial \boldsymbol{X}_l}\sum_{i=l}^{L-1}\mathcal{F}(\boldsymbol{X}_i,\boldsymbol{W}_i)$两项组成。第一项在可直接传播信息而与任意残差单元无关。而第二项保证信息直接回传到上一个残差单元。由于第一项的存在，等式\ref{residual_block_gradient}还能保证每一层梯度不容易消失，即使在残差单元权重很小的情况下。ResNet具有优异性能，深度达到上千层仍不会发生梯度消失现象。
+%设$\boldsymbol{X}_l$表示第$l$个残差单元的输入，$\boldsymbol{W}_{l}=\{\boldsymbol{W}_{l,k}|_{1\leq k \leq K}\}$表示第$l$个残差单元的权重，$K$表示残差单元个数。则相邻的残差单元输入$\boldsymbol{X}_{l+1}$可以表示为：
+%\begin{gather*}
+%	\boldsymbol{Y}_{l}=\boldsymbol{X}_l + \mathcal{F}(\boldsymbol{X}_l, \boldsymbol{W}_l), \\
+%	\boldsymbol{X}_{l+1}=f(\boldsymbol{Y}_{l}).
+%\end{gather*}
+%其中$f$表示激活函数，$\mathcal{F}(\boldsymbol{X}_l, \boldsymbol{W}_l)$表示残差单元中的卷积操作。如果$f$表示恒等变换，则$\boldsymbol{X}_{l+1}=\boldsymbol{Y}_{l}$，有：
+%\begin{equation*}
+%	\boldsymbol{X}_{l+1}=\boldsymbol{X}_l + \mathcal{F}(\boldsymbol{X}_l, \boldsymbol{W}_l).
+%\end{equation*}
+%对于任意第$L(L\ge l)$个残差单元，其输入$\boldsymbol{X}_{L}$，可写为：
+%\begin{equation}\label{equ:residual_block_compute}
+%\boldsymbol{X}_{L}=\boldsymbol{X}_l + \sum_{i=l}^{L-1}\mathcal{F}(\boldsymbol{X}_i, \boldsymbol{W}_i).
+%\end{equation}
+%设损失函数为$\boldsymbol{\varepsilon}$，根据等式\ref{equ:residual_block_compute}和反向梯度传播算法的链式求导法有：
+%\begin{equation}\label{residual_block_gradient}
+%\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_l}=\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}\frac{\partial \boldsymbol{X}_L}{\partial \boldsymbol{X}_l}=\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}(1+\frac{\partial}{\partial \boldsymbol{X}_l}\sum_{i=l}^{L-1}\mathcal{F}(\boldsymbol{X}_i,\boldsymbol{W}_i)).
+%\end{equation}
+%等式\ref{residual_block_gradient}表明，梯度$\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_l}$由$\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}$和$\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}\frac{\partial}{\partial \boldsymbol{X}_l}\sum_{i=l}^{L-1}\mathcal{F}(\boldsymbol{X}_i,\boldsymbol{W}_i)$两项组成。第一项在可直接传播信息而与任意残差单元无关。而第二项保证信息直接回传到上一个残差单元。由于第一项的存在，等式\ref{residual_block_gradient}还能保证每一层梯度不容易消失，即使在残差单元权重很小的情况下。ResNet具有优异性能，深度达到上千层仍不会发生梯度消失现象。
 \subsection{编码器-解码器}
 \begin{figure}[h]
 	\centering
@@ -85,11 +85,11 @@ CNN便可以很好避免多层感知机存在的问题，卷积操作可以很�
 \end{equation*}
 \noindent 以上朴素GAN中生成网络和判别网络均是多层感知机。在实际训练过程中参数过大，训练难度较大的问题，因而训练不稳定，经常训练失败。各种改进模型相继提出，DCGAN~\cite{radford2015unsupervised}利用了CNN强大的拟合能力和容量。针对训练过程中存在的梯度消失问题，WGAN~\cite{gulrajani2017improved}使用Wasserstein-1距离代替GAN~\cite{goodfellow2014generative}中的Jensen-Shannon散度~\cite{arjovsky2017towards}。WGAN-GP~\cite{gulrajani2017improved}更是在WGAN基础上又在GAN损失函数（见等式\ref{equ:gan_loss_func}）中加入了梯度惩罚项（Gradient Penalty），这也是WGAN-GP名字的由来。由于WGAN-GP可以有效避免GAN训练过程中的梯度消失，本文网络模型中GAN采用的就是WGAN-GP，下面进行简单简单介绍。
 
-与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作是二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此也会去掉朴素GAN中判别器最后一层的Sigmoid激活函数。设$p_g$表示给定噪音分布$z\sim p_z$时生成网络所代表的的分布。再加上梯度惩罚项，WGAN-GP的损失函数可写作：
+与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作是二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此也会去掉朴素GAN中判别器最后一层的Sigmoid激活函数。设$p_g$表示给定噪音分布$z\sim p_z$时生成网络所代表的数据分布。再加上梯度惩罚项，WGAN-GP的损失函数可写作：
 \begin{equation}\label{wgan_gp_loss_func}
 \min _{G} \max _{D} V(D, G)=E_{x \sim P_{d a t a}}[D(x)]-E_{x \sim p_{g}}[D(x)]+\lambda E_{\hat{x} \sim p_{\hat{x}}}\left[\left(\left\|\nabla_{\hat{x}} D(\hat{x})\right\|_{2}-1\right)^{2}\right].
 \end{equation}
-其中，$\lambda$为梯度惩罚项的权重，分布$p_{\hat{x}}$不是对整个样本空间采样，而只对分布$p_{data}$和分布$p_{g}$之间的空间采样。与朴素GAN的损失函数相比（见等式\ref{equ:gan_loss_func}）,判别器的损失函数不再取$\log$，这是因为WGAN-GP中不再使用Kullback-Leibler散度和Jensen-Shannon散度。在训练WGAN-GP时，同样$D$和$G$先后交替训练。因此，固定$G$，更新$D$时，等效于最小化损失函数：
+其中，$\lambda$为梯度惩罚项的权重，分布$p_{\hat{x}}$不是对整个样本空间采样，而只对分布$p_{data}$和分布$p_{g}$之间的空间采样。与朴素GAN的损失函数相比（见等式\ref{equ:gan_loss_func}）,判别器的损失函数不再取$\log$，这是因为WGAN-GP中不再使用Kullback-Leibler散度\footnote{https://en.wikipedia.org/wiki/Kullback\%E2\%80\%93Leibler\_divergence}和Jensen-Shannon散度\footnote{https://en.wikipedia.org/wiki/Jensen\%E2\%80\%93Shannon\_divergence}。在训练WGAN-GP时，同样$D$和$G$先后交替训练。因此，固定$G$，更新$D$时，等效于最小化损失函数：
 \begin{gather*}
 \tilde{{x}} = G_{}({z}), \\
 D(\tilde{{x}})-D({x})+\lambda\left(\left\|\nabla_{\hat{x}} D(\hat{x})\right\|_{2}-1\right)^{2}.
@@ -98,11 +98,11 @@ D(\tilde{{x}})-D({x})+\lambda\left(\left\|\nabla_{\hat{x}} D(\hat{x})\right\|_{2
 \begin{equation*}
 -D\left(G(z)\right).
 \end{equation*}
-通过实验证明，WGAN-GP在训练过程中不仅梯度较为稳定，不易发生梯度消失现象。另外，Wasserstein-1距离还有指示WGAN-GP训练效果的作用，Wasserstein-1距离越大，表示WGAN-GP训练得越好，使得训练过程易于理解。
+通过实验证明，WGAN-GP在训练过程中不仅梯度较为稳定，不易发生梯度消失现象。另外，Wasserstein-1距离还对训练过程有指示作用，Wasserstein-1距离越接近0，表示WGAN-GP训练得越好，使得训练过程具有语义性、更加易于理解。
 \section{疾病标记物定位方法}
-随着计算机计算在医学影像领域的广泛应用，目前已有可用于疾病标记物定位的模型提出，主要包括MIL~\cite{maron1998framework}和CNN可视化方法~\cite{zhou2016learning, selvaraju2017grad}。本小节将对其中的经典方法进行详细介绍，并比较方法之间的优劣，以便于读者对这些方法有清晰的认识与理解。
+随着计算机计算在医学影像领域的广泛应用，目前已有可用于疾病标记物定位的方法提出，主要有多示例学习（Multiple Instance Learning，缩写为MIL）、CNN可视化和弱监督目标定位。本小节将选取部分经典方法进行详细介绍，重点突出这些方法处理疾病标记物定位任务的优势和劣势，力求读者对这些方法有全面而又清晰的理解与认识。
 \subsection{多示例学习}
-MIL由Maron由等人~\cite{maron1998framework}提出，是一种与监督学习、半监督学习和非监督学习有所不同的不确切监督，也可用于处理弱监督问题。在MIL中，是以多示例包（Bag）为训练单元，训练集由一组具有分类标签（Label）多示例包组成，每个多示例包含有若干个没有分类标签的示例（Instance）。如果多示例包至少含有一个正示例，则该包被标记为正类多示例包（正包）。如果多示例包的所有示例都是负示例，则该包被标记为负类多示例包（负包）。设$\boldsymbol{X}=\{\boldsymbol{x_1,x_2,...,x_N}\}$为示例$\boldsymbol{x_1}$，$\boldsymbol{x_2}$，...，$\boldsymbol{x_N}$的特征向量集合组成的包，记示例$\boldsymbol{x_1}$，$\boldsymbol{x_2}$，...，$\boldsymbol{x_N}$对应的标签为示例$\boldsymbol{y_1}$，$\boldsymbol{y_2}$，...，$\boldsymbol{y_N}$。则包$\boldsymbol{X}$的标签$\boldsymbol{Y}\in \{-1,+1\}$可用形式化语言定义为：
+MIL是由Maron等人~\cite{maron1998framework}提出，是一种与监督学习、半监督学习和非监督学习有所不同的不确切监督，也可用于处理弱监督问题。在医学影像中，MIL方法可通过训练一个二分类器，不仅完成对异常影像的判断任务（异常/正常），还能粗略定位异常影像中的显著性区域（即待选疾病标记物）。因此，MIL方法可解决医学影像领域中的诸多问题，比如，眼底图像中的视网膜神经纤维分割~\cite{manivannan2017subcategory}和数字病理图像中的癌症诊断~\cite{kandemir2014empowering}。MIL中是以多示例包（Bag）为训练单元，训练集由许多具有分类标签（Label）的多示例包组成，每个多示例包含有若干个没有分类标签的示例（Instance）。如果多示例包至少含有一个正示例，则该包被标记为正类多示例包（正包）。如果多示例包的所有示例都是负示例，则该包被标记为负类多示例包（负包）。设$\boldsymbol{X}=\{\boldsymbol{x_1,x_2,...,x_N}\}$，其中每一个$\boldsymbol{x}_i$均是从图像中相应第$i$个区域中提取出来的特征向量，$\boldsymbol{N}$是图像被分割出的区域（示例）个数。拿二类问题来说，设示例$\boldsymbol{x_1}$，$\boldsymbol{x_2}$，...，$\boldsymbol{x_N}$对应的标签为示例$\boldsymbol{y_1}$，$\boldsymbol{y_2}$，...，$\boldsymbol{y_N}$。则包$\boldsymbol{X}$的标签$\boldsymbol{Y}\in \{-1,+1\}$可用形式化语言定义为：
 \begin{equation}
 \boldsymbol{Y}=\left\{\begin{array}{ll}
 {+1} & {\text { if } \quad \exists y_{i}: y_{i}=+1;} \\
@@ -110,7 +110,7 @@ MIL由Maron由等人~\cite{maron1998framework}提出，是一种与监督学习�
 \end{array}\right.
 \end{equation}
 
-\noindent 多示例学习的目的是，通过对具有分类标签的多示例包的学习，建立多示例分类器，并将该分类器应用于未知多示例包的预测。在图像处理问题中，可以从图像中提取许多小的图像块作为其示例，将整张图像看作包，这在诸如没有细粒度标记训练数据的感兴趣区域定位的任务中特别有用，比如本文研究的弱监督条件下的疾病标记物定位任务。具体来说，可将标签为异常的图像记为正例，标签为正常的图像记为负例，再利用数据增强来训练MIL二分类器，将细粒度的疾病标记物定位任务转化为感兴趣区域定位任务。用MIL处理图像分割也是如此。尽管如此，与其在算法和应用上的繁荣发展相反，因为分析的难度太大以及示例标签的不稳定性，多示例学习的理论研究成果~\cite{gondra2014object, wu2015deep}非常少。
+\noindent 多示例学习的目的是，通过对具有分类标签的多示例包的学习，建立多示例分类器，并将该分类器应用于未知多示例包的预测。在处理医学图像时，给定一张医学影像，根据MIL思想，将单张影像看作一个示例包，再对单张影像进行分块操作得到许多小方块，再将这些小方块看作一个个示例。从而将问题转化为在示例包标签已知情况下，找出示例（待选区域）的标签，最终将其中置信度最高的异常示例看作是疾病标记物定位结果。这在诸如没有细粒度标记训练数据的感兴趣区域定位的任务中特别有用。但是这种方法存在诸多缺点，首先对单张图像进行分块不易操作，分块尺寸过大时，精确度不够，小方块尺寸过大，很可能会包括较多正常区域；当分块尺寸过小时，小方块尺寸过小，会产生过多示例，大大增大后续训练的计算复杂度和计算量。因此，MIL方法只适合用于粗略定位图像中的目标物（例如，疾病标记物）。另外，当处理多类问题时，示例包就会出现多标签，使得问题的复杂度大大增加。因此，与其在算法和应用上的繁荣发展相反，因为分析的难度太大以及示例标签的不稳定性，近些年来，这种思路少有人问津，多示例学习的理论研究成果~\cite{gondra2014object, wu2015deep,Maron1998MultipleInstanceLF}也非常少。
 
 \subsection{卷积神经网络的可视化}\label{subsec:visulization_methods}
 CNN在从语音识别到自主系统的本地化和映射等大规模任务中的取得相当大的成就，使其成为先进的人工智能系统中最受欢迎的工具。尽管只能将成功的部分原因归功于这种网络的训练过程中算法的进步，但是学习过程和所学内容的内在性仍然很模糊，即CNN一直是个“黑匣子”，我们始终不知道其内部运行机制，更无法得知其作出判断的背后依据。然而，CNN所做决定的依据很多时候与所做决定同样重要，比如，在医学领域，如果专业医师看不到人工智能系统给出诊断方法，专业医师也就无法接受人工智能系统所给提出的对患者的治疗方案。因此，我们需要有一种方式了解导致CNN失败或成功的原因。如果我们无法解释模型的工作原理，我们如何信任模型的结果？这是一个合理的问题。更重要的是，较差的网络可解释性极大地阻碍了对各个网络层的鲁棒性评估，进一步优化网络结构，以及对不同应用的网络适应性和可移植性，这也是CNN的可视化需要回答的直接动力和实际意义。
@@ -219,10 +219,34 @@ M_{c}(x, y)=\sum_{k} w_{k}^{c} \alpha_{k}^c(x, y).
 \begin{equation*}
 x^{*}=\underset{x}{\operatorname{argmin}}\left(C \cdot \mathcal{L}\left(A(x), A\left(x_{0}\right)\right)-\lambda(x)\right).
 \end{equation*}
-其中，$\mathcal{L}$是计算输入特定层前后的特征图$A(x_0)$和$A(x)$的损失函数，$\lambda(x)$是正则项，$C$是调节损失函数和正则项的超参数。为了让重建图像更像自然图像，$\lambda(x)$可取$2$2-范数、全变差范数（Total Variation Norm）~\cite{rudin1992nonlinear}等。其中，全变差范数可让重建图像更为平滑，较低的锐度。与激活最大化方法~\cite{simonyan2013deep}相同的是，网络逆转方法也是通过重建输入图像来查看网络层对那些像素或者图像模式更为敏感，但是网络逆转方法可应用到网络任意层，而不限于网络第一层，因而泛化性更强。
-\subsubsection{本节小结}\label{subsec:related_work_summary}
-以上介绍了可用于在弱监督条件下完成疾病标记物定位任务的已有方法，包括MIL和卷积神经网络可视化方法，其中也不乏优秀精巧的模型，例如MIL、反卷积网络、CAM、Grad-CAM，但是这些方法的共同劣势在于无法实现像素级的精确定位。一方面，这些方法最初设计本身就不是为了解决疾病标记物定位问题；另一方面，当这些方法被运用到在弱监督条件下疾病标记物定位任务上时，这些方法背后的实现原理决定了其无法实现精确的像素级定位，而只能定位到某个区域或者疾病标记物所聚集的超像素。比如MIL需要将整张图片看做一个包，因此图像的一个个区域被看做一个个示例。对于CAM和Grad-CAM，由于特征图的尺寸随着卷积操作的不断堆叠而逐渐减小，因此可视化的特征图和原图之间的尺寸之间便存在一个“间隙”，导致需要上采样操作来填上尺寸上的“间隙”，导致了可视化结果区域往往呈片状。在自然图像中，则表现为，除了图像目标物（猫、狗等）外，目标物的周围物体或者区域也被高亮标出（见图\ref{fig:cam_example}和图\ref{fig:grad_cam_example}中的CAM和Grad-CAM实验结果示例）。虽然尺寸上的“间隙”，Grad-CAM可以通过可视化浅层特征图来在一定程度上缓解，但是终究无法彻底解决，这导致了这些方法在完成弱监督条件下疾病标记物定位时的不精确的定位结果。当将CAM和Grad-CAM应用到医学影像领域时，由于可视化通常只会高亮激活值最大、对分类结果最为重要的图像特征或者模式，而疾病标记物很多时候并不是只出现一处，更多的是多处会同时出现，这也导致很多患病区域尤其是较小、不够显眼的患病区域很难通常卷积神经网络的可视化检测甚至定位出来（相关实验验证见第\ref{sec:experiments}、\ref{sec:multi_classes}章）。综上所述，在弱监
-督条件下，一种更为精确、更为全面的处理疾病标记物定位的新方法亟待提出，这也是本文所有工作的根本出发点。
+其中，$\mathcal{L}$是计算输入特定层前后的特征图$A(x_0)$和$A(x)$的损失函数，$\lambda(x)$是正则项，$C$是调节损失函数和正则项的超参数。为了让重建图像更像自然图像，$\lambda(x)$可取$2$-范数、全变差范数（Total Variation Norm）~\cite{rudin1992nonlinear}等。其中，全变差范数可让重建图像更为平滑，较低的锐度。与激活最大化方法~\cite{simonyan2013deep}相同的是，网络逆转方法也是通过重建输入图像来查看网络层对那些像素或者图像模式更为敏感，但是网络逆转方法可应用到网络任意层，而不限于网络第一层，因而泛化性更强。
+
+如果将这些CNN的可视化方法用于定位疾病标记物，可通过可视化图像区域，将CNN分类器在预测图像类别时重点关注的区域看作是疾病标记物。其中，扰动方法~\cite{zintgraf2017visualizing}对每个可能的局部区域进行遮挡或遮罩，并检查分类器输出的变化，输出的下降量越大，说明在预测图像类时的重要性越高。相比之下，特征激活方法则是在特定卷积层输出的特征映射中，根据激活区域来定位重要的局部区域，如流行的类激活映射(CAM~\cite{zhou2016learning})及其变体Grad-CAM~\cite{selvaraju2017grad}等。近年来，基于CAM的方法在医学图像分析中得到了广泛的应用，如胸部X线图像~\cite{rajpurkar2017chexnet}中肺炎的检测、数字病理图像~\cite{zhang2017mdnet}中膀胱癌的预测、眼底图像中糖尿病视网膜病变异常区域定位~\cite{Gondaletal17}、MRI图像~\cite{yang2018visual}中阿尔茨海默病的诊断等。与CAM和Grad-CAM同样作为一种可视化方法，特征图方法~\cite{simonyan2013deep}利用CNN中的梯度信息计算输入图像中的像素点对图像分类结果的重要性分数。在医学影像处理领域中，该方法可用于解决多通道脑部MRI图像中的肿瘤检测~\cite{banerjee2016novel}、脑部MRI图像中的肿瘤体积检测~\cite{mitra2017volumetric}、皮肤镜图像中的异常分割~\cite{jahanifar2018supervised}等诸多问题。
+
+然而，与MIL一样，扰动方法和遮挡方法均是从图像中取块，将最可能是异常的块看作是疾病标记物，而疾病标记物往往是形状不规则，大小各异的，因而很难实现疾病标记物的精确定位。对于特征激活方法和特征图方法，由于在连续卷积作用下特征图通常会不断缩小，因此为了定位到疾病标记物，往往需要将卷积输出响应上采样到输入图像尺寸大小。不难想象，采样倍数越大，疾病标记物的定位越粗糙。故以上方法都只能粗略定位疾病标记物或病变区域，疾病标记物的精确定位仍是一个有待解决的问题。
+
+\subsection{弱监督目标定位}
+弱监督目标定位任务需要在提供图像级标签的情况下，给出对应类别物体的相关区域。Oquab等人~\cite{Oquab2015IsOL}率先使用CNN描述并解决弱监督目标定位问题，随后一系列运用CNN解决弱监督目标定位问题的方法被提出。在弱监督条件下，解决目标定位任务最常见的思路是利用CNN分类器产生有关于目标位置的监督信号。目标位置的监督信号可以来自于网络本身，还可以由其他方法产生。前者可以理解为一种自监督方法，后者可以利用CAM或者Grad-CAM产生目标的位置信息。另外一种思路与CNN可视化中遮挡实验类似，设计多个网络进行对抗擦除，并采用递归方式生成定位结果，直到分类CNN训练失败。还可以引入注意力机制，指导分类器生成更具判别性区域。近些年来，计算机视觉领域的提出的弱监督目标定位方法也被广泛用于定位医学影像中的异常区域，比如，胸部X射线影像中胸腔疾病病灶定位~\cite{WangPLLBS17}、胎盘超声影像中胎盘异常定位~\cite{Qi2017WeaklySL}、眼底图像中糖尿病性视网膜病变异常区域定位~\cite{GonzlezGonzalo2018ImprovingWL}和X射线胸腔影像中异常区域定位~\cite{Yao2018WeaklySM}。下面选取部分典型方法进行详细介绍。
+
+\subsubsection{生成目标位置的监督信号}
+当CNN分类器能够准确地对输入图像分类时，也就能表明CNN分类器已经能够很好学到各个类别图像中具有判别性的特征或者模式，此时便可以利用CNN产生与类别标签相关的目标物体位置信息，从而引入有关目标物体的监督信号。
+
+Sangheum等人~\cite{2015Hwang}用CNN完成分类任务的同时，用自身CNN产生目标物体的位置信息作为监督信号，借鉴多任务学习思想，同时完成了分类任务和目标定位任务，提出了自迁移学习方法。如图\ref{fig:self_transfer_learning}所示，自迁移学习的损失函数由分类损失和定位损失组成，两者之间设置超参数来平衡权重。在训练的开始阶段，分类网络的损失函数所占权重起着主导作用，因为对于定位器的成功训练，网络权值的初始值是非常重要的，因为定位器位置信息的监督信号由分类器和定位器共享的CNN特征提取器产生，没有训练良好的特征提取器，就无法产生具有判别性的类别相关区域充当监督信号。随着分类器的性能不断提升，CNN特征提取器产生的监督信号也就越来越可靠，此时需要增加定位损失函数的权重。注意，定位器的监督信号是来自CNN特征提取器本身的，这也是此方法称作自迁移学习的原因。
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figure/self_transfer_learning}
+	\caption{自迁移学习网络结构图（以上图像来自于原文）。} 
+	\label{fig:self_transfer_learning}
+\end{figure}
+
+与自迁移学习不同，另外一种思路中位置信息的监督信号来自于其他方法，Kim等人~\cite{Kim_2017_ICCV}提出了一种两阶段训练的方法，使用预训练CNN生成的CAM热图作为抑制掩码，然后将该抑制掩码添加到中间特征图来训练第二个CNN。
+
+\subsubsection{对抗擦除}
+
+\subsection{注意力机制}
+
+\subsection{本节小结}\label{subsec:related_work_summary}
+以上介绍了可用于在弱监督条件下完成疾病标记物定位任务的已有方法，包括MIL和卷积神经网络可视化方法，其中也不乏优秀精巧的模型，例如MIL、反卷积网络、CAM、Grad-CAM，但是这些方法的共同劣势在于无法实现像素级的精确定位。一方面，这些方法最初设计本身就不是为了解决疾病标记物定位问题；另一方面，当这些方法被运用到在弱监督条件下疾病标记物定位任务上时，这些方法背后的实现原理决定了其无法实现精确的像素级定位，而只能定位到某个区域或者疾病标记物所聚集的超像素。比如MIL需要将整张图片看做一个包，图像的一个个区域被看做一个个示例。对于CAM和Grad-CAM，由于特征图的尺寸随着卷积操作的不断堆叠而逐渐减小，因此可视化的特征图和原图之间的尺寸之间便存在一个“间隙”，导致需要上采样操作来填上尺寸上的“间隙”，导致了可视化结果区域往往呈片状。在自然图像中，则表现为，除了图像目标物（猫、狗等）外，目标物的周围物体或者区域也被高亮标出（见图\ref{fig:cam_example}和图\ref{fig:grad_cam_example}中的CAM和Grad-CAM实验结果示例）。虽然尺寸上的“间隙”，Grad-CAM可以通过可视化浅层特征图来在一定程度上缓解，但是终究无法彻底解决，这导致了这些方法在完成弱监督条件下疾病标记物定位时的不精确的定位结果。当将CAM和Grad-CAM应用到医学影像领域时，由于可视化通常只会高亮激活值最大、对分类结果最为重要的图像特征或者模式，而疾病标记物很多时候并不是只出现一处，更多的是多处会同时出现，这也导致很多患病区域尤其是较小、不够显眼的患病区域很难通常卷积神经网络的可视化检测甚至定位出来（相关实验验证见第\ref{sec:experiments}、\ref{sec:multi_classes}章）。综上所述，在弱监督条件下，一种更为精确的定位疾病标记物的新方法亟待提出，这也是本文所有工作的根本出发点。
 \section{评价标准}
 本文衡量实验结果分为定性分析和定量分析，前者主要以可视化方式比较各种方法定位结果和标签，后者主要引入精确率-召回率曲线（Precision-Recall Curve，缩写为P-R Curve）和受试者工作特征曲线（Receiver Operating Characteristic Curve，缩写为ROC Curve）以及对应曲线下的面积（Area Under Curve）作为评价标准。下面分别进行介绍。
 \subsection{受试者工作特征曲线}\label{subsec:roc_curve}
