@@ -115,7 +115,7 @@ MIL是由Maron等人~\cite{maron1998framework}提出，是一种与监督学习�
 \subsection{卷积神经网络的可视化}\label{subsec:visulization_methods}
 CNN在从语音识别到自主系统的本地化和映射等大规模任务中的取得相当大的成就，使其成为先进的人工智能系统中最受欢迎的工具。尽管只能将成功的部分原因归功于这种网络的训练过程中算法的进步，但是学习过程和所学内容的内在性仍然很模糊，即CNN一直是个“黑匣子”，我们始终不知道其内部运行机制，更无法得知其作出判断的背后依据。然而，CNN所做决定的依据很多时候与所做决定同样重要，比如，在医学领域，如果专业医师看不到人工智能系统给出诊断方法，专业医师也就无法接受人工智能系统所给提出的对患者的治疗方案。因此，我们需要有一种方式了解导致CNN失败或成功的原因。如果我们无法解释模型的工作原理，我们如何信任模型的结果？这是一个合理的问题。更重要的是，较差的网络可解释性极大地阻碍了对各个网络层的鲁棒性评估，进一步优化网络结构，以及对不同应用的网络适应性和可移植性，这也是CNN的可视化需要回答的直接动力和实际意义。
 
-CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，有很多研究者提出了解决方法。最简便也是最直接的方法是利用PyTorch\footnote{https://pytorch.org/}、TensorFlow\footnote{https://www.tensorflow.org/}等工具直接观察其网络结构可视化图，查看卷积核大小、输入和输出特征图尺寸、卷积层参数等相关信息。除此之外，还能通过t-SNE方法~\cite{maaten2008visualizing}对图像的特征向量进行降维操作，以在低维空间中查看数据的宏观分布。另一种可视化技术是获取大型数据集，通过网络输入图像，并跟踪哪些图像最大程度地激活了某些神经元。然后，我们可以将图像可视化，以了解神经元在其感受野中正在寻找什么。Girshick等人~\cite{girshick2014rich}提出了这样一种可视化技术，用于精确的对象检测和语义分割。这种方法的一个问题是ReLU神经元本身不一定具有任何语义，只有输入特征图沿着沿着与过滤器权重相对应轴方向的可视化结果。不需要专门去获取大型数据集，Zeiler等人提出的方法可以更为直接的了解到神经元真正感兴趣的区域或者物体，通过依次遮挡图像每一部分来绘制感兴趣类别的概率与遮挡物位置的关系图。以上可视化方法主要关注与低层特征。随着CNN的快速发展和实现，可视化已被扩展到解释CNN的整体工作机制。在表\ref{tab:typical_visualization_methods}中，回顾了四类有代表性的可视化方法如图\ref{tab:typical_visualization_methods}所示，下面再分别进行介绍。
+CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，有很多研究者提出了解决方法。最简便也是最直接的方法是利用PyTorch\footnote{https://pytorch.org/}、TensorFlow\footnote{https://www.tensorflow.org/}等工具直接观察其网络结构可视化图，查看卷积核大小、输入和输出特征图尺寸、卷积层参数等相关信息。除此之外，还能通过t-SNE方法~\cite{maaten2008visualizing}对图像的特征向量进行降维操作，以在低维空间中查看数据的宏观分布。另一种可视化技术是获取大型数据集，通过网络输入图像，并跟踪哪些图像最大程度地激活了某些神经元。然后，我们可以将图像可视化，以了解神经元在其感受野中正在寻找什么。Girshick等人~\cite{girshick2014rich}提出了这样一种可视化技术，用于精确的对象检测和语义分割。这种方法的一个问题是ReLU神经元本身不一定具有任何语义，只有输入特征图沿着沿着与过滤器权重相对应轴方向的可视化结果。不需要专门去获取大型数据集，Zeiler等人提出的方法可以更为直接的了解到神经元真正感兴趣的区域或者物体，通过依次遮挡图像每一部分来绘制感兴趣类别的概率与遮挡物位置的关系图。以上可视化方法主要关注与低层特征。随着CNN的快速发展和实现，可视化已被扩展到解释CNN的整体工作机制。表\ref{tab:typical_visualization_methods}回顾了三类有代表性的可视化方法。
 \begin{table}[h]
 	% reference: https://arxiv.org/pdf/1804.11191.pdf
 	\centering
@@ -125,7 +125,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 		\toprule[2pt]
 		方法原理 & 解释粒度 & 代表工作 \\ \midrule[2pt]
 		激活最大化 & 神经元  & Simonyan等人~\cite{simonyan2013deep}  \\\hline
-		反卷积网络 & 网络层  & Zeiler等人~\cite{zeiler2014visualizing, zeiler2010deconvolutional, zeiler2011adaptive} \\\hline
+		%反卷积网络 & 网络层  & Zeiler等人~\cite{zeiler2014visualizing, zeiler2010deconvolutional, zeiler2011adaptive} \\\hline
 		基于梯度 &  神经元 & Selvaraju等人~\cite{selvaraju2017grad}，Springenberg等人~\cite{springenberg2014striving} \\  \hline
 		网络逆转 & 网络层 &Mahendran等人~\cite{mahendran2015understanding, mahendran2016visualizing}，Dosovitskiy等人~\cite{dosovitskiy2016inverting}\\
 		\bottomrule[2pt]
@@ -142,17 +142,18 @@ x^{*}=\underset{x}{\operatorname{argmax}}\left(a_{i, l}(\theta, x)-\lambda(x)\ri
 \arg \max _{x} S_{c}(x)-\lambda\|x\|_{2}^{2}.
 \end{equation*}
 注意，$S_{c}(x)(0\leq S_{c}(x) \leq 1)$是经过Softmax激活函数得到的类别分数。此类方法通常都会固定网络参数，只是不断更新类别图像$x$，从而合成具有特定模式的输入图像，还能得到类别$c$的原型图。
-\subsubsection{反卷积网络}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=1.0\textwidth]{figure/deconvnet_architecture}
-	\caption{DeconvNet模型结构图（图片来自于原文）。}
-	\label{fig:deconvnet_architecture}
-\end{figure}
-激活最大化方法从最大化特定神经元的激活来解释CNN。反卷积网络（DeconvNet）~\cite{zeiler2014visualizing, zeiler2010deconvolutional, zeiler2011adaptive}从输入图像的角度解释了CNN。它从输入图像中找到激活卷积层中特定神经元的选择性模式。通过将低维神经元的特征图逐层映射回原始图像尺寸来重建图像。这个投影这个过程由反卷积网络实现，这种网络包含反卷积层、反池化层、反ReLU激活函数等逆运算。基于DeconvNet的可视化并不仅仅是分析神经元的兴趣，而是展示了一种直接的特征分析方法。DeconvNet模型结构图如图\ref{fig:deconvnet_architecture}所示，可以发现，DeconvNet是CNN网络的逆过程，CNN中存在的操作在DeconvNet中均有对应逆操作。DeconvNet将图片特征从特征空间转化到像素空间，以发现是哪些像素激活了特定的特征，达到分析解释CNN的目的。另外，用DeconvNet还有可用于可视化一个已经训练好的网络模型，无须没有学习训练的优点。所以DeconvNet使用起来比较简单。
 
-\subsubsection{基于梯度的方法}\label{subsec:gradient_based_methods}
-梯度是CNN中非常重要的概念，CNN在前向传播阶段计算损失。回传的过程，实质上是梯度的计算和回传的过程，从而更新网络参数。不难理解，流过神经元的梯度越大，则代表前向传播时该神经元激活值越大，进而说明该神经元越重要。基于梯度的网络可视化方法就是充分利用CNN中流动的梯度，从梯度角度来解释每一个神经元在网络中所起到的作用，相对上述反卷积网络和激活最大化方法，基于梯度的方法可得到更为精细的可视化结果。另外，由于CNN每一层均有梯度，因而通常基于梯度的方法还更为灵活，可以实现位于任意层的任意神经元的可视化。在本小节，我们将介绍常见的两种方法：Guided-Backpropagation~\cite{springenberg2014striving}和Grad-CAM~\cite{selvaraju2017grad}。
+%\subsubsection{反卷积网络}
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=1.0\textwidth]{figure/deconvnet_architecture}
+%	\caption{DeconvNet模型结构图（图片来自于原文）。}
+%	\label{fig:deconvnet_architecture}
+%\end{figure}
+%激活最大化方法从最大化特定神经元的激活来解释CNN。反卷积网络（DeconvNet）~\cite{zeiler2014visualizing, zeiler2010deconvolutional, zeiler2011adaptive}从输入图像的角度解释了CNN。它从输入图像中找到激活卷积层中特定神经元的选择性模式。通过将低维神经元的特征图逐层映射回原始图像尺寸来重建图像。这个投影这个过程由反卷积网络实现，这种网络包含反卷积层、反池化层、反ReLU激活函数等逆运算。基于DeconvNet的可视化并不仅仅是分析神经元的兴趣，而是展示了一种直接的特征分析方法。DeconvNet模型结构图如图\ref{fig:deconvnet_architecture}所示，可以发现，DeconvNet是CNN网络的逆过程，CNN中存在的操作在DeconvNet中均有对应逆操作。DeconvNet将图片特征从特征空间转化到像素空间，以发现是哪些像素激活了特定的特征，达到分析解释CNN的目的。另外，用DeconvNet还有可用于可视化一个已经训练好的网络模型，无须没有学习训练的优点。所以DeconvNet使用起来比较简单。
+
+\subsubsection{基于梯度}\label{subsec:gradient_based_methods}
+梯度是CNN中非常重要的概念，CNN在前向传播阶段计算损失。回传的过程，实质上是梯度的计算和回传的过程，从而更新网络参数。不难理解，流过神经元的梯度越大，则代表前向传播时该神经元激活值越大，进而说明该神经元越重要。基于梯度的网络可视化方法就是充分利用CNN中流动的梯度，从梯度角度来解释每一个神经元在网络中所起到的作用，相对上述激活最大化方法，基于梯度的方法可得到更为精细的可视化结果。另外，由于CNN每一层均有梯度，因而通常基于梯度的方法还更为灵活，可以实现位于任意层的任意神经元的可视化。在本小节，我们将介绍常见的两种方法：Guided-Backpropagation~\cite{springenberg2014striving}和Grad-CAM~\cite{selvaraju2017grad}。
 
 Guided-Backpropagation用带步长的卷积层（如步长为2，卷积核为$3\times 3$的卷积层也可达到输入尺寸减半的效果）代替池化操作。另外，对于ReLU反向传播，与一般梯度回传法则\footnote{https://en.wikipedia.org/wiki/Backpropagation}不同的是，Guided-Backpropagation组合了DeconvNet和一般梯度回传的ReLU函数梯度计算法则，使得Guided-Backpropagation不仅可以得到更为精细、细节更为丰富的可视化结果，还能可视化高层的特征（在这种情况下，DeconvNet可视化经常会失效）。
 
@@ -162,24 +163,26 @@ Guided-Backpropagation用带步长的卷积层（如步长为2，卷积核为$3\
 	\caption{CAM网络结构示意图（图片来自于原文）。}
 	\label{fig:cam_arichitecture}
 \end{figure}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=1.0\textwidth]{figure/cam_example}
-	\caption{CAM可视化效果图示例（图片来自于原文）。}
-	\label{fig:cam_example}
-\end{figure}
+
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=1.0\textwidth]{figure/cam_example}
+%	\caption{CAM可视化效果图示例（图片来自于原文）。}
+%	\label{fig:cam_example}
+%\end{figure}
+%\vspace{-1.5cm}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/grad_cam_architecture}
 	\caption{Grad-CAM流程图（图片来自于原文）。}
 	\label{fig:grad_cam_architecture}
 \end{figure}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=1.0\textwidth]{figure/grad_cam_example}
-	\caption{Grad-CAM可视化效果图示例（图片来自于原文）。} 
-	\label{fig:grad_cam_example}
-\end{figure}
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=1.0\textwidth]{figure/grad_cam_example}
+%	\caption{Grad-CAM可视化效果图示例（图片来自于原文）。} 
+%	\label{fig:grad_cam_example}
+%\end{figure}
 另外一种基于梯度，应用极为广泛的可视化方式是Grad-CAM，由于Grad-CAM是基于CAM的。在此，先来介绍CAM。如图\ref{fig:cam_arichitecture}所示，全局均值池化（Global Average Pooling，缩写为GAP）输出最后一个卷积层每个单元的特征图的空间平均值，这些值的加权和用于生成最终输出。同样，我们计算最后一个卷积层的特征图的加权和，便可以得到类激活图（Class Activation Map）。下面我们以分类问题为例进行更为详细的描述（假设最后一层激活函数Softmax）。对于给定的图像，令$f_k(x, y)$表示激活空间位置最后一个卷积层中第$k$个特征图的$(x,y)$位置的激活值。对于第$k$个特征图执行GAP，则GAP结果$F_k=\sum_{x, y} f_{k}(x,y)$。因此，对于类别$c$，被送到softmax激活函数的输入$S_c=\sum_{k} w_{k}^{c} F_{k}$，其中$w_k^c$是对应于第$k$个特征的类别$c$的权重。实质上，$w_{k}^{c}$表示第$k$个特征图对于类别$c$的重要性。故类别$c$经过Softmax激活函数输出$P_c$可定义为$
 P_c=\frac{\exp \left(S_{c}\right)}{\sum_{c} \exp \left(S_{c}\right)}$。根据以上定义，我们可以作出如下推导： 
 \begin{equation*}
@@ -189,7 +192,7 @@ S_{c}=\sum_{k} w_{k}^{c} \sum_{x, y} f_{k}(x, y)=\sum_{x, y} \sum_{k} w_{k}^{c} 
 \begin{equation}\label{equ:cam_heatmap_compute}
 M_{c}(x, y)=\sum_{k} w_{k}^{c} f_{k}(x, y).
 \end{equation}
-故$S_{c}=\sum_{x,y} M_{c}(x, y)$。不难发现，$M_{c}(x, y)$直接表明了空间位置$(x,y)$处的激活值对于该图像被分为类别$c$的重要性程度。可视化效果图示例可参见图\ref{fig:cam_example}。CAM在网络最后一层是GAP的情况下方能使用，例如，CAM不能实现对VGG网络的可视化。为此，Grad-CAM计算类激活图的特征加权系数不是分类器的权值，而是通过反向传播计算的梯度得到的，从而将CAM扩展到任何CNN。Grad-CAM与CAM相比，它的优点是适用的范围更广，不像CAM要求最后一层是GAP，Grad-CAM对各类结构，各种任务都可以使用。这两种方法也可以应用于进行弱监督下的目标检测，而本文将用这两种方法完成弱监督下的疾病标记物定位。另外，Grad-CAM还能与Guided-Backpropagation结合，相比于Guided-Backpropagation，可视化结果不仅更为准确，还更为精细（见图\ref{fig:grad_cam_architecture}最左侧Guided-Grad-CAM）。下面对Grad-CAM模型进行详细描述，其流程图如图\ref{fig:grad_cam_architecture}所示。设CNN输出类别$c$的分数为$y_c$（在送入Softmax激活函数之前）。假设网络最后一层卷积层后是GAP。设$\frac{\partial y^{c}}{\partial A^{k}}$为$y_c$回传到特征激活图$A^{k}$处的梯度，设$A^{k}$的宽为$w$，高为$h$。则在特征激活图$A^{k}$的重要性权重$\alpha_{k}^{c}$可定义为：
+故$S_{c}=\sum_{x,y} M_{c}(x, y)$。不难发现，$M_{c}(x, y)$直接表明了空间位置$(x,y)$处的激活值对于该图像被分为类别$c$的重要性程度。CAM在网络最后一层是GAP的情况下方能使用，例如，CAM不能实现对VGG网络的可视化。为此，Grad-CAM计算类激活图的特征加权系数不是分类器的权值，而是通过反向传播计算的梯度得到的，从而将CAM扩展到任何CNN。Grad-CAM与CAM相比，它的优点是适用的范围更广，不像CAM要求最后一层是GAP，Grad-CAM对各类结构，各种任务都可以使用。这两种方法也可以应用于进行弱监督下的目标检测，而本文将用这两种方法完成弱监督下的疾病标记物定位。另外，Grad-CAM还能与Guided-Backpropagation结合，相比于Guided-Backpropagation，可视化结果不仅更为准确，还更为精细（见图\ref{fig:grad_cam_architecture}最左侧Guided-Grad-CAM）。下面对Grad-CAM模型进行详细描述，其流程图如图\ref{fig:grad_cam_architecture}所示。设CNN输出类别$c$的分数为$y_c$（在送入Softmax激活函数之前）。假设网络最后一层卷积层后是GAP。设$\frac{\partial y^{c}}{\partial A^{k}}$为$y_c$回传到特征激活图$A^{k}$处的梯度，设$A^{k}$的宽为$w$，高为$h$。则在特征激活图$A^{k}$的重要性权重$\alpha_{k}^{c}$可定义为：
 \begin{equation}
 \alpha_{k}^{c}=\quad \frac{1}{w·h} \sum_{i}^{w} \sum_{j}^{h} \frac{\partial y^{c}}{\partial A_{i j}^{k}}.
 \end{equation}
@@ -197,7 +200,7 @@ M_{c}(x, y)=\sum_{k} w_{k}^{c} f_{k}(x, y).
 \begin{equation}\label{equ:grad_cam_heatmap_compute}
 M_{c}(x, y)=\sum_{k} w_{k}^{c} \alpha_{k}^c(x, y).
 \end{equation}
-由于在梯度回传阶段，梯度可以回传到任意层，故Grad-CAM可适用于任意层，任意网络结构，比如VGG。另外，从等式\ref{equ:grad_cam_heatmap_compute}可以看出，Grad-CAM是CAM的泛化和推广。因为梯度可以回传到网络浅层（特征图尺寸相对较大），上采样倍数相对较小，所以一般来说，Grad-CAM可视化相较于CAM可视化效果在热图上更为准确（参见图\ref{fig:grad_cam_example}：Grad-CAM可视化效果图示例）。
+由于在梯度回传阶段，梯度可以回传到任意层，故Grad-CAM可适用于任意层，任意网络结构，比如VGG。另外，从等式\ref{equ:grad_cam_heatmap_compute}可以看出，Grad-CAM是CAM的泛化和推广。因为梯度可以回传到网络浅层（特征图尺寸相对较大），上采样倍数相对较小，所以一般来说，Grad-CAM可视化相较于CAM可视化效果在热图上更为准确。
 %\begin{figure}[h!] % image examples & compare
 %	\begin{subfigure}{0.45\textwidth}
 %		\centering
@@ -223,15 +226,12 @@ x^{*}=\underset{x}{\operatorname{argmin}}\left(C \cdot \mathcal{L}\left(A(x), A\
 
 如果将这些CNN的可视化方法用于定位疾病标记物，可通过可视化图像区域，将CNN分类器在预测图像类别时重点关注的区域看作是疾病标记物。其中，扰动方法~\cite{zintgraf2017visualizing}对每个可能的局部区域进行遮挡或遮罩，并检查分类器输出的变化，输出的下降量越大，说明在预测图像类时的重要性越高。相比之下，特征激活方法则是在特定卷积层输出的特征映射中，根据激活区域来定位重要的局部区域，如流行的类激活映射(CAM~\cite{zhou2016learning})及其变体Grad-CAM~\cite{selvaraju2017grad}等。近年来，基于CAM的方法在医学图像分析中得到了广泛的应用，如胸部X线图像~\cite{rajpurkar2017chexnet}中肺炎的检测、数字病理图像~\cite{zhang2017mdnet}中膀胱癌的预测、眼底图像中糖尿病视网膜病变异常区域定位~\cite{Gondaletal17}、MRI图像~\cite{yang2018visual}中阿尔茨海默病的诊断等。与CAM和Grad-CAM同样作为一种可视化方法，特征图方法~\cite{simonyan2013deep}利用CNN中的梯度信息计算输入图像中的像素点对图像分类结果的重要性分数。在医学影像处理领域中，该方法可用于解决多通道脑部MRI图像中的肿瘤检测~\cite{banerjee2016novel}、脑部MRI图像中的肿瘤体积检测~\cite{mitra2017volumetric}、皮肤镜图像中的异常分割~\cite{jahanifar2018supervised}等诸多问题。
 
-然而，与MIL一样，扰动方法和遮挡方法均是从图像中取块，将最可能是异常的块看作是疾病标记物，而疾病标记物往往是形状不规则，大小各异的，因而很难实现疾病标记物的精确定位。对于特征激活方法和特征图方法，由于在连续卷积作用下特征图通常会不断缩小，因此为了定位到疾病标记物，往往需要将卷积输出响应上采样到输入图像尺寸大小。不难想象，采样倍数越大，疾病标记物的定位越粗糙。故以上方法都只能粗略定位疾病标记物或病变区域，疾病标记物的精确定位仍是一个有待解决的问题。
-
 \subsection{弱监督目标定位}
-弱监督目标定位任务需要在提供图像级标签的情况下，给出对应类别物体的相关区域。Oquab等人~\cite{Oquab2015IsOL}率先使用CNN描述并解决弱监督目标定位问题，随后一系列运用CNN解决弱监督目标定位问题的方法被提出。在弱监督条件下，解决目标定位任务最常见的思路是利用CNN分类器产生有关于目标位置的监督信号。目标位置的监督信号可以来自于网络本身，还可以由其他方法产生。前者可以理解为一种自监督方法，后者可以利用CAM或者Grad-CAM产生目标的位置信息。另外一种思路与CNN可视化中遮挡实验类似，设计多个网络进行对抗擦除，并采用递归方式生成定位结果，直到分类CNN训练失败。还可以引入注意力机制，指导分类器生成更具判别性区域。近些年来，计算机视觉领域的提出的弱监督目标定位方法也被广泛用于定位医学影像中的异常区域，比如，胸部X射线影像中胸腔疾病病灶定位~\cite{WangPLLBS17}、胎盘超声影像中胎盘异常定位~\cite{Qi2017WeaklySL}、眼底图像中糖尿病性视网膜病变异常区域定位~\cite{GonzlezGonzalo2018ImprovingWL}和X射线胸腔影像中异常区域定位~\cite{Yao2018WeaklySM}。下面选取部分典型方法进行详细介绍。
+弱监督目标定位任务需要在提供图像级标签的情况下，给出对应类别物体的相关区域。Oquab等人~\cite{Oquab2015IsOL}率先使用CNN描述并解决弱监督目标定位问题，随后一系列运用CNN解决弱监督目标定位问题的方法被提出。在弱监督条件下，解决目标定位任务最常见的思路是利用CNN分类器产生有关于目标位置的监督信号。目标位置的监督信号可以来自于网络本身，还可以由其他方法产生。前者可以理解为一种自监督方法~\cite{2015Hwang}，后者可以利用CAM或者Grad-CAM产生目标的位置信息~\cite{Kim_2017_ICCV, Krishna2018}。另外一种思路与CNN可视化中遮挡实验类似，设计多个网络进行对抗性擦除~\cite{WeiFLCZY17, ZhangWF0H18}，并采用递归方式生成定位结果，直到分类CNN训练失败。还可以引入注意力机制，指导分类器生成更具判别性区域。
 
 \subsubsection{生成目标位置的监督信号}
-当CNN分类器能够准确地对输入图像分类时，也就能表明CNN分类器已经能够很好学到各个类别图像中具有判别性的特征或者模式，此时便可以利用CNN产生与类别标签相关的目标物体位置信息，从而引入有关目标物体的监督信号。
+当CNN分类器能够准确地对输入图像分类时，也就能表明CNN分类器已经能够很好学到各个类别图像中具有判别性的特征或者模式，此时便可以利用CNN产生与类别标签相关的目标物体位置信息，从而引入有关目标物体位置的监督信号。Sangheum等人~\cite{2015Hwang}用CNN完成分类任务的同时，用自身CNN产生目标物体的位置信息作为监督信号，借鉴多任务学习思想，同时完成了分类任务和目标定位任务，提出了自迁移学习方法。如图\ref{fig:self_transfer_learning}所示，自迁移学习的损失函数由分类损失和定位损失组成，两者之间设置超参数来平衡权重。在训练的开始阶段，分类网络的损失函数所占权重起着主导作用，因为对于定位器的成功训练，网络权值的初始值是非常重要的，因为定位器位置信息的监督信号由分类器和定位器共享的CNN特征提取器产生，没有训练良好的特征提取器，就无法产生具有判别性的类别相关区域充当监督信号。随着分类器的性能不断提升，CNN特征提取器产生的监督信号也就越来越可靠，此时需要增加定位损失函数的权重。注意，定位器的监督信号是来自CNN特征提取器本身的，这也是此方法称作自迁移学习的原因。
 
-Sangheum等人~\cite{2015Hwang}用CNN完成分类任务的同时，用自身CNN产生目标物体的位置信息作为监督信号，借鉴多任务学习思想，同时完成了分类任务和目标定位任务，提出了自迁移学习方法。如图\ref{fig:self_transfer_learning}所示，自迁移学习的损失函数由分类损失和定位损失组成，两者之间设置超参数来平衡权重。在训练的开始阶段，分类网络的损失函数所占权重起着主导作用，因为对于定位器的成功训练，网络权值的初始值是非常重要的，因为定位器位置信息的监督信号由分类器和定位器共享的CNN特征提取器产生，没有训练良好的特征提取器，就无法产生具有判别性的类别相关区域充当监督信号。随着分类器的性能不断提升，CNN特征提取器产生的监督信号也就越来越可靠，此时需要增加定位损失函数的权重。注意，定位器的监督信号是来自CNN特征提取器本身的，这也是此方法称作自迁移学习的原因。
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/self_transfer_learning}
@@ -239,45 +239,88 @@ Sangheum等人~\cite{2015Hwang}用CNN完成分类任务的同时，用自身CNN�
 	\label{fig:self_transfer_learning}
 \end{figure}
 
-与自迁移学习不同，另外一种思路中位置信息的监督信号来自于其他方法，Kim等人~\cite{Kim_2017_ICCV}提出了一种两阶段训练的方法，使用预训练CNN生成的CAM热图作为抑制掩码，然后将该抑制掩码添加到中间特征图来训练第二个CNN。
+与自迁移学习不同，另外一种思路中位置信息的监督信号来自于其他方法，Kim等人~\cite{Kim_2017_ICCV}提出了一种两阶段训练的方法，第一阶段训练CNN分类器，第二阶段固定第一阶段中的CNN分类器，使用预训练CNN生成的与特定类相关的CAM热图作为抑制掩码，然后将该抑制掩码添加到中间特征图来训练第二个CNN，抑制掩码丢掉了第一阶段中认为的最具有判别性的区域，这会强制第二阶段中CNN分类器去学习除第一阶段外的判别性区域或者模式，最终可通过整合两阶段的结果来更加精确定位到目标物的位置，其网络结构如图\ref{fig:cam_based_weakly_supervised_localization}所示。另外，如果再增加额外训练阶段，可得到更加精细的定位效果。Singh等人~\cite{Krishna2018}同样使用了CAM，与Kim等人等人不同的是，他们通过隐藏输入图像中的部分区域（比如，矩形区域）来迫使网络学习专注于对象的多个相关部分，而不是最相关的部分，还可以将噪声（块）注入到输入图像来进一步加强数据增强，并学习更强大、更鲁邦的目标定位网络。
 
-\subsubsection{对抗擦除}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figure/cam_based_weakly_supervised_localization}
+	\caption{利用CAM热图产生抑制掩码的弱监督目标定位网络结构图（以上图像来自于原文）。} 
+	\label{fig:cam_based_weakly_supervised_localization}
+\end{figure}
 
-\subsection{注意力机制}
+\subsubsection{对抗性擦除与注意力机制}
+对抗性擦除最初由等人~\cite{WeiFLCZY17}提出，通过对抗性擦除，分类网络首先为特定图像类别标签挖掘最具区分性的区域。然后从图像中删除已发现的判别性区域，并且对分类网络进行了重新训练，以发现一个新的目标区域以尽量保证不会降低分类性能。他们采用递归方式、多次重复这种对抗性擦除过程，直到分类网络训练失败（可将分类网络训练失败定义为对分类网络的可视化结果性能较差），再将擦除的区域合并为一个完整的前景定位蒙版，其网络模型如图\ref{subfig:adversarial_erasing}所示。由于上述对抗性擦除擦除方法中设置了三个CNN分类器，并且不是端到端训练方式，Zhang等人~\cite{ZhangWF0H18}提出了上述对抗性擦除的改进版本，将这些独立的CNN集成到单个网络中，只需要设置两个CNN分类器，并进行端到端的训练，取得了更为优异的定位性能，其网络结构如图\ref{subfig:improved_adversarial_learning}所示。
+
+\begin{figure}[h!]
+	\centering
+	\begin{subfigure}{0.38\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{figure/adversarial_erasing}
+        \caption{对抗行性擦除弱监督目标定位方法。}
+		\label{subfig:adversarial_erasing}
+	\end{subfigure}
+	%\quad
+	\begin{subfigure}{0.57\textwidth}
+		\centering
+		\includegraphics[width=1.0\textwidth]{figure/improved_adversarial_learning}
+		\caption{改进版本对抗性擦除弱监督目标定位方法。}
+		\label{subfig:improved_adversarial_learning}
+	\end{subfigure}
+	\caption{两种对抗性擦除方法网络结构图（以上图像来自于原文）。}
+	\label{mul_fig:weakly_supervised_localization}
+\end{figure}
+
+注意力机制模仿了生物观察行为的内部过程，注意力机制可以快速提取稀疏数据的重要特征，因而最初被广泛用于自然语言处理任务，特别是机器翻译。Teh等人\cite{BMVC2016_52}将注意力机制用于弱监督目标定位，利用注意力机制产生每个特征图的注意力分数，其数值大小表示特征图的重要性程度，从而让分类器能够专注于与特定类最相关的特征或者模式，而目标定位结果可由特征图的加权平均给出，而权值便是对应特征图的注意力分数，其网络结构如图\ref{fig:attention_weakly_supervised_object_localization}所示。
+\vspace{-0.2cm}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=1.0\textwidth]{figure/attention_weakly_supervised_object_localization}
+	\caption{利用CAM热图产生抑制掩码的弱监督目标定位网络结构图（以上图像来自于原文）。} 
+	\label{fig:attention_weakly_supervised_object_localization}
+\end{figure}
+
+近些年来，计算机视觉领域的提出的弱监督目标定位方法也被广泛用于定位医学影像中的异常区域，比如，胸部X射线影像中胸腔疾病病灶定位~\cite{WangPLLBS17}、胎盘超声影像中胎盘异常定位~\cite{Qi2017WeaklySL}、眼底图像中糖尿病性视网膜病变异常区域定位~\cite{GonzlezGonzalo2018ImprovingWL}、X射线图像中股骨近端骨折的定位~\cite{JimnezSnchez2018WeaklySupervisedLA}和X射线胸腔影像中异常区域定位~\cite{Yao2018WeaklySM, Tang2018AttentionGuidedCL}。
+
 
 \subsection{本节小结}\label{subsec:related_work_summary}
-以上介绍了可用于在弱监督条件下完成疾病标记物定位任务的已有方法，包括MIL和卷积神经网络可视化方法，其中也不乏优秀精巧的模型，例如MIL、反卷积网络、CAM、Grad-CAM，但是这些方法的共同劣势在于无法实现像素级的精确定位。一方面，这些方法最初设计本身就不是为了解决疾病标记物定位问题；另一方面，当这些方法被运用到在弱监督条件下疾病标记物定位任务上时，这些方法背后的实现原理决定了其无法实现精确的像素级定位，而只能定位到某个区域或者疾病标记物所聚集的超像素。比如MIL需要将整张图片看做一个包，图像的一个个区域被看做一个个示例。对于CAM和Grad-CAM，由于特征图的尺寸随着卷积操作的不断堆叠而逐渐减小，因此可视化的特征图和原图之间的尺寸之间便存在一个“间隙”，导致需要上采样操作来填上尺寸上的“间隙”，导致了可视化结果区域往往呈片状。在自然图像中，则表现为，除了图像目标物（猫、狗等）外，目标物的周围物体或者区域也被高亮标出（见图\ref{fig:cam_example}和图\ref{fig:grad_cam_example}中的CAM和Grad-CAM实验结果示例）。虽然尺寸上的“间隙”，Grad-CAM可以通过可视化浅层特征图来在一定程度上缓解，但是终究无法彻底解决，这导致了这些方法在完成弱监督条件下疾病标记物定位时的不精确的定位结果。当将CAM和Grad-CAM应用到医学影像领域时，由于可视化通常只会高亮激活值最大、对分类结果最为重要的图像特征或者模式，而疾病标记物很多时候并不是只出现一处，更多的是多处会同时出现，这也导致很多患病区域尤其是较小、不够显眼的患病区域很难通常卷积神经网络的可视化检测甚至定位出来（相关实验验证见第\ref{sec:experiments}、\ref{sec:multi_classes}章）。综上所述，在弱监督条件下，一种更为精确的定位疾病标记物的新方法亟待提出，这也是本文所有工作的根本出发点。
+以上内容介绍了与疾病标记物相关的解决方案，包括MIL、CNN的可视化和弱监督目标定位，其中也不乏优秀精巧的模型，例如CAM和Grad-CAM，但是这些方法的共同劣势在于无法实现像素级的精确定位。一方面，这些方法最初并不是专门为解决疾病标记物定位任务而设计；另一方面，当这些方法被运用到在弱监督条件下疾病标记物定位任务上时，其背后实现原理决定了其无法实现精确的像素级定位，而只能定位到某个区域或者疾病标记物所在的区域或者所聚集的超像素。对于MIL中存在的取块操作，无论其取块尺寸大小，所得图像块都无法避免地包含正常区域。因此MIL方法无法精确定位到疾病标记物。CNN可视化方法中，扰动方法和遮挡方法与MIL一样均需要从图像中取块；激活最大化方法和网络逆转方法只能得到图像的最具判别性的图像特征或者模式；对于基于梯度的方法（比如Grad-CAM），由于在连续卷积作用下特征图通常会不断缩小，因此为了定位到疾病标记物，往往需要将卷积输出响应上采样到输入图像尺寸大小。不难想象，采样倍数越大，疾病标记物的定位越粗糙。如果将疾病标记物也看做是目标物体，那么弱监督目标定位任务的目标是用候选矩形框框出目标物体的位置，该任务目标要求本身就比本文目标低，另外以上弱监督目标定位方法往往需要是通过中间层目标物体相关的判别性区域来计算目标物体在原图中位置，这个计算过程也会涉及到上采样操作，因而弱监督目标定位方法也不无法精确定位疾病标记物。
+
+综上所述，包括MIL、CNN的可视化和弱监督目标定位在内的系列方法都只能粗略定位疾病标记物，精确定位疾病标记物仍是一个有待解决的问题。在弱监督条件下，一种精确定位疾病标记物的新方法亟待提出，这也是本文所有工作的根本出发点。
+
 \section{评价标准}
 本文衡量实验结果分为定性分析和定量分析，前者主要以可视化方式比较各种方法定位结果和标签，后者主要引入精确率-召回率曲线（Precision-Recall Curve，缩写为P-R Curve）和受试者工作特征曲线（Receiver Operating Characteristic Curve，缩写为ROC Curve）以及对应曲线下的面积（Area Under Curve）作为评价标准。下面分别进行介绍。
 \subsection{受试者工作特征曲线}\label{subsec:roc_curve}
 受试者工作特征曲线或者ROC曲线\footnote{https://en.wikipedia.org/wiki/Receiver\_operating\_characteristic}是一个可以说明二元分类器系统的鉴别阈值变化时的诊断能力的图形。通过绘制各种阈值设置下的真阳率（True Positive Rate，缩写为TPR）与假阳率（False Positive Rate，缩写为FPR）来创建ROC曲线。真阳率在机器学习中也称为灵敏度（Sensitivity），表示模型预测的真正类个数占所有真实正例的比例。假阳率也称为假警报的概率，也可计算为（1-特异性（Specificity）），表示模型预测的假正类（实际为负例）个数占所有真实负例的比例。ROC曲线是以TPR作为衰减的函数。换句话说，ROC曲线的横轴是FPR或者（1-Specificity），纵轴是TPR或者Sensitivity。下面给出TPR、FPR、Sensitivity和Specificity的数学定义。
 
-考虑两类预测问题（二分类），其中标签被标记为正（p）或负（n）。二分类器有四个可能的结果。如果预测的结果为p，而实际值也为p，则称为真正（True Positive，缩写为TP）。但是，如果实际值为n，则称其为误报（False Positive，缩写为FP）。相反，当预测结果和实际值均为n时，则为“真”（True Negative，缩写为TN），而当预测结果和实际值均为p时，为“假”（False Negative，缩写为FN）。可用表\ref{tab:confusion_mateix}表示以上关系：
-\begin{table}[h]
-	\centering
-	\caption{TP、TN、FP和FN概念定义。}
-	\label{tab:confusion_mateix}
-	\begin{tabular}{c|c|c|c}
-		\toprule[2pt]
-		&                   & \multicolumn{2}{c}{True condition}     \\ 
-				\midrule[2pt]
-		&  & Condition Positive & Condition Negative \\ \hline
-		\multirow{2}{*}{Predicted} & Predicted Positive & TP  & FP \\ \cline{2-4} 
-		& Predicted Negative & FN & TN  \\ 
-		\bottomrule[2pt]
-	\end{tabular}
-\end{table}
+考虑两类预测问题（二分类），其中标签被标记为正（p）或负（n）。二分类器有四个可能的结果。如果预测的结果为p，而实际值也为p，则称为真正（True Positive，缩写为TP）。但是，如果实际值为n，则称其为误报（False Positive，缩写为FP）。相反，当预测结果和实际值均为n时，则为“真”（True Negative，缩写为TN），而当预测结果和实际值均为p时，为“假”（False Negative，缩写为FN）。由此我们可以定义以下概念：
 
-\noindent 表\ref{tab:confusion_mateix}也叫混淆矩阵（Confusion Matrix）\footnote{https://en.wikipedia.org/wiki/Confusion\_matrix}。由此我们可以定义TPR、FPR等概念：
+%可用表\ref{tab:confusion_mateix}表示以上关系：
+
+%\begin{table}[h]
+%	\centering
+%	\caption{TP、TN、FP和FN概念定义。}
+%	\label{tab:confusion_mateix}
+%	\begin{tabular}{c|c|c|c}
+%		\toprule[2pt]
+%		&                   & \multicolumn{2}{c}{True condition}     \\ 
+%				\midrule[2pt]
+%		&  & Condition Positive & Condition Negative \\ \hline
+%		\multirow{2}{*}{Predicted} & Predicted Positive & TP  & FP \\ \cline{2-4} 
+%		& Predicted Negative & FN & TN  \\ 
+%		\bottomrule[2pt]
+%	\end{tabular}
+%\end{table}
+
+%\noindent 表\ref{tab:confusion_mateix}也叫混淆矩阵（Confusion Matrix）\footnote{https://en.wikipedia.org/wiki/Confusion\_matrix}。
 \begin{gather}
 	\mathrm{TPR}=\mathrm{Sensitivity}=\frac{\mathrm{TP}}{\mathrm{P}}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}},\\
 	\mathrm{FPR}=\frac{\mathrm{FP}}{\mathrm{N}}=\frac{\mathrm{FP}}{\mathrm{FP}+\mathrm{TN}},\\
 	\mathrm{Specificity}=\frac{\mathrm{TN}}{\mathrm{FP}+\mathrm{TN}}=1-\mathrm{FPR}.
 \end{gather}
-根据以上定义，便可以画出ROC曲线。在二分类系统中，设$\boldsymbol{p}(0\leq \boldsymbol{p}\in \mathbb{R} \leq 1)$表示样本被分为正样本的概率。给定$N$个样本，该分类系统给出的预测值为$x=\{p_1,p_2,...,p_N
-\}$，设这些样本的真实标签为$y=\{y_1,y_2,...,y_N\}(\text{对于索引}\, i(0\leq i \le N)\text{，}y_i\in \{0,1\})$。由于ROC曲线只需要FPR和TPR，可说明分类系统随着鉴别阈值变化时的判断能力，因此，可将二分类系统给出的预测值作为阈值，当测试样本属于正样本的概率大于或等于阈值$T(0\leq T\in \mathbb{R} \leq 1)$时，我们认为它为正样本，否则为负样本。对于不同的阈值，我们可以得到一组FPR和TPR，从而画出ROC曲线，此时ROC曲线时呈阶梯型。当然，随着$T$取值组数不断增加，ROC曲线也会越来越逼近一条曲线。
+设在二分类系统中，设$p(0\leq p \leq 1)$表示样本被分为正样本的概率。给定$N$个样本，该分类系统给出的预测值为$x=\{p_1,p_2,...,p_N
+\}$，设这些样本的真实标签为$y=\{y_1,y_2,...,y_N\}$，其中$y_i \in \{0,1\},0\leq i \le N$。随后，可依次将二分类系统给出的预测值作为阈值$T(0\leq T \leq 1)$，当$p_i$大于或等于阈值时，我们认为它为正样本，否则为负样本。对于多组不同的阈值，我们可以得到多组FPR和TPR，从而画出ROC曲线。
 
-我们将ROC曲线右下方的面积成为AUC，AUC的值介于0.5与1之间。前者表示分类系统在对样本随机判断情况下的结果，后者表示分类系统对样本判断完全正确，预测值与真实标签相同。由于所取阈值$T$组数有限，可依次计算每个小矩形面积即可。如果ROC曲线是一条曲线，曲线函数沿着FPR在$[0,1]$上的积分即为AUC。一般来说，如果一条ROC曲线$f_1$在另外一条ROC曲线$f_2$上方，我们称ROC曲线$f_1$“包围”ROC曲线$f_2$，说明$f_1$代表的分类系统性能优于$f_2$代表的分类系统。
+我们将ROC曲线与横轴正半轴、纵轴正半轴共同围城的面积叫做AUC，AUC数值介于$0.5$与$1$之间，数值大小等于ROC曲线函数沿着FPR在$[0,1]$上的定积分。一般来说，如果一条ROC曲线$f_1$在另外一条ROC曲线$f_2$上方，我们称ROC曲线$f_1$“包围”ROC曲线$f_2$，说明$f_1$代表的分类系统性能优于$f_2$代表的分类系统。
 \subsection{精确率-召回率曲线}\label{subsec:pr_curve}
 精确率-召回率曲线或者P-R曲线显示了不同阈值时精确率和召回率之间的权衡，是以精确率（Precision）为横轴，召回率（Recall）为纵轴的一条曲线。精确率也叫准确率，表示真正样本在被模型识别的正样本中的比例，反映了模型识别正样本的准确性。召回率也叫检出率，表示被正确识别的正样本占所有正样本的比例，反映了模型对正样本的检索能力。根据\ref{subsec:roc_curve}小节中相关定义，精确率和召回率可定义为：
 \begin{gather}
@@ -285,36 +328,37 @@ Sangheum等人~\cite{2015Hwang}用CNN完成分类任务的同时，用自身CNN�
 	\mathrm{Recall}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}}.
 \end{gather}
 
-P-R曲线是一条以Precision为纵轴，Recall为横轴的曲线。其画法与ROC曲线非常相似，均需要取一组阈值。与ROC曲线的画法不同的是，P-R曲线需要计算Precision和Recall。在ROC曲线中，TPR（纵轴）随着FPR（横轴）的增大而增大，即ROC曲线呈现一种单调增加趋势。而在P-R曲线中，Precision（纵轴）随着Recall（横轴）的增大而减小，即P-R曲线呈现一种单调减小趋势。这种差异主要是Precision和Recall之间的“矛盾”关系造成的。以挑选“好”西瓜为例，极端情况下，可以认为所有西瓜都是“好”瓜，则所有“好”瓜都能选出来，不难想象，此时Precision=0，Recall=1;反之，认为所有西瓜都不是“好”瓜，则所有“好”瓜都不能选出来，不难想象，此时Recall=0，Precision$\to 1$。故P-R曲线能反应模型平衡准确率和检出率的能力。直观上来看，如果一条P-R曲线在另外一条P-R曲线上方，说明前者代表的模型性能优于后者，这一点是与ROC曲线的；另外，P-R曲线的AUC定义与表达意义也与ROC曲线一致，AUC越大表示其模型性能越优。
+%以挑选“好”西瓜为例，极端情况下，可以认为所有西瓜都是“好”瓜，则所有“好”瓜都能选出来，不难想象，此时Precision=0，Recall=1;反之，认为所有西瓜都不是“好”瓜，则所有“好”瓜都不能选出来，不难想象，此时Recall=0，Precision$\to 1$。故P-R曲线能反应模型平衡准确率和检出率的能力。
 
-注意，当测试集中的正负样本的分布变化的时候，ROC曲线能够保持稳定，这是ROC曲线一个重要特征。因此，对于正负样本分布大致均匀的问题，ROC曲线作为性能指标更加鲁邦、效果表现更为优异。反之，在正负样本分布得极不均匀，负例远大于正例时，P-R曲线比ROC曲线能更有效地反应分类器的好坏，也就是说P-R曲线对于类别不平衡现象更为敏感，即P-R曲线在正负样本比例悬殊较大时更能反映分类的真实性能。
+P-R曲线是一条以Precision为纵轴，Recall为横轴的曲线。其画法与ROC曲线非常相似，均需要取一组阈值。与ROC曲线的画法不同的是，P-R曲线需要计算Precision和Recall。在ROC曲线中，TPR（纵轴）随着FPR（横轴）的增大而增大，即ROC曲线呈现一种单调增加趋势。而在P-R曲线中，Precision（纵轴）随着Recall（横轴）的增大而减小，即P-R曲线呈现一种单调减小趋势。这种差异主要是Precision和Recall之间的“矛盾”关系造成的。同样，直观上来看，如果一条P-R曲线在另外一条P-R曲线上方，说明前者代表的模型性能优于后者；P-R曲线的AUC定义也与ROC曲线一致，AUC数值越大，模型性能越优。
 
+注意，当测试集中的正负样本的分布变化的时候，ROC曲线能够保持稳定，这是ROC曲线一个重要特征。因此，对于正负样本分布大致均匀的问题，ROC曲线作为性能指标更加鲁邦、效果表现更为优异。反之，在正负样本分布得极不均匀，负例远大于正例时，P-R曲线对于类别不平衡现象更为敏感，更能反映分类器的性能好坏。
+
+%再加上医学影像数据获取、标注成本更高，导致可用于疾病标记物的精确定位测试的公开数据集较少。由于医学数据很可能会涉及到病人的隐私，为了尽可能保护病人权益，防止病人信息泄露，图像数量较多的、图像质量较高的数据集往往存于知名公立医院且未公开。
 \section{常用数据集}\label{sec:usually_ds_intro}
-一旦展开对选取问题的具体研究，第一步便是选取实验所使用的数据集。尤其对于当下十分火热、有着数据驱动特性的CNN来说，选择一个合适的数据集的重要性更加不言而喻。再加上医学影像数据获取、标注成本更高，导致可用于疾病标记物的精确定位测试的公开数据集较少。由于医学数据很可能会涉及到病人的隐私，为了尽可能保护病人权益，防止病人信息泄露，图像数量较多的、图像质量较高的数据集往往存于知名公立医院且未公开。在已然公开的数据集中，本文将选取一些知名度较高的、在学术界被研究者广泛接受的、图像质量相对较高的数据集进行介绍。
+一旦展开对选取问题的具体研究，第一步便是选取实验所使用的数据集。尤其对于当下十分火热、有着数据驱动特性的CNN来说，选择一个合适的数据集的重要性更加不言而喻。接下来，在已公开的数据集中，本文将简单介绍部分目前在学术界被研究者广泛接受的、图像质量相对较高的数据集。
 
 \subsection{眼底病变数据集}\label{subsec:original_dr_dataset_intro}
-眼科学是临床医学的一个独特分支。眼科的影像学检查方法有眼底摄影、光学相干断层扫描、眼底荧光血管造影、扫描激光检眼镜等。一个明确的眼科疾病诊断需要结合几个不同的试验结果。在临床实践中，诊断和治疗策略的确定依赖于影像学资料的评价。目前眼底照片已广泛应用于青光眼和视网膜疾病等眼科疾病的诊断。然而，眼成像数据的解释需要大量的经验和时间。在这里，我们介绍部分具有良好注释和标签的数据集，扼要信息如表~\ref{tab:datasets_info}所示，下面分别进行简单介绍。
+眼科学是临床医学的一个独特分支。眼科的影像学检查方法有眼底摄影、光学相干断层扫描、眼底荧光血管造影、扫描激光检眼镜等。一个明确的眼科疾病诊断需要结合几个不同的试验结果。在临床实践中，诊断和治疗策略的确定依赖于影像学资料的评价。目前眼底照片已广泛应用于青光眼和视网膜疾病等眼科疾病的诊断。然而，眼成像数据的解释需要大量的经验和时间。表~\ref{tab:datasets_info}列出了部分眼底病数据集的扼要信息。
 \begin{table}[h]
 	\centering
-	\caption{常用眼底病变数据集。}		
+	\caption{常用眼底病变数据集。}
 	\label{tab:datasets_info}
-	\begin{tabular}{c|c|c|c}
+	\begin{tabular}{c|c|c}
 		\toprule[2pt]
-		数据集名称 & 图像数量 & 类别 & 标注 \\
+		数据集名称 & 图像数量 & 类别 \\
 		\midrule[2pt]
-		Kaggle Diabetic Retinopathy (DR)	& 35,127	& 5	&图像级 \\
+		Kaggle Diabetic Retinopathy (DR)	& 35,127	& 5	 \\
 		\hline                         
-		iChallenge Glaucomatous Optic Neuropathy (GON)    & 1,200    & 2 & 图像级 \\ \hline
-		iChallenge Age-related Macular Degeneration (AMD) & 1,200    & 2 & 部分像素级 \\ \hline
-		iChallenge Pathological Myopia (PM)               & 1,200    & 2 & 部分像素级 \\ \hline
-		ODIR-5K & 7,000 & 8 & 图像级 \\ \hline
+		iChallenge Glaucomatous Optic Neuropathy (GON)    & 1,200    & 2 \\ \hline
+		iChallenge Age-related Macular Degeneration (AMD) & 1,200    & 2  \\ \hline
+		iChallenge Pathological Myopia (PM)               & 1,200    & 2 \\ \hline
+		ODIR-5K & 7,000 & 8 \\ \hline
 		
-		Indian Diabetic Retinopathy Image Dataset (IDRiD) & 516 & 5 & 部分像素级 \\
+		Indian Diabetic Retinopathy Image Dataset (IDRiD) & 516 & 5  \\
 		\bottomrule[2pt]
 	\end{tabular}
 \end{table}
-
-注意，图像级标注指的是将图像标注为对应类别，如正常/异常。像素级标注在图像级标注基础上还标出病变的准确位置。另外，图像数量指的是数据集中官方有提供标注的图像数据。以上说明同样适用于表~\ref{tab:skin_datasets_info}。
 
 糖尿病视网膜病变是发达国家劳动年龄人口失明的主要原因。DR数据集\footnote{https://www.kaggle.com/c/diabetic-retinopathy-detection/data}是目前关于糖尿病视网膜病变的最大数据集，提供了在各种成像条件下拍摄的高分辨率视网膜图像。目前在Kaggle上开源数据中，训练集有35,127张样本，每张图像尺寸均大于$1000\times 1000$但大小不等，目前只有图像集标注。专业医师根据患者患病程度将每张图像标注为0至4共5类。0、1、2、3和4分别代表未患糖尿病视网膜病变、轻微糖尿病视网膜病变、中度糖尿病视网膜病变、严重糖尿病视网膜病变和增生性糖尿病视网膜病变。标注数字越大代表患病越严重。
 
@@ -328,23 +372,23 @@ ODIR-5K数据集\footnote{https://odir2019.grand-challenge.org/dataset/}是一�
 
 IDRiD\footnote{https://idrid.grand-challenge.org/Data/}眼底图像是由印度一家眼科诊所的视网膜专家收集的。数据集共包括516张样本，均提供了典型糖尿病视网膜病变病变和正常视网膜结构的专家标记。数据集所有图像都集中在黄斑附近。图像分辨率为$4288\times 2848$像素，存储为jpg文件格式。此外，它还根据国际临床相关性标准，为数据库中的每张图像提供关于糖尿病视网膜病变的疾病严重程度和糖尿病黄斑水肿的信息。与DR数据集一样，它一共将图像分为5类。与DR数据集不同的是，IDRiD数据集有81张患病彩色眼袋图像有精确像素级标注，如微动脉瘤、软渗出物、硬渗出物和出血。
 
-眼底病变往往有病变区域较小，病变区域数量较多，病变区域分布较分散的特点。因此，眼底有些病变区域容易混淆，比较难发现。另外，眼底图像较为精细，各种细节纹理丰富，故发现眼底病变的疾病标记物通常极具挑战性。
+眼底病变往往病变区域较大小不一，病变区域数量较多，病变区域分布较分散。眼底部分病变区域之间容易混淆。眼底图像通常也较为精细，各种细节纹理比较丰富。
+
 
 \subsection{黑色素瘤皮肤病变数据集}\label{subsec:original_dermatoscope_ds_intro}
-黑色素瘤是多种皮肤癌中最致命的一种。黑色素瘤是发生在皮肤表面的色素性病变，可以通过专业医师的视觉检查早期发现。黑色素瘤也适用于自动检测与图像分析。皮肤镜检查是一种皮肤成像方法，与无辅助的视觉检查相比，已证明可改善皮肤癌的诊断。为了更广泛地提供专业知识，国际皮肤成像协作组织开发了专门档案，这是一个国际皮肤镜图像库，可用于皮肤科专业医师的临床培训，也能用于举办比赛，寻求计算机算法解决临床问题。在这里，我们介绍三个图像质量较高，可用于疾病标记物定位的黑色素瘤病变数据集。数据集名称、图像数量等基本信息如表~\ref{tab:skin_datasets_info}所示。
-
+黑色素瘤是多种皮肤癌中最致命的一种。黑色素瘤是发生在皮肤表面的色素性病变，可以通过专业医师的视觉检查早期发现。黑色素瘤也适用于自动检测与图像分析。皮肤镜检查是一种皮肤成像方法，与无辅助的视觉检查相比，已证明可改善皮肤癌的诊断。在这里，我们介绍三个图像质量较高，可用于疾病标记物定位的黑色素瘤病变皮肤镜图像数据集。数据集名称、图像数量等基本信息如表~\ref{tab:skin_datasets_info}所示。
 
 \begin{table}[h]
 	\centering
 	\caption{常用眼底病变数据集。}		
 	\label{tab:skin_datasets_info}
-	\begin{tabular}{c|c|c|c}
+	\begin{tabular}{c|c|c}
 		\toprule[2pt]
-		数据集名称 & 图像数量 & 类别 & 标注 \\
+		数据集名称 & 图像数量 & 类别 \\
 		\midrule[2pt]
-		International Skin Imaging Collaboration (ISIC) 2017 &  $\sim 2,300$ & 3 & 部分像素级 \\ \hline
-		International Skin Imaging Collaboration (ISIC) 2018 & $\geq 12,500$ & 7  & 部分像素级 \\ \hline
-		International Skin Imaging Collaboration (ISIC) 2019 & 25,331 & 8  & 图像级  \\ 
+		International Skin Imaging Collaboration (ISIC) 2017 &  $\sim 2,300$ & 3  \\ \hline
+		International Skin Imaging Collaboration (ISIC) 2018 & $\geq 12,500$ & 7  \\ \hline
+		International Skin Imaging Collaboration (ISIC) 2019 & 25,331 & 8    \\ 
 		\bottomrule[2pt]
 	\end{tabular}
 \end{table}
@@ -355,7 +399,9 @@ ISIC2018数据集~\cite{codella2019skin, tschandl2018ham10000}中有超过12,500
 
 ISIC2019数据集\footnote{https://challenge2019.isic-archive.com/}中有25,331张皮肤镜图像，包括黑色素瘤黑素细胞痣、基底细胞癌、光化性角化病、良性角化病（太阳扁豆/脂溢性角化病/扁平苔藓样角化病）、皮肤纤维瘤、血管病变、鳞状细胞癌和没有以上病变类型在内的8个类别。图像尺寸大小在$400\sim 600$之间。
 
-与眼底病变类型不同的是，黑色素瘤的各种病变类型往往在皮肤镜上所占区域比较大，通常所占比例在$1/3$以上。各种病变类型之间的区别主要表现在病变区域细微纹理区间上。
+与眼底病变类型不同的是，黑色素瘤的各种病变类型往往在皮肤镜上所占区域比较大，通常所占比例在$1/3$以上，另外图像背景以及纹理结构相对简单。
+
+%各种病变类型之间的区别主要表现在病变区域细微纹理区间上。
 
 \section{本章小结}
 本章主要先介绍了与疾病标记物任务相关的医学数据集和本文涉及到的基本知识要点。接着介绍了疾病标记物定位任务相关的研究进展，并详细介绍了在深度学习领域内的相关方法，例如，CAM和Grad-CAM。另外，也定义了本文要解决的问题（见\ref{subsec:bio_loc_task_definition}小节）和实验相关评价标准（ROC曲线及其AUC和P-R曲线及其AUC）。针对疾病标记物定位任务中存在的难点（见\ref{sec:existing_diffcuities}小节），我们提出了一种新的网络模型，该模型极具创新性的将对抗生成网络和CNN组合训练，既发挥了CNN在模式识别方面的优势，又充分利用了对抗生成网络在图像生成方面的长处，避免了CAM和Grad-CAM处理疾病标记物定位时不够精确的问题，也填补了直接用深度学习方法处理疾病标记物定位问题的空白，本文将在第\ref{sec:method}章详细介绍我们解决疾病标记物的方法和原理。随后，为了验证模型在疾病标记物定位任务上的有效性和鲁棒性，我们在二类问题和多类问题上均进行了相关实验，从P-R曲线和AUC等评价标准上来看，远远超过了CAM和Grad-CAM，验证了我们的模型的先进水平。相关内容我们将会在第\ref{sec:experiments}章进行阐述。
