@@ -173,20 +173,20 @@ CNN分类器主要考虑的问题是如何选择一个较为优秀的分类网�
 \begin{equation}\label{equ:model_loss_func}
 \mathcal{L}=\min _{G, C} \max _{D} \quad L_{GAN}(D, G)+\lambda_{1} L_{C E}(C, G)+\lambda_{2} L_{E D}(G).
 \end{equation}
-其中，$L_{GAN}(D, G)$表示对抗生成网络的损失函数（本文使用WGAN-GP），$L_{CE}(C, G)$表示CNN分类器的交叉熵损失函数，$L_{E D}(G)$是约束编码器-解码器的损失函数（本文使用L1损失函数），用于强调输入和输出之间的相似性，$\lambda{1}$和$\lambda_{2}$是两个超参数，用于平衡各个损失函数之间的权重。
+其中，$L_{GAN}(D, G)$表示对抗生成网络的损失函数（本文使用WGAN-GP），$L_{CE}(C, G)$表示CNN分类器的交叉熵损失函数，$L_{E D}(G)$是约束编码器-解码器的损失函数（本文使用L1损失函数），用于强调输入和输出之间的相似性，$\lambda{1}$和$\lambda_{2}$是两个超参数，用于平衡各个损失函数之间的权重。注意$L_{E D}(G)$这一项是不可缺少的，一旦缺少（$\lambda_{2}=0$），在CNN分类器和判别器的指导下，编码器-解码器很可能在修改疾病标记物所在区域的同时还会修改正常区域，导致不可避免地出现假阳现象。
 
-接下来，本文将给出每个步骤训练时的损失函数。根据等式\ref{equ:model_loss_func}和\ref{item:training_steps}小节中的两个步骤设计，本文可进一步给出本文两步训练的损失函数。设分布$y\sim p_{all}$表示整个样本空间（包括正常图像和异常图像）所代表的的分布，设第一步的损失函数为$\mathcal{L}_{u\_c}$，本文将$\mathcal{L}_{u\_c}$定义为：
+接下来，本文将给出每个步骤训练时的损失函数。根据等式\ref{equ:model_loss_func}和\ref{item:training_steps}小节中的两个步骤设计，本文可进一步给出本文两步训练的损失函数。设分布$y\sim p_{all}$表示整个样本空间（包括正常图像和异常图像）所代表的的分布，设第一步的损失函数为${L}_{u\_c}$，本文将${L}_{u\_c}$定义为：
 
 \begin{equation}
-\mathcal{L}_{u\_c} = \lambda_{1} L_{CE}(G(y)-y) + \lambda_{2}L_{ED}(G(y), y).
+L_{u\_c} = \lambda_{1} L_{CE}(G(y)-y) + \lambda_{2}L_{ED}(G(y), y).
 \end{equation}
-\noindent 设分布$x\sim p_n$表示给定的正常图像数据的分布，$z\sim p_l$表示给定的异常图像数据的分布。则第二步训练由编码器-解码器和判别器组成的对抗生成网络的目标可表示为最小化损失函数：
+\noindent 设分布$x\sim p_n$表示给定的正常图像数据的分布，$z\sim p_l$表示给定的异常图像数据的分布。则第二步训练由编码器-解码器和判别器组成的对抗生成网络的目标可表示为最小化损失函数$L_{GAN}(G, D)$：
 \begin{equation}\label{equ:training_gan_loss}
 L_{GAN}(G, D)=D(G(z))-D(x)+\lambda \left[\left(\left\|\nabla_{\hat{x}} D(\hat{x})\right\|_{2}-1\right)^{2}\right].
 \end{equation}
-其中分布$p_{\hat{x}}$不是对分布$p_{all}$代表的空间采样，而只对分布$p_n$和分布$p_l$之间的公共空间采样，$\lambda$是梯度惩罚项的权重。由于对抗生成网络的训练也是分两个阶段完成的，本文将进一步介绍每一步对应的损失函数，则训练对抗生成网络的第一步（固定$G$而更新$D$）对应的损失函数为最小化等式\ref{equ:training_gan_loss}。而第二步（固定D而更新G）对应的目标可表示为最小化损失函数：
+其中分布$p_{\hat{x}}$不是对分布$p_{all}$代表的空间采样，而只对分布$p_n$和分布$p_l$之间的公共空间采样，$\lambda$是梯度惩罚项的权重。由于对抗生成网络的训练也是分两个阶段完成的，本文将进一步介绍每一步对应的损失函数，则训练对抗生成网络的第一步（固定$G$而更新$D$）对应的损失函数为最小化等式\ref{equ:training_gan_loss}。而第二步（固定D而更新G）对应的目标可表示为最小化损失函数${L}_{u\_d}$：
 \begin{equation*}
-	-D\left(G(z)\right) + \lambda_{2}\left[L_{ED}(G(z), z) + L_{ED}(G(x), x)\right].
+	{L}_{u\_d}=-D\left(G(z)\right) + \lambda_{2}\left[L_{ED}(G(z), z) + L_{ED}(G(x), x)\right].
 \end{equation*}
 \noindent 到这里，本文将模型方法相关内容叙述都已描述完毕。为了更为清晰表示其训练过程及其损失函数，与之对应的算法过程描述如算法\ref{alg:net}所示。
 \begin{algorithm}[h]

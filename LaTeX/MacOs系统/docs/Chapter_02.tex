@@ -74,14 +74,14 @@ CNN便可以很好避免多层感知机存在的问题，卷积操作可以很�
 \end{equation}
 我们对$D$进行训练，使其对$G$中的训练示例和样本分配正确标签的概率最大化。我们同时对$G$进行训练，使其对$log(1 - D(G(z))$最小化。换句话说，$D$和$G$玩了一个具有损失函数$V (G, D)$的二人极大极小博弈。在实际训练时，$D$和$G$先后交替训练。
 
-\noindent 固定$\theta_{g}$，优化$\theta_{d}$等价于用随机梯度上升算法最大化损失函数：
+\noindent 固定$\theta_{g}$，优化$\theta_{d}$等价于用随机梯度上升算法最大化损失函数$L_d$：
 \begin{equation*}
-\log D\left(x\right)+\log \left(1-D\left(G\left(z\right)\right)\right).
+L_d=\log D\left(x\right)+\log \left(1-D\left(G\left(z\right)\right)\right).
 \end{equation*}
 
-\noindent 固定$\theta_{d}$，优化$\theta_{g}$等价于用随机梯度下降算法最小化损失函数：
+\noindent 固定$\theta_{d}$，优化$\theta_{g}$等价于用随机梯度下降算法最小化损失函数$L_g$：
 \begin{equation*}
-\log \left(1-D\left(G\left(z\right)\right)\right).
+L_g=\log \left(1-D\left(G\left(z\right)\right)\right).
 \end{equation*}
 \noindent 以上朴素GAN中生成网络和判别网络均是多层感知机。在实际训练过程中参数过大，训练难度较大的问题，因而训练不稳定，经常训练失败。各种改进模型相继提出，DCGAN~\cite{radford2015unsupervised}利用了CNN强大的拟合能力和容量。针对训练过程中存在的梯度消失问题，WGAN~\cite{gulrajani2017improved}使用Wasserstein-1距离代替GAN~\cite{goodfellow2014generative}中的Jensen-Shannon散度~\cite{arjovsky2017towards}。WGAN-GP~\cite{gulrajani2017improved}更是在WGAN基础上又在GAN损失函数（见等式\ref{equ:gan_loss_func}）中加入了梯度惩罚项（Gradient Penalty），这也是WGAN-GP名字的由来。由于WGAN-GP可以有效避免GAN训练过程中的梯度消失，本文网络模型中GAN采用的就是WGAN-GP，下面进行简单简单介绍。
 
@@ -192,7 +192,7 @@ S_{c}=\sum_{k} w_{k}^{c} \sum_{x, y} f_{k}(x, y)=\sum_{x, y} \sum_{k} w_{k}^{c} 
 \begin{equation}\label{equ:cam_heatmap_compute}
 M_{c}(x, y)=\sum_{k} w_{k}^{c} f_{k}(x, y).
 \end{equation}
-故$S_{c}=\sum_{x,y} M_{c}(x, y)$。不难发现，$M_{c}(x, y)$直接表明了空间位置$(x,y)$处的激活值对于该图像被分为类别$c$的重要性程度。CAM在网络最后一层是GAP的情况下方能使用，例如，CAM不能实现对VGG网络的可视化。为此，Grad-CAM计算类激活图的特征加权系数不是分类器的权值，而是通过反向传播计算的梯度得到的，从而将CAM扩展到任何CNN。Grad-CAM与CAM相比，它的优点是适用的范围更广，不像CAM要求最后一层是GAP，Grad-CAM对各类结构，各种任务都可以使用。这两种方法也可以应用于进行弱监督下的目标检测，而本文将用这两种方法完成弱监督下的疾病标记物定位。另外，Grad-CAM还能与Guided-Backpropagation结合，相比于Guided-Backpropagation，可视化结果不仅更为准确，还更为精细（见图\ref{fig:grad_cam_architecture}最左侧Guided-Grad-CAM）。下面对Grad-CAM模型进行详细描述，其流程图如图\ref{fig:grad_cam_architecture}所示。设CNN输出类别$c$的分数为$y_c$（在送入Softmax激活函数之前）。假设网络最后一层卷积层后是GAP。设$\frac{\partial y^{c}}{\partial A^{k}}$为$y_c$回传到特征激活图$A^{k}$处的梯度，设$A^{k}$的宽为$w$，高为$h$。则在特征激活图$A^{k}$的重要性权重$\alpha_{k}^{c}$可定义为：
+故$S_{c}=\sum_{x,y} M_{c}(x, y)$。不难发现，$M_{c}(x, y)$直接表明了空间位置$(x,y)$处的激活值对于该图像被分为类别$c$的重要性程度。CAM在网络最后一层是GAP的情况下方能使用，例如，CAM不能实现对VGG网络的可视化。为此，Grad-CAM计算类激活图的特征加权系数不是分类器的权值，而是通过反向传播计算的梯度得到的，从而将CAM扩展到任何CNN。Grad-CAM与CAM相比，它的优点是适用的范围更广，不像CAM要求最后一层是GAP，Grad-CAM对各类结构，各种任务都可以使用。这两种方法也可以应用于进行弱监督下的目标检测，而本文将用这两种方法完成弱监督下的疾病标记物定位。另外，Grad-CAM还能与Guided-Backpropagation结合，可得到更为准确，还更为精细的可视化结果（见图\ref{fig:grad_cam_architecture}最左侧Guided-Grad-CAM）。下面对Grad-CAM模型进行详细描述，其流程图如图\ref{fig:grad_cam_architecture}所示。设CNN输出类别$c$的分数为$y_c$（在送入Softmax激活函数之前）。假设网络最后一层卷积层后是GAP。设$\frac{\partial y^{c}}{\partial A^{k}}$为$y_c$回传到特征激活图$A^{k}$处的梯度，设$A^{k}$的宽为$w$，高为$h$。则在特征激活图$A^{k}$的重要性权重$\alpha_{k}^{c}$可定义为：
 \begin{equation}
 \alpha_{k}^{c}=\quad \frac{1}{w·h} \sum_{i}^{w} \sum_{j}^{h} \frac{\partial y^{c}}{\partial A_{i j}^{k}}.
 \end{equation}
@@ -287,10 +287,10 @@ x^{*}=\underset{x}{\operatorname{argmin}}\left(C \cdot \mathcal{L}\left(A(x), A\
 
 综上所述，包括MIL、CNN的可视化和弱监督目标定位在内的系列方法都只能粗略定位疾病标记物，精确定位疾病标记物仍是一个有待解决的问题。在弱监督条件下，一种精确定位疾病标记物的新方法亟待提出，这也是本文所有工作的根本出发点。
 
-\section{评价标准}
-本文衡量实验结果分为定性分析和定量分析，前者主要以可视化方式比较各种方法定位结果和标签，后者主要引入精确率-召回率曲线（Precision-Recall Curve，缩写为P-R Curve）和受试者工作特征曲线（Receiver Operating Characteristic Curve，缩写为ROC Curve）以及对应曲线下的面积（Area Under Curve）作为评价标准。下面分别进行介绍。
-\subsection{受试者工作特征曲线}\label{subsec:roc_curve}
-受试者工作特征曲线或者ROC曲线\footnote{https://en.wikipedia.org/wiki/Receiver\_operating\_characteristic}是一个可以说明二元分类器系统的鉴别阈值变化时的诊断能力的图形。通过绘制各种阈值设置下的真阳率（True Positive Rate，缩写为TPR）与假阳率（False Positive Rate，缩写为FPR）来创建ROC曲线。真阳率在机器学习中也称为灵敏度（Sensitivity），表示模型预测的真正类个数占所有真实正例的比例。假阳率也称为假警报的概率，也可计算为（1-特异性（Specificity）），表示模型预测的假正类（实际为负例）个数占所有真实负例的比例。ROC曲线是以TPR作为衰减的函数。换句话说，ROC曲线的横轴是FPR或者（1-Specificity），纵轴是TPR或者Sensitivity。下面给出TPR、FPR、Sensitivity和Specificity的数学定义。
+\section{评价标准}\label{sec:evaluation_metrics}
+本文衡量实验结果分为定性分析和定量分析，前者主要以可视化方式比较各种方法定位结果和标签，后者主要引入精确率-召回率曲线（Precision-Recall Curve，缩写为P-R Curve）和接收者操作特征曲线（Receiver Operating Characteristic Curve，缩写为ROC Curve）以及对应曲线下的面积（Area Under Curve）作为评价标准。下面分别进行介绍。
+\subsection{接收者操作特征曲线}\label{subsec:roc_curve}
+接收者操作特征曲线或者ROC曲线\footnote{https://en.wikipedia.org/wiki/Receiver\_operating\_characteristic}是一个可以说明二元分类器系统的鉴别阈值变化时的诊断能力的图形。通过绘制各种阈值设置下的真阳率（True Positive Rate，缩写为TPR）与假阳率（False Positive Rate，缩写为FPR）来创建ROC曲线。真阳率在机器学习中也称为灵敏度（Sensitivity），表示模型预测的真正类个数占所有真实正例的比例。假阳率也称为假警报的概率，也可计算为（1-特异性（Specificity）），表示模型预测的假正类（实际为负例）个数占所有真实负例的比例。ROC曲线是以TPR作为衰减的函数。换句话说，ROC曲线的横轴是FPR或者（1-Specificity），纵轴是TPR或者Sensitivity。下面给出TPR、FPR、Sensitivity和Specificity的数学定义。
 
 考虑两类预测问题（二分类），其中标签被标记为正（p）或负（n）。二分类器有四个可能的结果。如果预测的结果为p，而实际值也为p，则称为真正（True Positive，缩写为TP）。但是，如果实际值为n，则称其为误报（False Positive，缩写为FP）。相反，当预测结果和实际值均为n时，则为“真”（True Negative，缩写为TN），而当预测结果和实际值均为p时，为“假”（False Negative，缩写为FN）。由此我们可以定义以下概念：
 
