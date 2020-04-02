@@ -66,7 +66,8 @@
 % 定义了一种新的clearpage方式，允许一个变量切换电子版及双面打印版
 \newcommand{\newclearpage}{
     \if\@printtwoside1
-        \clearemptydoublepage
+        % 避免为了双面打印版而出现空页
+        \clearpage %\clearemptydoublepage
     \else
         \clearpage
     \fi
@@ -126,20 +127,21 @@
     \fancyhead[CO]{\zihao{-5}{中山大学\@degree 学位论文}}
     \fancyhead[CE]{\zihao{-5}\@ctitle}
 }
-
+\fancypagestyle{listoffiguretable}{\fancyhead[R]{\zihao{-5}插图与表格目录}}
 % 表格与图片标题设定
 \renewcommand{\thefigure}{\thechapter-\arabic{figure}}
 \renewcommand{\thetable}{\thechapter-\arabic{table}}
-\renewcommand{\theequation}{\thechapter-\arabic{equation}}
+% 将公式编号格式改为"章节.序号
+\renewcommand{\theequation}{\thechapter.\arabic{equation}} %\renewcommand{\theequation}{\thechapter-\arabic{equation}}
 \setlength\heavyrulewidth{0.2em}
-\captionsetup{font=small,format=hang}
+\captionsetup{font=small}       %\captionsetup{font=small,format=hang}
 
 
 % 目录设定，使用tocloft宏包
 \setcounter{secnumdepth}{3} % depth of toc, 2
-\setcounter{tocdepth}{1}
+%\setcounter{tocdepth}{1} %显示二级目录
 % 如果要在目录中显示子章节请换用下面这行(目录中显示到x.y.z章)，如果不用这行默认显示到x.y章。
-% \setcounter{tocdepth}{2}
+\setcounter{tocdepth}{2}  %显示三级目录
 
 % 目录标题：小二号黑体加粗
 \renewcommand{\cfttoctitlefont}{\hfill\zihao{-2}\heiti\bfseries}
@@ -246,7 +248,7 @@
 
         \end{center}
     \end{titlepage}
-    \newclearpage
+    %\newclearpage
 }
 
 % 开题报告
@@ -601,6 +603,15 @@
     \newclearpage
 }
 
+% 重新定义description列表 使其根据label最长内容对齐缩进
+\newenvironment{mydescription}[1]
+   {\begin{list}{}%
+    {\renewcommand\makelabel[1]{##1:\hfill}%
+    \settowidth\labelwidth{\makelabel{#1}}%
+    \setlength\leftmargin{\labelwidth}
+    \addtolength\leftmargin{\labelsep}}}
+   {\end{list}}
+
 \renewcommand\mainmatter{
     \@mainmattertrue
     %\fancypagestyle{plain}{ \fancyhead[R]{\zihao{-5} 第 \thechapter 章 \leftmark} }
@@ -664,13 +675,13 @@
     		titleformat = {\zihao{-2}\heiti}
     	}
     }
-
-        % 引用样式
+        % reference模板采用自定义形式 推荐MICCAI
+        % 引用样式 
         %\bibliographystyle{bibtex-style/ieeetr}         % 国际标准样式
-        \bibliographystyle{Bibliography/bibtex-style/gbt7714-2005}    % 国标文后参考文献著录规则
+        %\bibliographystyle{Bibliography/bibtex-style/gbt7714-2005}    % 国标文后参考文献著录规则
         %\bibliographystyle{bibtex-style/sysuthesis}     % 历史遗留模板
         %\bibliographystyle{bibtex-style/sysuthesis2}     % 2017年由程建生师兄提供的模板
-        {\zihao{5}\rmfamily\bibliography{Bibliography/Reference}}    % 引用文献列表
+        %{\zihao{5}\rmfamily\bibliography{Bibliography/Reference}}    % 引用文献列表
     \endgroup
 }
 

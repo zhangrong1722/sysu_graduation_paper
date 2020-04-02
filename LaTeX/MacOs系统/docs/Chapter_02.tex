@@ -16,18 +16,36 @@
 %生物标志物是开发新疗法和辅助诊断的关键，受到研究人员的不断关注，其目标是为合适的病人开发合适的药物。随着计算机视觉技术不断应用到医学领域，疾病标记物定位任务自然也变成了研究热点。在医学影像处理领域，一旦一张医学影像被诊断为某种特定疾病，疾病标记物定位任务的目标便是寻找其患病区域，或者说在图像上找到诊断依据，该依据或者患病区域即可看作是疾病标记物。如图\ref{fig:biomarker_localization_example}，该图像被诊断为患有糖尿病视网膜病变，疾病标记物定位任务便是找到其异常表现，并给出其准确位置。可以发现，糖尿病视网膜病变有多种异常表现，疾病标记物定位任务要求不能漏检。另外，可以发现从颜色特征上看，出血(图中黄色矩形框)异常和眼底血管非常相似，因而将微小血管看作异常表现的假阳现象也可能发现。以上均给疾病标记物定位任务增加了不少难度。如果将CNN手段，根据以上介绍，疾病标记物定位任务的目标是找出疾病诊断背后的诊断依据，这与CNN的可视化/可解释性的目标恰好一致，因此CNN的可视化/可解释性是疾病标记物定位任务的主要解决方案之一。相关内容将会在\ref{subsec:visulization_methods}小节详细叙述。
 \subsection{卷积神经网络}\label{subsec:cnn_introduction}
 CNN最初是为了避免传统神经网络（多层感知机~\cite{gardner1998artificial}）在处理图像时的缺点而提出的。多层感知机在处理图像数据时，多层感知机对每张输入图像中的每个像素点都使用一个感知器。对于较大的图像，权重的数量很快就变得难以管理。例如，对于一个有3个彩色通道的224$\times$224像素图像，大约需要训练150,000个权值。此时，多层感知机的训练将变得十分困难。另外，多层感知机不具备平移不变性。例如，如果一张猫出现在一张图像的左上角和另一张图像的右下角，多层感知机将假设猫总是出现在图片的这个位置。再加上，多层感知机在处理图像时需要将二维图像数据将会以一维向量形式存在，因此无法利用二维空间的相对位置信息。
-\begin{figure}[h]
+
+\begin{figure}[h!] % image examples & compare
 	\centering
-	\includegraphics[width=1.0\textwidth]{figure/popular_networks}
-	\caption{三种经典的CNN模型结构。从左到右，依次为AlexNet~\cite{krizhevsky2012imagenet}、ResNet~\cite{he2016deep, he2016identity}、DenseNet~\cite{huang2017densely}（图片均来自于原始论文）。注意，中间是ResNet的一个残差单元，ResNet实际上是由多个残差单元堆叠组成。} 
-	\label{fig:popular_networks}
+	\begin{subfigure}{0.35\textwidth}
+		\centering
+		\includegraphics[width=1.0\textwidth]{figure/popular_networks_alex_net}
+		\caption{AlexNet~\cite{krizhevsky2012imagenet}}
+		\label{subfig1}
+	\end{subfigure}
+	\quad
+	\begin{subfigure}{0.336\textwidth}
+		\centering
+		\includegraphics[width=1.0\textwidth]{figure/popular_networks_resnet}
+		\caption{ResNet残差单元~\cite{he2016deep}}
+		\label{subfig:resnet_block}
+	\end{subfigure}
+	\begin{subfigure}{0.265\textwidth}
+		\centering
+		\includegraphics[width=1.0\textwidth]{figure/popular_networks_densenet}
+		\caption{DenseNet~\cite{huang2017densely}}
+	\end{subfigure}
+	\caption{三种经典的CNN网络结构（图片均来自于对应论文~\cite{krizhevsky2012imagenet, he2016deep, huang2017densely}）} 
+	\label{mulfig:popular_networks}
 \end{figure}
 
 %CNN便可以很好避免多层感知机存在的问题，卷积操作可以很好的捕捉图像的空间信息。另外，卷机操作还具有平移不变性。权值共享机制可以大大降低参数量。随着计算机算力的快速提升，运用反向传播算法~\cite{hecht1992theory}，CNN的大规模训练变得切实可行。自Hinton等人利用两块GPU成功训练AlexNet~\cite{krizhevsky2012imagenet}后，很多优秀网络结构被提出，比如VGG~\cite{simonyan2014very}，ResNet~\cite{he2016deep, he2016identity}，DenseNet~\cite{huang2017densely}，Inception系列网络~\cite{szegedy2015going, szegedy2016rethinking, szegedy2017inception}。CNN除了在分类问题上取得出色性能外，还在自然语言处理~\cite{dos2014deep, mou2016convolutional, li2019knowledge}、无人驾驶~\cite{lee2017deep, csillik2018identification, tang2017vehicle}、语音识别~\cite{abdel2013exploring, swietojanski2014convolutional, robertson2019exploring}等领域表现不凡，越来越受到研究者们的青睐。
 
-CNN可以很好避免多层感知机存在的问题，卷积操作首先可以很好的捕捉图像的空间信息。除此之外，卷机操作还具有平移不变性。再加上权值共享机制可以大大降低参数量。随着计算机算力的快速提升，运用反向传播算法~\cite{hecht1992theory}，CNN的大规模训练也变得切实可行。因此，自从Hinton等人利用两块GPU成功训练AlexNet~\cite{krizhevsky2012imagenet}后，很多优秀网络结构相继被提出，比如，VGG~\cite{simonyan2014very}，ResNet~\cite{he2016deep, he2016identity}，DenseNet~\cite{huang2017densely}。CNN除了在分类问题上取得出色性能外，还在自然语言处理~\cite{dos2014deep, mou2016Convolutional}、无人驾驶~\cite{lee2017deep}、语音识别~\cite{abdel2013exploring}等领域表现不凡，越来越受到研究者们的青睐。
+CNN可以很好避免多层感知机存在的问题，卷积操作首先可以很好的捕捉图像的空间信息。除此之外，卷机操作还具有平移不变性。再加上权值共享机制可以大大降低参数量。随着计算机算力的快速提升，运用反向传播算法~\cite{hecht1992theory}，CNN的大规模训练也变得切实可行。因此，自从Hinton等人利用两块GPU成功训练AlexNet~\cite{krizhevsky2012imagenet}后，很多优秀网络结构相继被提出，比如，VGG~\cite{simonyan2014very}，ResNet~\cite{he2016deep, he2016identity}和DenseNet~\cite{huang2017densely}。CNN除了在分类问题上取得出色性能外，还在自然语言处理~\cite{dos2014deep, mou2016Convolutional}、无人驾驶~\cite{lee2017deep}、语音识别~\cite{abdel2013exploring}等领域表现不凡，越来越受到研究者们的青睐。
 
-三种经典的CNN的模型结构如图~\ref{fig:popular_networks}所示。可以看出，CNN都是由一系列卷积操作组成的，在卷积操作之后再接上激活函数以增强非线性表达能力。为了减少参数量，CNN还引入了池化操作，使得输入图像尺寸随着深度不断增加而减小。池化操作也起到过滤无用信息的的作用。最后，再接上全连接层对CNN提取到的特征进行分类（视不同任务而改变）。因此，CNN实际上充当特征提取器的角色。那么我们可以这样理解卷积神经的原理：单纯卷积操作提取的是图像的局部信息，随着一系列卷积操作的堆叠，CNN的感受野越来越大，比如两个3$\times$3的卷积核堆叠相当于一个5$\times$5卷积核的感受野，CNN便能提取到图像的全局信息。同时，随着深度增加，输入的尺寸大小变得越来越小，通常以2倍关系减小，CNN便会丢掉无用信息。因而CNN是一种层次化结构。再在损失函数，如交叉熵，的监督指导下，根据反向梯度传播算法更新网络参数，CNN便能被训练成一个优秀的特征提取器。
+三种经典的CNN的模型结构如图~\ref{mulfig:popular_networks}所示。图中从左到右，三种网络结构依次为AlexNet~\cite{krizhevsky2012imagenet}、ResNet残差单元（ResNet实际上是由多个残差单元堆叠组成）~\cite{he2016deep, he2016identity}和DenseNet~\cite{huang2017densely}。可以看出，CNN都是由一系列卷积操作组成的，在卷积操作之后再接上激活函数以增强非线性表达能力。为了减少参数量，CNN引入了权值共享机制。除此之外，CNN还引入了池化操作，使得输入图像尺寸随着深度不断增加而减小，进一步减少参数量，与此同时池化操作还起到过滤无关信息的的作用。最后，再接上全连接层对提取到的特征进行分类（视不同任务而改变）。在此过程中，CNN实际上充当特征提取器的角色。那么我们可以这样理解CNN：CNN是一种层次化结构，单纯卷积操作提取的是图像的局部信息，随着一系列卷积操作的堆叠，CNN的感受野越来越大，比如两个3$\times$3的卷积核堆叠相当于一个5$\times$5卷积核的感受野，CNN便能提取到图像的全局信息。激活函数增强CNN的非线性表达能力。随着深度增加，输入卷积层的尺寸大小会变得越来越小，通常以2倍关系减小，CNN便可逐步提取到高层语义特征并且过滤掉与任务无关的信息。在损失函数（比如交叉熵）的监督指导下，根据反向梯度传播算法更新网络参数，CNN便能被训练成一个良好的特征提取器。
 
 %以上便是CNN的一般结构和工作原理，由于ResNet-18在本文提出的方法充当重要角色，下面将详细介绍ResNet模型。随着VGG-19~\cite{simonyan2014very}的出现，一个CNN的深度越深，学出来的效果是否越好的问题摆在了研究者们的面前。由于CNN的深度越深，原本就存在的过拟合和梯度消失问题变得越严重。何凯明等人便设计了一种在深度远大于VGG-19，效果也由于VGG-19的网络模型。设$\mathcal{H}(x)$是CNN拟合的函数，$x$表示网络输入。如果假设多个非线性层可以渐近逼近复杂函数并且假设输入和输出尺寸相同，那么就可以假设它们可以渐近逼近残差函数$\mathcal{F}(x)$，即$\mathcal{F}(x)=\mathcal{H}(x)− x$。因此，ResNet没有让网络直接拟合$\mathcal{H}(x)$，而是明确地让这些层近似为残差函数$\mathcal{F}(x)=\mathcal{H}(x)-x$。 因此，原始函数变为$\mathcal{F}(x)+x$。尽管两种形式都应能够渐近地逼近所需的功能（如假设），但是近似拟合残差函数要容易得多。另外，为了表示加号，残差单元中通常加入跳接操作。
 
@@ -49,28 +67,52 @@ CNN可以很好避免多层感知机存在的问题，卷积操作首先可以�
 %\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_l}=\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}\frac{\partial \boldsymbol{X}_L}{\partial \boldsymbol{X}_l}=\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}(1+\frac{\partial}{\partial \boldsymbol{X}_l}\sum_{i=l}^{L-1}\mathcal{F}(\boldsymbol{X}_i,\boldsymbol{W}_i)).
 %\end{equation}
 %等式\ref{residual_block_gradient}表明，梯度$\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_l}$由$\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}$和$\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}\frac{\partial}{\partial \boldsymbol{X}_l}\sum_{i=l}^{L-1}\mathcal{F}(\boldsymbol{X}_i,\boldsymbol{W}_i)$两项组成。第一项在可直接传播信息而与任意残差单元无关。而第二项保证信息直接回传到上一个残差单元。由于第一项的存在，等式\ref{residual_block_gradient}还能保证每一层梯度不容易消失，即使在残差单元权重很小的情况下。ResNet具有优异性能，深度达到上千层仍不会发生梯度消失现象。
-\subsection{编码器-解码器}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=1.0\textwidth]{figure/popular_encoder_decoder}
-	\caption{三种经典的编码器-解码器模型结构。从左到右依次为编码器-解码器~\cite{hinton2006reducing}、全CNN~\cite{long2015fully}和U-Net~\cite{ronneberger2015u}（图片均来自于原文）。} 
-	\label{fig:popular_encoder_decoder}
-\end{figure}
-编码-解码器自Hinton等人~\cite{hinton2006reducing}提出以来被广泛应用。编码-解码器不是某一种网络，而是代表了一类网络。随后便有降噪编码器-解码器~\cite{vincent2008extracting}、稀疏编码器-解码器~\cite{coates2011analysis}、变分贝叶斯编码器-解码器~\cite{kingma2013auto}等变体。将卷积操作应用到编码器-解码器中，启发了FCN~\cite{long2015fully}、U-Net~\cite{ronneberger2015u}、FPN~\cite{lin2017feature}等经典网络结构。FCN和U-Net均是分割分割领域（包括自然图像和医学图像）最为基础的网络结构。为了读者对编码器-解码器模型结构由较为直观的认识，三种经典网络结构如图\ref{fig:popular_encoder_decoder}所示。
 
-在深度学学习领域，编码器-解码器是一种无监督的神经网络。从图\ref{fig:popular_encoder_decoder}可看出，编码器-解码器共同特点是由编码器和解码器组成，下面展开简要介绍：
+\subsection{编码器-解码器}
+
+%\begin{figure}[h]
+%	\centering
+%	\includegraphics[width=1.0\textwidth]{figure/popular_encoder_decoder}
+%	\caption{三种经典的编码器-解码器模型结构。从左到右依次为编码器-解码器~\cite{hinton2006reducing}、全CNN~\cite{long2015fully}和U-Net~\cite{ronneberger2015u}（图片均来自于原文）。} 
+%	\label{fig:popular_encoder_decoder}
+%\end{figure}
+
+\begin{figure}[h!] % image examples & compare
+	\centering
+	\begin{subfigure}{0.22\textwidth}
+		\centering
+		\includegraphics[width=1.0\textwidth]{figure/popular_encoder_decoder_original_encoder_encoder}
+		\caption{Encoder-Decoder~\cite{hinton2006reducing}}
+	\end{subfigure}
+	\qquad
+	\begin{subfigure}{0.71\textwidth}
+		\centering
+		\includegraphics[width=1.0\textwidth]{figure/popular_encoder_decoder_unet}
+		\caption{U-Net~\cite{ronneberger2015u}}
+		\label{subfig:popular_encoder_decoder_unet}
+	\end{subfigure}
+	\caption{两种经典的编码器-解码器模型（图片均来自于对应论文~\cite{hinton2006reducing, ronneberger2015u}）} 
+	\label{mulfig:popular_encoder_decoder}
+\end{figure}
+
+编码-解码器自Hinton等人~\cite{hinton2006reducing}提出以来被广泛应用。编码-解码器不是某一种网络，而是代表了一类网络。随后便有降噪编码器-解码器~\cite{vincent2008extracting}、稀疏编码器-解码器~\cite{coates2011analysis}、变分贝叶斯编码器-解码器~\cite{kingma2013auto}等变体。将卷积操作应用到编码器-解码器中，启发了全卷积神经网络~\cite{long2015fully}、U-Net~\cite{ronneberger2015u}等诸多优秀网络结构。全卷积神经网络和U-Net均是分割分割领域（包括自然图像和医学图像）最为基础的网络结构。为了读者对编码器-解码器模型结构由较为直观的认识，包括原始编码器-解码器和U-Net在内的两种经典网络结构如图\ref{mulfig:popular_encoder_decoder}所示。
+
+在深度学学习领域，编码器-解码器是一种无监督的神经网络。从图\ref{mulfig:popular_encoder_decoder}可看出，编码器-解码器共同特点是由编码器和解码器组成：
 
 1)编码器：编码器在网络结构图中是将卷积操作输入不断变小的过程，U-Net中是运用池化层实现下采样，不断将卷积操作输入以2倍关系缩小，从而达到提取图像特征的目的。由于通过编码器，可将输入维度不断降低，因此编码器-解码器最直观的应用便是图像压缩和图像去燥。在实际使用过程中，为了让编码器提取到输入较好的特征表达，通常会利用深度学习网络知识可迁移的优点，用Image-Net~\cite{deng2009imagenet}上的预训练模型参数来初始化编码器~\cite{iglovikov2018ternausnet}。
 
 2)解码器：解码器和编码器相反，是将特征不断扩大，最终恢复到原图像大小的过程。通常会使用上采样或者反卷积~\cite{zeiler2010deconvolutional}操作以2倍关系逐步扩大，从而达到融合不同层次、不同尺寸的特征的目的。
 
-由于本文使用到了U-Net~\cite{ronneberger2015u}，故同时简单介绍U-Net。除了以上特点之外，U-Net中还存在从编码器直接到解码器的跨层连接，这些跨层连接使网络可以将上下文信息传播到更高分辨率的层，从而使得特征融合更加充分。在网络可视化图上（见图\ref{fig:popular_encoder_decoder}右子图），由于编码器和解码器相互对称，形成一个U型结构。U-Net中只含有卷积层，不含任何全连接层，最后视不同任务而接上不同激活函数。U-Net作为一种巧妙的网络模型，被广泛应用于医学影像处理领域~\cite{cciccek20163d, han2018framing, dong2017automatic, sevastopolsky2017optic, zhang2018ct}，更启发了后续诸多优秀网络模型~\cite{zhou2018unet++, oktay2018attention, ibtehaz2020multiresunet, alom2019recurrent, milletari2016v}。
+由于本文使用到了U-Net~\cite{ronneberger2015u}，故最后在此简单介绍U-Net。除了以上特点之外，U-Net中还存在从编码器直接到解码器的跨层连接，这些跨层连接使网络可以将上下文信息传播到更高分辨率的层，从而使得特征融合更加充分。在网络可视化图上（见图\ref{subfig:popular_encoder_decoder_unet}右子图），由于编码器和解码器相互对称，形成一个U型结构。U-Net中只含有卷积层，不含任何全连接层，最后视不同任务而接上不同激活函数。U-Net作为一种巧妙的网络模型，被广泛应用于医学影像处理领域~\cite{cciccek20163d, han2018framing, dong2017automatic, sevastopolsky2017optic, zhang2018ct}，更启发了后续诸多优秀网络模型~\cite{zhou2018unet++, oktay2018attention, ibtehaz2020multiresunet, alom2019recurrent, milletari2016v}。
 \subsection{对抗生成网络}\label{subsec:gan_introduction}
+%
+%
+%
 对抗生成网络（Generative Adversarial Networks，缩写为GAN）最初于2014年由Goodfellow等人~\cite{goodfellow2014generative}提出，就越来越受到学术界和工业界的重视。而随着GAN在理论与模型上的高速发展，它在计算机视觉~\cite{zhu2017unpaired}、自然语言处理~\cite{qin2018dsgan}、人机交互~\cite{qiao2018emotional}等领域有着越来越深入的应用，在医学影像领域更是大放异彩~\cite{yang2017dagan, bhadra2020medical}。GAN是生成式模型，受博弈论中的零和博弈启发，将生成问题视作判别网络和生成网络这两个网络的对抗和博弈。生成网络努力生成新数据，判别器努力区分生成网络生成的数据（一般记为“假”）和真实数据（一般记为“真”）。生成网络尽量产生更真实的数据，而判别器尽量更完美地把真实数据与生成数据区分开来。由此，生成网络和判别器形成对抗关系，彼此进步。在不断的迭代训练过程中，生成网络生成的数据也就越来越逼近真实数据，即生成网络学到的分布越来越接近真实数据代表的分布。在理想情况下，判别器无法区分生成的数据和真实的数据。
 
 设真实数据分布为$x\sim p_{data}(x)$，噪音分布为$z\sim p_z(z)$，生成网络和判别网络分别用$G$和$D$表示。$\theta_{g}$和$\theta_{d}$分别表示$G$和$D$的训练参数。则$G(z;\theta_{g})$表示生成网络生成的数据分布。$D(x;\theta_{d})$将会输出一个数值。可将$D$看做一个二类分类器。不妨将交叉熵当做损失函数。因此，可用$D(x)(0\leq D(x)\leq 1)$表示数据$x$来自于真实数据的概率。运用极大极小优化理论，GAN的损失函数可写成：
 \begin{equation}\label{equ:gan_loss_func}
-\min _{G} \max _{D} V(D, G)=\mathbb{E}_{\boldsymbol{x} \sim p_{\text {data }}(\boldsymbol{x})}[\log D(\boldsymbol{x})]+\mathbb{E}_{\boldsymbol{z} \sim p_{\boldsymbol{z}}(\boldsymbol{z})}[\log (1-D(G(\boldsymbol{z})))].
+\min _{G} \max _{D} V(D, G)=\mathbb{E}_{\boldsymbol{{\rm x}} \sim p_{\text {data }}(\boldsymbol{{\rm x}})}[\log D(\boldsymbol{\mathrm {x}})]+\mathbb{E}_{\boldsymbol{{\rm z}} \sim p_{\boldsymbol{z}}(\boldsymbol{{\rm z}})}[\log (1-D(G(\boldsymbol{{\rm z}})))].
 \end{equation}
 我们对$D$进行训练，使其对$G$中的训练示例和样本分配正确标签的概率最大化。我们同时对$G$进行训练，使其对$log(1 - D(G(z))$最小化。换句话说，$D$和$G$玩了一个具有损失函数$V (G, D)$的二人极大极小博弈。在实际训练时，$D$和$G$先后交替训练。
 
@@ -83,11 +125,12 @@ L_d=\log D\left(x\right)+\log \left(1-D\left(G\left(z\right)\right)\right).
 \begin{equation*}
 L_g=\log \left(1-D\left(G\left(z\right)\right)\right).
 \end{equation*}
-以上朴素GAN中生成网络和判别网络均是多层感知机。在实际训练过程中存在参数过大，训练难度较大等问题，训练过程也不稳定，经常训练失败。建议以上情况，各种改进模型相继提出，DCGAN~\cite{radford2015unsupervised}利用了CNN强大的拟合能力和容量。针对训练过程中存在的梯度消失问题，WGAN~\cite{gulrajani2017improved}使用Wasserstein-1距离代替素朴GAN~\cite{goodfellow2014generative}中使用的Kullback-Leibler散度\footnote{https://en.wikipedia.org/wiki/Kullback\%E2\%80\%93Leibler\_divergence}或者Jensen-Shannon散度\footnote{https://en.wikipedia.org/wiki/Jensen\%E2\%80\%93Shannon\_divergence}。WGAN-GP~\cite{gulrajani2017improved}在WGAN基础上使用梯度惩罚项（Gradient Penalty）代替WGAN中的采用的权值截取方式来更好地满足利普希茨连续条件（Lipschitz Continuity
-）\footnote{https://en.wikipedia.org/wiki/Lipschitz\_continuity}，这也是WGAN-GP名字的由来。由于WGAN-GP可以有效避免GAN训练过程中的梯度消失，本文网络模型中GAN采用的就是WGAN-GP。与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作是二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此也会去掉朴素GAN中判别器最后一层的Sigmoid激活函数。设$p_g$表示给定噪音分布$z\sim p_z$时生成网络所代表的数据分布。再加上梯度惩罚项，WGAN-GP的损失函数可写作：
+以上朴素GAN中生成网络和判别网络均是多层感知机。在实际训练过程中存在参数过大，训练难度较大等问题，训练过程也不稳定，经常训练失败。建议以上情况，各种改进模型相继提出，DCGAN~\cite{radford2015unsupervised}利用了CNN强大的拟合能力和容量。针对训练过程中存在的梯度消失问题，WGAN~\cite{gulrajani2017improved}使用Wasserstein-1距离代替素朴GAN~\cite{goodfellow2014generative}中使用的Kullback-Leibler散度\footnote{https://en.wikipedia.org/wiki/Kullback\%E2\%80\%93Leibler\_divergence}或者Jensen-Shannon散度\footnote{https://en.wikipedia.org/wiki/Jensen\%E2\%80\%93Shannon\_divergence}。WGAN-GP~\cite{gulrajani2017improved}在WGAN基础上使用梯度惩罚项（Gradient Penalty）代替WGAN中的采用的权值截取方式来更好地满足利普希茨连续条件\footnote{https://en.wikipedia.org/wiki/Lipschitz\_continuity}（Lipschitz Continuity），这也是WGAN-GP名字的由来。由于WGAN-GP可以有效避免GAN训练过程中的梯度消失，本文网络模型中GAN采用的就是WGAN-GP。与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作是二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此也会去掉朴素GAN中判别器最后一层的Sigmoid激活函数。设$p_g$表示给定噪音分布$z\sim p_z$时生成网络所代表的数据分布。再加上梯度惩罚项，WGAN-GP的损失函数可写作：
+
 \begin{equation}\label{wgan_gp_loss_func}
-\min _{G} \max _{D} V(D, G)=E_{x \sim P_{d a t a}}[D(x)]-E_{x \sim p_{g}}[D(x)]+\lambda E_{\hat{x} \sim p_{\hat{x}}}\left[\left(\left\|\nabla_{\hat{x}} D(\hat{x})\right\|_{2}-1\right)^{2}\right].
+\min _{G} \max _{D} V(D, G)=E_{\boldsymbol{x} \sim P_{d a t a}}[D(x)]-E_{x \sim p_{g}}[D(x)]+\lambda E_{\hat{x} \sim p_{\hat{x}}}\left[\left(\left\|\nabla_{\hat{x}} D(\hat{x})\right\|_{2}-1\right)^{2}\right].
 \end{equation}
+
 其中，$\lambda$为梯度惩罚项的权重，分布$p_{\hat{x}}$不是对整个样本空间采样，而只对分布$p_{data}$和分布$p_{g}$之间的空间采样。与朴素GAN的损失函数相比（见等式\ref{equ:gan_loss_func}）,判别器的损失函数不再取$\log$，这是因为WGAN-GP中不再使用Kullback-Leibler散度或者Jensen-Shannon散度。在训练WGAN-GP时，同样$D$和$G$先后交替训练。因此，固定$G$，更新$D$时，等效于最小化损失函数：
 \begin{gather*}
 \tilde{{x}} = G_{}({z}), \\
@@ -254,7 +297,7 @@ x^{*}=\underset{x}{\operatorname{argmin}}\left(C \cdot \mathcal{L}\left(A(x), A\
 	\centering
 	\begin{subfigure}{0.38\textwidth}
 		\centering
-		\includegraphics[width=1\textwidth]{figure/adversarial_erasing}
+		\includegraphics[width=1.0\textwidth]{figure/adversarial_erasing}
         \caption{对抗行性擦除弱监督目标定位方法。}
 		\label{subfig:adversarial_erasing}
 	\end{subfigure}
@@ -281,7 +324,7 @@ x^{*}=\underset{x}{\operatorname{argmin}}\left(C \cdot \mathcal{L}\left(A(x), A\
 近些年来，计算机视觉领域的提出的弱监督目标定位方法也被广泛用于定位医学影像中的异常区域，比如，胸部X射线影像中胸腔疾病病灶定位~\cite{WangPLLBS17}、胎盘超声影像中胎盘异常定位~\cite{Qi2017WeaklySL}、眼底图像中糖尿病性视网膜病变异常区域定位~\cite{GonzlezGonzalo2018ImprovingWL}、X射线图像中股骨近端骨折的定位~\cite{JimnezSnchez2018WeaklySupervisedLA}和X射线胸腔影像中异常区域定位~\cite{Yao2018WeaklySM, Tang2018AttentionGuidedCL}。
 
 
-\subsection{本节小结}\label{subsec:related_work_summary}
+%\subsection{本节小结}\label{subsec:related_work_summary}
 以上内容介绍了与疾病标记物相关的解决方案，包括MIL、CNN的可视化和弱监督目标定位，其中也不乏优秀精巧的模型，例如CAM和Grad-CAM，但是这些方法的共同劣势在于无法实现像素级的精确定位。一方面，这些方法最初并不是专门为解决疾病标记物定位任务而设计；另一方面，当这些方法被运用到在弱监督条件下疾病标记物定位任务上时，其背后实现原理决定了其无法实现精确的像素级定位，而只能定位到某个区域或者疾病标记物所在的区域或者所聚集的超像素。对于MIL中存在的取块操作，无论其取块尺寸大小，所得图像块都无法避免地包含正常区域。因此MIL方法无法精确定位到疾病标记物。CNN可视化方法中，扰动方法和遮挡方法与MIL一样均需要从图像中取块；激活最大化方法和网络逆转方法只能得到图像的最具判别性的图像特征或者模式；对于基于梯度的方法（比如Grad-CAM），由于在连续卷积作用下特征图通常会不断缩小，因此为了定位到疾病标记物，往往需要将卷积输出响应上采样到输入图像尺寸大小。不难想象，采样倍数越大，疾病标记物的定位越粗糙。如果将疾病标记物也看做是目标物体，那么弱监督目标定位任务的目标是用候选矩形框框出目标物体的位置，该任务目标要求本身就比本文目标低，另外以上弱监督目标定位方法往往需要是通过中间层目标物体相关的判别性区域来计算目标物体在原图中位置，这个计算过程也会涉及到上采样操作，因而弱监督目标定位方法也不无法精确定位疾病标记物。
 
 综上所述，包括MIL、CNN的可视化和弱监督目标定位在内的系列方法都只能粗略定位疾病标记物，精确定位疾病标记物仍是一个有待解决的问题。在弱监督条件下，一种精确定位疾病标记物的新方法亟待提出，这也是本文所有工作的根本出发点。

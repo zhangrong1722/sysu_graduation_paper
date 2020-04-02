@@ -1,3 +1,4 @@
+% style reference: https://github.com/sysu-thesis/sysu-thesis/blob/master/sysuthesis.cls
 \documentclass{classes/sysuthesis}
 \usepackage{multirow}
 \usepackage{amsmath}
@@ -10,17 +11,16 @@
     \frontmatter
         \pagenumbering{Roman}
         \maketitle    % 扉页
-        \makedisclaim       % 原创性及学位论文使用授权声明 
-         
-	    \makeabstract       % 中英文摘要
-        \maketableofcontents        % 目录
-        
+        %\makedisclaim       % 原创性及学位论文使用授权声明 
+	    %\makeabstract       % 中英文摘要
+        %\maketableofcontents        % 目录
+        %\makelistoffiguretable  % 表格列表
         %缩略语
-        \include{docs/Acronym}
+        %\include{docs/Acronym}
         %\newclearpage
         
         %数学符号
-        \include{docs/Symbol}
+        %\include{docs/Symbol}
         %\newclearpage
 
     % 论文主体部分
@@ -35,9 +35,9 @@
         %\newclearpage
         \include{docs/Chapter_04}
         %\newclearpage
-        \include{docs/Chapter_05}
+        %\include{docs/Chapter_05}
         %\newclearpage
-        \include{docs/Chapter_06}
+        %\include{docs/Chapter_06}
         %\newclearpage
         % 结语
 
@@ -45,26 +45,25 @@
     \backmatter
         % 参考文献
         \makereferences
-        %\bibliographystyle{bibtex-style}
-        %\bibliography{Bibliography/Reference.bib}
+        \bibliographystyle{Bibliography/bibtex-style/splncs04}
+        \bibliography{Bibliography/Reference}
         %\newclearpage
-        
         % 附录
     \appendix
-        \include{docs/Appendix1}
+        %\include{docs/Appendix1}
         %\newclearpage
         % \include{docs/Appendix2}
         % \newclearpage
         
         %后记
     \backmatter
-       \include{docs/Achievement}    % 科研成果目录
+       %\include{docs/Achievement}    % 科研成果目录
        % \newclearpage
         
-       \include{docs/Acknowledgements}    % 致谢
+       %\include{docs/Acknowledgements}    % 致谢
        % \newclearpage
         
-       \include{docs/Postscript}    % 中山大学学位论文版权使用授权书
+       %\include{docs/Postscript}    % 中山大学学位论文版权使用授权书
        % \newclearpage
 
 \end{document}
