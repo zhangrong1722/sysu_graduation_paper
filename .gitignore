@@ -3,7 +3,7 @@
 .DS_Store/*
 refs/*
 */main.pdf
-PDF/*.pdf
+comments/*.pdf
 MICCAI2019-Biomarker Localization by Combining CNN Classifier and Generative Adversarial Network.pdf
 
 # Ignore everything in the tests and old  directories
