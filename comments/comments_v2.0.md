@@ -8,4 +8,6 @@
 8. 图\label{fig:popular_encoder_decoder}  拆分为子图	图\label{fig:popular_networks}拆分为子图
 9. 论文结构与章节安排：重新排版latex description
 10. 矩阵（大写字母，黑体，非斜体） 向量（小写字母 黑体 非斜体） 标量（小写字母 斜体）介绍GAN的数学公式 重新整理 介绍CAM和Grad-CAM的时候 公式重新整理
-
+11. 第二章中列出不同方法 说明每种方式用了那种弱监督方法（TODO）
+12. 第三章损失函数写法（TODO）
+13. 
