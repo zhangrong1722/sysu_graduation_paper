@@ -4,6 +4,7 @@
 refs/*
 */main.pdf
 comments/*.pdf
+LaTeX/MacOs系统/figure/backup*
 MICCAI2019-Biomarker Localization by Combining CNN Classifier and Generative Adversarial Network.pdf
 
 # Ignore everything in the tests and old  directories
