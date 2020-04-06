@@ -125,25 +125,23 @@
 	\label{fig:simulated_skin_hist_freq}
 \end{figure}
 
-以上实验从额外训练的ResNet分类器简介说明本文提出的模型在定位并去除疾病标记物方面具有较强能力。在本小节中，我们还将“正常”四类数据集中的正常图像和异常图像均送入判别器，从而从判别器角度再次验证上述结论，判别器输出分数的频率分布直方图如图\ref{fig:simulated_skin_hist_freq}所示，图中黄色柱子表示判别器真图像输入端的输出分数，蓝色柱子表示判别器假图像输入端的输出分数。从图\ref{fig:simulated_skin_hist_freq}中我们可以发现根据判别器两端输出分数所绘制的频率直方图中有较大重叠面积。根据以上频率直方图，我们计算得到判别器两端输出分数的平均数分别为$1.3 $和$1.2$。而初试参数下，我们计算得到判别器两端输出的平均分数分别为$2.5$和$-0.5$，这说明在训练结束后，判别器输出两端输入图像的相似性得到了极大提升（平均分数差距：$3.0\rightarrow 0.1$），进一步说明判别器很难分辨输入图像的真/假，从而证明编码器-解码器的异常图像输出已经十分接近正常图像输出，由此我们可以推断出编码器-解码器已经很好的定位并去除了异常图像中的疾病标记物。
+以上实验从额外训练的ResNet分类器简介说明本文提出的模型在定位并去除疾病标记物方面具有较强能力。在本小节中，我们还将“正常”四类数据集中的正常图像和异常图像均送入判别器，从而从判别器角度再次验证上述结论，判别器输出分数的频率分布直方图如图\ref{fig:simulated_skin_hist_freq}所示，图中黄色柱子表示判别器真图像输入端的输出分数，蓝色柱子表示判别器假图像输入端的输出分数。从图\ref{fig:simulated_skin_hist_freq}中我们可以发现根据判别器两端输出分数所绘制的频率直方图中有较大重叠面积。根据以上频率直方图，我们计算得到判别器两端输出分数的平均数分别为$1.3 $和$1.2$。而初始参数下，我们计算得到判别器两端输出的平均分数分别为$2.5$和$-0.5$，这说明在训练结束后，判别器输出两端输入图像的相似性得到了极大提升（平均分数差距：$3.0\rightarrow 0.1$），进一步说明判别器很难分辨输入图像的真/假，从而证明编码器-解码器的异常图像输出已经十分接近正常图像输出，由此我们可以推断出编码器-解码器已经很好的定位并去除了异常图像中的疾病标记物。
 
 \section{不同超参数下的实验结果分析}\label{sec:multi_classes_hyper_paras}
-在本小节中，本文继续探究在不同不同超参数$\lambda_{1}$和$\lambda_{2}$组合下，本文提出的模型在疾病标记物定位任务上的性能表现，以评估本文提出的模型的鲁棒性。在学习率、优化器、迭代次数、模型结构等设置均保持不变的情况下，除了默认超参数组合外（$\lambda_{1}=4.0,\lambda_{2}=20.0$），我们还选取了另外$6$组不同超参数。在多类模拟皮肤病病变数据集上完成了相关实验后，分别根据第一类异常、第二类异常和第三类异常图像所绘制的P-R曲线分别如图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}、图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}所示，为了更方便地比较不同超参数下的模型性能，以上P-R曲线的AUC分数列在表\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}中。
+在本小节中，本文继续探究在不同不同超参数$\lambda_{1}$和$\lambda_{2}$组合下，本文提出的模型在疾病标记物定位任务上的性能表现，以评估本文提出的模型的鲁棒性。在学习率、优化器、迭代次数、模型结构等设置均保持不变的情况下，除了默认超参数组合外（$\lambda_{1}=4.0,\lambda_{2}=20.0$），我们还选取了另外$6$组不同超参数。在多类模拟皮肤病病变数据集上完成了相关实验后，分别根据第一类异常、第二类异常和第三类异常图像所绘制的P-R曲线分别如图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}、图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}所示。另外，为了更方便地比较不同超参数下的模型性能，我们将以上P-R曲线的平均AUC分数列在表\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}中。
 %另外，为了更为直观看出不同超参数组合下的模型性能，我们还将根据以上P-R曲线计算得到的AUC分数列在表\ref{tab:simulated_skin_diff_parameters}中。
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin_hyper_paras/IMAGE_NET_pr_curve.png}
 	\caption{不同超参数组合下第一类异常图像P-R曲线对比} 
 	\label{fig:multi_simulate_pr_curve_image_net_hyper_paras}
 \end{figure}
-%\vspace{-0.2cm}
-\begin{figure}[h]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin_hyper_paras/SKIN_pr_curve.png}
 	\caption{不同超参数组合下第二类异常图像P-R曲线对比}
 	\label{fig:multi_simulate_pr_curve_skin_hyper_paras}
 \end{figure}
-\vspace{-0.8cm}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin_hyper_paras/CIRCLE_pr_curve.png}
@@ -151,11 +149,10 @@
 	\label{fig:multi_simulate_pr_curve_circle_hyper_paras}
 \end{figure}
 
-从表\ref{tab:simulated_skin_diff_parameters}的平均AUC分数可以看出，本文的默认$\lambda_{1}$和$\lambda_{2}$超参数组合对疾病标记物的定位性能最佳。从各类异常上个AUC分数来看，除了第二类异常外，本文的默认参数均取得了最高AUC分数。我们还能发现，当超参数$\lambda_{1}$偏小时，比如$\lambda_{1}=1$（表中第$3$列），本文提出的模型（以下简称“模型”）取得的平均AUC较低（$0.590$），与默认超参数相比有所下降，极端情况下（$\lambda_{1}=0$）更是如此（表中第$7$列,平均AUC=$0.570$）。这是因为CNN分类器在模型中主要负责定位疾病标记物（实验验证参见\ref{sec:g_c_g_d_g_d_c_comparsion}小节），一旦CNN分类器在模型中占的权重（$\lambda_{1}$）较小，这显然会导致模型定位疾病标记物的定位精确度有所下降。当超参数$\lambda_{2}$偏小时，比如$\lambda_{2}=10$和$\lambda_2=0$，此时L1损失函数所占权重较小，则模型对图像修改的约束将会降低，那么模型在修改疾病标记物所在的像素强度的同时显然会不可避免地修改正常区域的像素强度，因此模型取得的平均AUC更低，平均AUC分别为$0.312$（表中第$5$列）和$0.442$（表中第8列）。反之，当$\lambda_{1}(\ge 4)$和$\lambda_{2}(\le 20)$取值较大时，模型对疾病标记物的定位性能较为稳定，如表中第$2$列（$\lambda_{1}=4, \lambda_{2}=20$）、第$4$列（$\lambda_{1}=10, \lambda_{2}=20$）和$6$列（$\lambda_{1}=4, \lambda_{2}=50$）中模型取得平均AUC分别为$0.668$、$0.659$、$0.628$，可证明模型的超参数适用范围较广，具有较好的鲁棒性。根据三类异常图像所绘制的P-R曲线同样可证明以上结论，图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}中，绿色P-R曲线明显在其他曲线上方，这说明模型在默认参数下，定位第一类异常和第三类异常的疾病标记物的性能最佳。而在图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}中，黄色P-R曲线（$\lambda_{1}=10,\lambda_{2}=20$）刚好能够包围其他P-R曲线，其AUC（AUC=$0.823$）也略微大于默认参数得到的AUC分数（AUC=$0.805$）。当超参数$\lambda_{1}$偏小甚至取$0$，图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}、图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}中，与绿色P-R曲线（默认参数），深红色P-R曲线（$\lambda_{1}=1$）和粉红色P-R曲线（$\lambda_{1}=0$）的AUC分数均较低，尤其是极端情况$\lambda_{1}=0$（图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}中深红色P-R曲线），其AUC最低（AUC=$0.135$），当$\lambda_{2}$取值过小（青色和黑色P-R曲线）或者过大（蓝色P-R曲线）时，情况也类似，与默认参数相比，其AUC也较低，尤其是图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}中青色P-R曲线，其AUC最低（AUC=$0.084$）。
-%（参见图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}、图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}）
+从图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}可以看出，绿色P-R曲线明显在其他曲线上方，这说明本文提出的模型（以下简称“模型”）在默认参数（$\lambda_{1}=4,\lambda_{2}=20$）下，定位第一类异常和第二类异常对应的疾病标记物的性能最佳。相反，在图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}中，黄色P-R曲线（$\lambda_{1}=10,\lambda_{2}=20$）刚好能够包围其他P-R曲线，其AUC（AUC=$0.823$）也略微大于绿色P-R曲线（黄色和绿色P-R曲线的AUC分别为$0.823$和$0.805$），这主要是因为因为第三类异常对应的疾病标记物相比第一类异常和第二类异常在图像中的更多、分布的范围也更广，因而CNN分类器权重（超参数$\lambda_{2}$）较大更有利于模型更全面、更准确地定位到第三类异常对应的疾病标记物。但是从平均AUC分数来看（见表\ref{tab:simulated_skin_diff_parameters}），模型在默认参数下平均AUC分数最高（AUC=$0.668$，表中第一列），可说明模型在默认参数下定位疾病标记物性能最佳。相比于默认参数（绿色P-R曲线），当超参数$\lambda_{1}$偏小甚至取$0$时，在图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}中，深红色P-R曲线（$\lambda_{1}=1$）和粉红色P-R曲线（$\lambda_{1}=0$）的AUC分数均较低，尤其是极端情况$\lambda_{1}=0$，图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}中深红色P-R曲线的AUC最低（AUC=$0.135$）。这说明，一旦CNN分类器在模型中占的权重（$\lambda_{1}$）较小，这会导致模型定位疾病标记物的性能有所下降，在极端情况（$\lambda_{1}=0$）下，CNN分类器没有发挥任何作用，此时模型定位性能最差。对于L1损失权重即超参数$\lambda_{2}$，当超参数$\lambda_{2}$偏小时，此时L1损失函数所占权重较小，则模型对图像修改的约束将会降低，那么模型在修改疾病标记物所在的像素强度的同时显然会不可避免地修改正常区域的像素强度，比如青色P-R曲线（$\lambda_{2}=10$）和黑色P-R曲线（$\lambda_2=0$），两条P-R曲线的AUC分数都较低，尤其是图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}中青色P-R曲线，其AUC最低（AUC=$0.084$）。反之，当超参数$\lambda_{2}$偏大时，比如蓝色P-R曲线（$\lambda_{2}=50$），通过图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}、图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}，我们均可以发现蓝色P-R曲线被绿色P-R曲线包围，更为直观的是看表\ref{tab:simulated_skin_diff_parameters}中的平均AUC分数，两者分别为$0.668$和$0.628$，这主要是因为当超参数$\lambda_{2}$取值过大时，L1损失权重过大，限制了判别器网络对图像的修改，最终导致模型定位性能下降。表\ref{tab:simulated_skin_diff_parameters}中第$2$列（$\lambda_{1}=4,\lambda_{2}=20$）、第$4$列（$\lambda_{1}=10,\lambda_{2}=20$）和$6$列（$\lambda_{1}=4,\lambda_{2}=50$）的平均AUC较为接近，分别为$0.668$、$0.659$、$0.628$，可说明模型的超参数适用范围较广，具有较好的鲁棒性。
 \begin{table}[H]
 	\centering
-	\caption{不同超参数组合下三类异常图像P-R曲线的AUC分数}
+	\caption{不同超参数组合下三类异常图像P-R曲线平均AUC分数}
 	\label{tab:simulated_skin_diff_parameters}
 	\resizebox{1.0\textwidth}{!}{
 		\begin{tabular}{c|c|c|c|c|c|c|c}
@@ -166,13 +163,13 @@
 			$\lambda_{1}=0,\lambda_{2}=20$ &
 			$\lambda_{1}=4, \lambda_{2}=0$\\
 			\midrule[2pt]
-			第一类异常	& $\textbf{0.236}$ &	$0.135 $ & $0.207$ & $0.084$ & $0.194$& $0.149$ &	$0.176$ \\\hline
+			%第一类异常	& $\textbf{0.236}$ &	$0.135 $ & $0.207$ & $0.084$ & $0.194$& $0.149$ &	$0.176$ \\\hline
 
-			第二类异常	& $\textbf{0.962}$ &	$0.884 $ & $0.946$ & $0.627$ & $0.910$& $0.847$ & $0.644$	 \\\hline
+			%第二类异常	& $\textbf{0.962}$ &	$0.884 $ & $0.946$ & $0.627$ & $0.910$& $0.847$ & $0.644$	 \\\hline
 
-			第三类异常	& $0.805$ &	$0.750 $ & $\textbf{0.823}$ & $0.226$ & $0.779$& $0.714$ & $0.505$	 \\\hline
+			%第三类异常	& $0.805$ &	$0.750 $ & $\textbf{0.823}$ & $0.226$ & $0.779$& $0.714$ & $0.505$	 \\\hline
 
-			Average AUC	& $\textbf{0.668}$ &	$0.590 $ & $0.659$ & $0.312$ & $0.628$& $0.570$ &	$0.442$ \\
+			平均AUC	& $\textbf{0.668}$ &	$0.590 $ & $0.659$ & $0.312$ & $0.628$& $0.570$ &	$0.442$ \\
 			\bottomrule[2pt]
 		\end{tabular}
 	}

@@ -173,50 +173,61 @@ CNN分类器主要考虑的问题是如何选择一个较为优秀的分类网�
 \begin{equation}\label{equ:model_loss_func}
 \mathcal{L}=\min _{G, C} \max _{D} \quad L_{GAN}(D, G)+\lambda_{1} L_{C E}(C, G)+\lambda_{2} L_{E D}(G).
 \end{equation}
-其中，$L_{GAN}(D, G)$表示对抗生成网络的损失函数（本文使用WGAN-GP），$L_{CE}(C, G)$表示CNN分类器的交叉熵损失函数，$L_{E D}(G)$是约束编码器-解码器的损失函数（本文使用L1损失函数），用于强调输入和输出之间的相似性，$\lambda{1}$和$\lambda_{2}$是两个超参数，用于平衡各个损失函数之间的权重。注意$L_{E D}(G)$这一项是不可缺少的，一旦缺少（$\lambda_{2}=0$），在CNN分类器和判别器的指导下，编码器-解码器很可能在修改疾病标记物所在区域的同时还会修改正常区域，导致不可避免地出现假阳现象。
+其中，$L_{GAN}(D,G)$表示对抗生成网络的损失函数（本文使用WGAN-GP），$L_{CE}(C, G)$表示CNN分类器的交叉熵损失函数，$L_{E D}(G)$是约束编码器-解码器的损失函数（本文使用L1损失函数），用于强调输入和输出之间的相似性，$\lambda{1}$和$\lambda_{2}$是两个超参数，用于平衡各个损失函数之间的权重。注意$L_{E D}(G)$这一项是不可缺少的，一旦缺少（$\lambda_{2}=0$），在CNN分类器和判别器的指导下，编码器-解码器很可能在修改疾病标记物所在区域的同时还会修改正常区域，导致不可避免地出现假阳现象。
 
-接下来，本文将给出每个步骤训练时的损失函数。根据等式\ref{equ:model_loss_func}和\ref{item:training_steps}小节中描述的训练策略，本文可进一步分别给出本文两步训练的损失函数。设$\ve{x}$是随机从整个样本空间（包括正常图像和异常图像）中取得的一张图像，对应类别标签为$\ve{y}$。设第一步的损失函数为$L(\ve{x};\vv{\theta})$，则第一步训练的目标是最小化损失函数$L(\ve{x};\vv{\theta})$：
+接下来，本文将给出每个步骤训练时的损失函数。根据等式\ref{equ:model_loss_func}和\ref{item:training_steps}小节中描述的训练策略，本文可进一步分别给出本文两步训练的损失函数。设第一步和第二步的损失函数分别为$L_1$和$L_2$，则第一步训练的损失函数$L_1$定义为：
 \begin{equation}
-L(\ve{x};\vv{\theta}) = \lambda_{1} L_{CE}(G(\ve{x};\vv{\theta})-\ve{x},\ve{y}) + \lambda_{2}L_{ED}(G(\ve{x};\vv{\theta}), \ve{x}).
+\min_{G, C} \;\; L_{1}=\lambda_1 L_{CE}(C,G) + \lambda_2 L_{ED}(G).
 \end{equation}
-\noindent 设分布$x\sim p_n$表示给定的正常图像数据的分布，$z\sim p_l$表示给定的异常图像数据的分布。则第二步训练由编码器-解码器和判别器组成的对抗生成网络的目标可表示为最小化损失函数$L_{GAN}(G, D)$：
-\begin{equation}\label{equ:training_gan_loss}
-L_{GAN}(G, D)=D(G(z))-D(x)+\lambda \left[\left(\left\|\nabla_{\hat{x}} D(\hat{x})\right\|_{2}-1\right)^{2}\right].
+%设正常图像数据分布为$\ve{x}\sim \text{p}_{\text{n}}(\ve{x})$，异常图像数据分布为$\ve{z}\sim \text{p}_{\text{l}}(\ve{z})$，包括正常图像和异常图像在内的所有图像数据分布为$\ve{y}\sim \text{p}_{\text{all}}(\ve{y})$，分布$\text{p}_{\text{all}}$的随机取样$\ve{y}$对应的图像标签为$\ve{l}$，分布。设第一步的损失函数为$L(\ve{x};\vv{\theta})$，则第一步训练的目标是最小化损失函数$L(\ve{x};\vv{\theta})$：
+%\begin{equation}
+%L(\ve{x};\vv{\theta}) = \lambda_{1} %L_{CE}(G(\ve{x};\vv{\theta})-\ve{x},\ve{l}) + %\lambda_{2}L_{ED}(G(\ve{x};\vv{\theta}), \ve{x}).
+%\end{equation}
+第二步中训练由编码器-解码器和判别器组成的对抗生成网络，则损失函数$L_2$可定义为：
+%L_{GAN}(G, D)$：
+%\begin{equation}\label{equ:training_gan_loss}
+%L_{GAN}(G, D)=L()=D(\ve{x};\vv{\theta})-D(G(\ve{z};\vv{\theta});\vv{\theta})+\lambda \left[\left(\left\|\nabla_{\hat{x}} D(\hat{\ve{x}};\vv{\theta})\right\|_{2}-1\right)^{2}\right].
+%\end{equation}
+%其中分布$p_{\hat{x}}$不是对分布$p_{all}$代表的空间采样，而只对分布$p_n$和给定分布$\text{p}_{\text{l}}$时编码器-解码器生成的图像数据分布之间的公共空间采样，$\lambda$是梯度惩罚项的权重。由于对抗生成网络的训练也是分两个阶段完成的，本文将进一步介绍每一步对应的损失函数，则训练对抗生成网络的第一步（固定$G$而更新$D$）对应的损失函数为最小化等式\ref{equ:training_gan_loss}。而第二步（固定D而更新G）对应的目标可表示为最小化损失函数${L}_{u\_d}$：
+%\begin{equation*}
+%	{L}_{u\_d}=-D\left(G(z)\right) + \lambda_{2}\left[L_{ED}(G(z), z) + L_{ED}(G(x), x)\right].
+%\end{equation*}
+\begin{equation}
+\min_{G} \max_D \;\; L_{2}= L_{GAN}(D,G) + \lambda_2 L_{ED}(G).
 \end{equation}
-其中分布$p_{\hat{x}}$不是对分布$p_{all}$代表的空间采样，而只对分布$p_n$和分布$p_l$之间的公共空间采样，$\lambda$是梯度惩罚项的权重。由于对抗生成网络的训练也是分两个阶段完成的，本文将进一步介绍每一步对应的损失函数，则训练对抗生成网络的第一步（固定$G$而更新$D$）对应的损失函数为最小化等式\ref{equ:training_gan_loss}。而第二步（固定D而更新G）对应的目标可表示为最小化损失函数${L}_{u\_d}$：
-\begin{equation*}
-	{L}_{u\_d}=-D\left(G(z)\right) + \lambda_{2}\left[L_{ED}(G(z), z) + L_{ED}(G(x), x)\right].
-\end{equation*}
-\noindent 到这里，本文将模型方法相关内容叙述都已描述完毕。为了更为清晰表示其训练过程及其损失函数，与之对应的算法过程描述如算法\ref{alg:net}所示。
+
+到这里，本文将模型方法相关内容叙述都已描述完毕。为了更为清晰表示其训练过程及其损失函数，与之对应的算法过程描述如算法\ref{alg:net}所示。从算法\ref{alg:net}也可以看出，本文中GAN选用的是WGAN-GP。
 \begin{algorithm}[h]
 	\SetAlgoLined
-	\caption{本文提出的新型网络模型训练过程描述图。}
+	\caption{本文提出的新型网络模型训练过程描述图}
 	\label{alg:net}
 	%\KwIn{Sample normal images $x\in \mathbb{P}_n$, lesion images $z\in \mathbb{P}_l$.}
 	%\KwOut{$y$, the net activation}
 	%$y\leftarrow 0$\;
 	\SetKwInOut{Input}{Input}\SetKwInOut{Output}{output}
-	\Input{learning rate $\alpha$, batch size $m$, hyperparameters $\lambda _1$ and $\lambda _2$, encoder-decoder's parameters $\theta _g$, classifier's parameters $\theta _c$, discriminator's parameters $\theta _d$, maximum iterations $K$.}
+	\Input{learning rate $\alpha$, batch size $m$, hyperparameters $\lambda _1$ and $\lambda _2$, encoder-decoder's parameters $\vv{\theta} _g$, classifier's parameters $\vv{\theta} _c$, discriminator's parameters $\vv{\theta} _d$, maximum iterations $K$.}
 	\nl \For{$k\leftarrow 1$ \KwTo $K$}{
 		%reference: http://mlg.ulb.ac.be/files/algorithm2e.pdf
 		\nl
-		Sample a batch $\{\ve{x}^{(i)}\}_{i=1}^{m}$ from the normal dataset, and a batch $\{\ve{z}^{(i)}\}_{i=1}^{m}$ from the abnormal dataset; collect both to get batch $y=\{y^{(i)}\}_{i=1}^{2m}$ and set their corresponding label as.\\
-		\nl	$L_{u\_c}$ $\leftarrow \lambda _1$[$\frac{1}{2m}\sum_{i=1}^{2m}$$L_{CE}(C, G(y^{(i)}))$] + $\lambda _2[\frac{1}{2m}\sum_{i=1}^{2m}L_{ED}G(y^{(i)})]$  \\
-		\nl	$\theta _g$$\leftarrow Adam(\nabla _{\theta _g}  L_{u\_c}, \theta _g, \alpha)$ 
+		Sample a batch $\{\ve{x}^{(i)}\}_{i=1}^{m}$ from the normal dataset, and a batch $\{\ve{z}^{(i)}\}_{i=1}^{m}$ from the abnormal dataset; collect both to get batch $\ve{y}=\{\ve{y}^{(i)}\}_{i=1}^{2m}$, and their corresponding labels $\ve{l}=\{\ve{l}^{(i)}\}_{i=1}^{2m}$.\\
+		\nl	$L(\ve{y},\ve{l};\vv{\theta})$ $\leftarrow \lambda _1$[$\frac{1}{2m}\sum_{i=1}^{2m}$$L_{CE}(C(G(\ve{y}^{(i)};\vv{\theta});\vv{\theta}), \ve{l}^{(i)})$] $+$\\
+		\qquad \qquad \, \, \, $\lambda _2[\frac{1}{2m}\sum_{i=1}^{2m}L_{ED}(G(\ve{y}^{(i)};\vv{\theta}),\ve{y}^{(i)})]$  \\
+		\nl	$\vv{\theta} _g$$\leftarrow Adam(\nabla _{\vv{\theta} _g} L(\ve{y},\ve{l};\vv{\theta}), \vv{\theta} _g, \alpha)$
 		\tcp*{minimize G}
-		\nl	$\theta _c$$\leftarrow Adam(\nabla _{\theta _c} L_{u\_c}, \theta _c, \alpha)$  
+		\nl	$\vv{\theta} _c$$\leftarrow Adam(\nabla _{\vv{\theta} _c} L(\ve{y},\ve{l};\vv{\theta}), \vv{\theta} _c, \alpha)$
 		\tcp*{minimize C}
-		\nl	$\hat{x}^{(i)}\leftarrow \eta x^{(i)} + (1-\eta)z^{(i)}$, $\eta\sim U(0, 1)$ ;\\
-		$L_{u\_d}$ $\leftarrow $$\frac{1}{m}\sum_{i=1}^{m}$$L_{GAN}(D(G(z^{(i)}))-D(x^{(i)})+\left(\left\|\nabla_{\hat{x}^{(i)}} D(\hat{x}^{(i)})\right\|_{2}-1\right)^{2})$ + \\
-		\quad \qquad $\lambda _2[\frac{1}{2m}\sum_{i=1}^{2m}L_{ED}(G(y^{(i)}))]$  \\
-		\nl	$\theta _d$$\leftarrow -Adam(\nabla _{\theta _d} L_{u\_d}, \theta _d, \alpha)$ 
+		\nl	$\hat{\ve{x}}^{(i)}\leftarrow \eta \ve{x}^{(i)} + (1-\eta)G(\ve{z}^{(i)};\vv{\theta})$, $\eta\sim \text{U}(0, 1)$ ;\\
+		
+		$L(\ve{x},\hat{\ve{x}},\ve{z};\vv{\theta})$ $\leftarrow $$\frac{1}{m}\sum_{i=1}^{m}$$[D(G(\ve{z}^{(i)};\vv{\theta});\vv{\theta})-$$D(\ve{x}^{(i)};\vv{\theta})+$\\ \qquad \qquad \qquad \qquad \quad \,\, $\left(\left\|\nabla_{\hat{\ve{x}}^{(i)}} D(\hat{\ve{x}}^{(i)};\vv{\theta})\right\|_{2}-1\right)^{2}]$ \\
+		\nl	$\vv{\theta} _d$$\leftarrow -Adam(\nabla _{\vv{\theta} _d} L(\ve{x},\hat{\ve{x}},\ve{z};\vv{\theta}), \vv{\theta} _d, \alpha)$ 
 		\tcp*{maximize D}
-		\nl	$\theta _g$$\leftarrow Adam(\nabla _{\theta _g} L_{u\_d}, \theta _g, \alpha)$ 
+		$L(\ve{x}, \ve{z}; \vv{\theta})\leftarrow -\frac{1}{m}\sum_{i=1}^{m}D(G(\ve{z}^{(i)};\vv{\theta});\vv{\theta})+\lambda_2[\frac{1}{m}\sum_{i=1}^{m}L_{ED}(G(\ve{x}^{(i)};\vv{\theta}),\ve{x}^{(i)})+$
+		\\ \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \qquad \,
+		$\frac{1}{m}\sum_{i=1}^{m}L_{ED}(G(\ve{z}^{(i)};\vv{\theta}),\ve{z}^{(i)}))]$\\
+		\nl	$\vv{\theta} _g$$\leftarrow Adam(\nabla _{\vv{\theta} _g} L(\ve{x}, \ve{z}; \vv{\theta}), \vv{\theta} _g, \alpha)$ 
 		\tcp*{minimize G}
 	}
 \end{algorithm}
-
-%\noindent 从算法\ref{alg:net}可以看出，本文模型训练的难点在于编码器-解码器和判别器组成的对抗生成网络，本文模型最终选用的是WGAN-GP。
 \section{本章小结}\label{sec:chapter3_summary}
 本章内容主要围绕介绍本文提出的模型方法结构而展开。首先在\ref{sec:idea_thinking}小节介绍了本文提出新型方法的背后思考、相关模型分析以及引入各个子模块的必要性和重要性。简单来说，本文提出的模型共包括三个子模块：编码器-解码器、CNN分类器和判别器。该模型以编码器-解码器为骨架网络，以CNN分类器和判别器为辅助角色来指导编码器-解码器，使其具备识别疾病标记物的能力。另外，编码器-解码器和判别器组成了对抗生成网络。与传统的CAM和Grad-CAM等方法不同的是，本文从图像生成的角度来完成疾病标记物精确定位任务，给定任意一张输入图像，希望通过CNN分类器给出其类别（正常/异常），如果是异常，通过编码器-解码器的输出和输入之差来给出疾病标记物的精确位置。随后，本文在\ref{sec:model_architecture_intro}小节给出模型结构图，并详细介绍了三个子模块的模型结构示意图（相关内容参见\ref{subsec:encoder_decoder_model}小节、\ref{subsec:cnn_classifier_model}小节和\ref{subsec:discrimintor_model}小节），以期读者不仅能对本文提出的模型有宏观上的理解，还不缺对各个子模块细节上的详实说明。最后，本文在\ref{sec:loss_func_training_stragies}小节中给出了模型训练的两步训练策略（见\ref{item:training_steps}小节）和模型训练的损失函数（见等式\ref{equ:model_loss_func}）。为了方便读者进一步理解本文提出的训练策略，在算法\ref{alg:net}中，本文还用形式化语言描述了模型训练过程以及每一步的损失函数。到此，本文提出的模型方法的相关介绍结束，接下来将在第\ref{sec:experiments}章和第\ref{sec:multi_classes}章中介绍相关实验。
 

@@ -127,14 +127,11 @@ CNN可以很好避免多层感知机存在的问题，卷积操作首先可以�
 	\end{equation*}
 \end{itemize}
 
-以上朴素GAN中生成器和判别器均是多层感知机。在实际训练过程中存在参数量过大、训练困难、损失函数不具备可解释性、模式崩塌、容易出现梯度消失等问题，这些问题经常导致训练GAN失败。鉴于以上情况，各种改进模型相继提出，Alec等人~\cite{radford2015unsupervised}成功将CNN和GAN结合起来，提出了DCGAN，用CNN代替生成器和判别器中的多层感知机，使得训练GAN更加容易，生成图像的分辨率也更高。针对训练过程中存在的梯度消失和模式崩塌问题，Martin等人~\cite{arjovsky2017wasserstein}提出了WGAN，使用Wasserstein-1距离代替素朴GAN~\cite{goodfellow2014generative}中使用的Kullback-Leibler散度~\cite{Kullback1951ONIA}或者Jensen-Shannon散度~\cite{Kantor2001FoundationsOS}，并且采用权值截断（Weight Clipping）满足利普希茨连续条件\footnote{https://en.wikipedia.org/wiki/Lipschitz\_continuity}（Lipschitz Continuity），但这也会造成权值趋向两个截断阈值，导致GAN不容易收敛。为了更好满足利普希茨连续条件，Ishaan等人~\cite{gulrajani2017improved}采用梯度惩罚项（Gradient Penalty），提出了WGAN-GP。由于WGAN-GP可以有效避免GAN训练过程中的梯度消失问题，其训练过程也比较稳定，网络收敛得也较快。另外，Wasserstein-1距离还对训练过程有指示作用，Wasserstein-1距离越接近0，表示WGAN-GP训练得越好。基于以上诸多优势，本文网络模型中的GAN采用WGAN-GP。与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此判别器最后一层也不再有Sigmoid激活函数。设$\text{p}_\text{g}$表示给定噪音分布$\ve{z}\sim \text{p}_{\text{z}}$时生成器所代表的数据分布。再加上梯度惩罚项，WGAN-GP的优化目标$V(D, G)$可写作：
+以上朴素GAN中生成器和判别器均是多层感知机。在实际训练过程中存在参数量过大、训练困难、损失函数不具备可解释性、模式崩塌、容易出现梯度消失等问题，这些问题经常导致训练GAN失败。鉴于以上情况，各种改进模型相继提出，Alec等人~\cite{radford2015unsupervised}成功将CNN和GAN结合起来，提出了DCGAN，用CNN代替生成器和判别器中的多层感知机，使得训练GAN更加容易，生成图像的分辨率也更高。针对训练过程中存在的梯度消失和模式崩塌问题，Martin等人~\cite{arjovsky2017wasserstein}提出了WGAN，使用Wasserstein-1距离代替素朴GAN~\cite{goodfellow2014generative}中使用的Kullback-Leibler散度~\cite{Kullback1951ONIA}或者Jensen-Shannon散度~\cite{Kantor2001FoundationsOS}，并且采用权值截断（Weight Clipping）满足利普希茨连续条件\footnote{https://en.wikipedia.org/wiki/Lipschitz\_continuity}（Lipschitz Continuity），但这也会造成权值趋向两个截断阈值，导致GAN不容易收敛。为了更好满足利普希茨连续条件，Ishaan等人~\cite{gulrajani2017improved}采用梯度惩罚项（Gradient Penalty），提出了WGAN-GP。由于WGAN-GP可以有效避免GAN训练过程中的梯度消失问题，其训练过程也比较稳定，网络收敛得也较快。另外，Wasserstein-1距离还对训练过程有指示作用，Wasserstein-1距离越接近0，表示WGAN-GP训练得越好。基于以上诸多优势，本文网络模型中的GAN采用WGAN-GP。与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此判别器最后一层也不再有Sigmoid激活函数。设$\ve{y}\sim \text{p}_\text{g}(\ve{y})$表示给定噪音分布$\ve{z}\sim \text{p}_{\text{z}}(\ve{z})$时生成器所代表的数据分布。再加上梯度惩罚项，WGAN-GP的优化目标$V(D, G)$可写作：
 \begin{equation*}\label{wgan_gp_loss_func}
-\min _{G} \max _{D} V(D, G)=E_{\ve{x} \sim \text{p}_{\text{data}}}[D(\ve{x};\vv{\theta})]-E_{\ve{x} \sim \text{p}_{\text{g}}}[D(\ve{x};\vv{\theta})]+\lambda E_{\hat{\ve{x}} \sim \text{p}_{\hat{\ve{x}}}}\left[\left(\left\|\nabla_{\hat{\ve{x}}}D(\hat{\ve{x}};\vv{\theta})\right\|_{2}-1\right)^{2}\right].
+\min _{G} \max _{D} V(D, G)=\mathbb{E}_{\ve{x} \sim \text{p}_{\text{data}}}[D(\ve{x};\vv{\theta})]-\mathbb{E}_{\ve{y} \sim \text{p}_{\text{g}}}[D(\ve{y};\vv{\theta})]+\lambda \mathbb{E}_{\hat{\ve{x}} \sim \text{p}_{\hat{\ve{x}}}}\left[\left(\left\|\nabla_{\hat{\ve{x}}}D(\hat{\ve{x}};\vv{\theta})\right\|_{2}-1\right)^{2}\right].
 \end{equation*}
-%\begin{eqnarray} \label{eq:triplet}
-%l(\ve{x}_i, \ve{y}_i, \ve{z}_i; \vv{\theta}) = [\|\ve{f}(\ve{x}_i; \vv{\theta}) - \ve{f}(\ve{y}_{i}; \vv{\theta}) \| + \alpha - \|\ve{f}(\ve{x}_i; \vv{\theta}) - \ve{f}(\ve{z}_{i}; \vv{\theta}) \|]_{+},
-%\end{eqnarray}
-\noindent 其中，$\lambda$为梯度惩罚项的权重，注意此处分布$\text{p}_{\hat{\ve{x}}}$不是对整个样本空间采样，而只对分布$\text{p}_{\text{data}}$和分布$\text{p}_{\text{g}}$之间的空间采样。与朴素GAN的损失函数相比,判别器的损失函数不再取$\log$，这是因为WGAN-GP中不再使用Kullback-Leibler散度或者Jensen-Shannon散度。在训练WGAN-GP时，同样判别器和生成器先后交替训练：
+其中，$\lambda$为梯度惩罚项的权重，注意此处分布$\text{p}_{\hat{\ve{x}}}$不是对整个样本空间采样，而只对分布$\text{p}_{\text{data}}$和分布$\text{p}_{\text{g}}$之间的空间采样。与朴素GAN的损失函数相比,判别器的损失函数不再取$\log$，这是因为WGAN-GP中不再使用Kullback-Leibler散度或者Jensen-Shannon散度。在训练WGAN-GP时，同样判别器和生成器先后交替训练：
 \begin{itemize}
 	\item 固定生成器，更新判别器。这等效于最小化损失函数$L(\ve{x},\ve{z};\vv{\theta})$：
 	\begin{gather*}
@@ -272,7 +269,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 \end{equation*}
 其中，$\mathcal{L}$是计算输入特定层前后的特征图$\ve{A}(\ve{x}_0)$和$\ve{A}(\ve{x})$的损失函数，$\lambda(\ve{x})$是正则项，$C$是调节损失函数和正则项的超参数。为了让重建图像更像自然图像，$\lambda(\ve{x})$可取L2-范数、全变差范数（Total Variation Norm）~\cite{rudin1992nonlinear}等。其中，全变差范数可让重建图像更为平滑，较低的锐度。与激活最大化方法~\cite{simonyan2013deep}相同的是，网络逆转方法也是通过重建输入图像来查看网络层对那些像素或者图像模式更为敏感，但是网络逆转方法可应用到网络任意层，而不限于网络第一层，因而泛化性更强。
 
-如果将这些CNN的可视化方法用于定位疾病标记物，可通过可视化图像区域，将CNN分类器在预测图像类别时重点关注的区域看作是疾病标记物。其中，扰动方法~\cite{zintgraf2017visualizing}对每个可能的局部区域进行遮挡或遮罩，并检查分类器输出的变化，输出的下降量越大，说明在预测图像类时的重要性越高。相比之下，特征激活方法则是在特定卷积层输出的特征映射中，根据激活区域来定位重要的局部区域，如流行的类激活映射(CAM~\cite{zhou2016learning})及其变体Grad-CAM~\cite{selvaraju2017grad}等。近年来，基于CAM的方法在医学图像分析中得到了广泛的应用，如胸部X线图像~\cite{rajpurkar2017chexnet}中肺炎的检测、数字病理图像~\cite{zhang2017mdnet}中膀胱癌的预测、眼底图像中糖尿病视网膜病变异常区域定位~\cite{Gondaletal17}、胎盘超声影像中胎盘异常定位~\cite{Qi2017WeaklySL}、MRI图像~\cite{yang2018visual}中阿尔茨海默病的诊断等。与CAM和Grad-CAM同样作为一种可视化方法，特征图方法~\cite{simonyan2013deep}利用CNN中的梯度信息计算输入图像中的像素点对图像分类结果的重要性分数。在医学影像处理领域中，该方法可用于解决多通道脑部MRI图像中的肿瘤检测~\cite{banerjee2016novel}、脑部MRI图像中的肿瘤体积检测~\cite{mitra2017volumetric}、皮肤镜图像中的异常分割~\cite{jahanifar2018supervised}等诸多问题。
+如果将这些CNN的可视化方法用于定位疾病标记物，可通过可视化图像区域，将CNN分类器在预测图像类别时重点关注的区域看作是疾病标记物。其中，扰动方法~\cite{zintgraf2017visualizing}对每个可能的局部区域进行遮挡或遮罩，并检查分类器输出的变化，输出的下降量越大，说明在预测图像类时的重要性越高。相比之下，特征激活方法则是在特定卷积层输出的特征映射中，根据激活区域来定位重要的局部区域，如流行的类激活映射(CAM~\cite{zhou2016learning})及其变体Grad-CAM~\cite{selvaraju2017grad}等。近年来，基于CAM的方法在医学图像分析中得到了广泛的应用，如胸部X射线图像~\cite{rajpurkar2017chexnet}中肺炎的检测、数字病理图像~\cite{zhang2017mdnet}中膀胱癌的预测、眼底图像中糖尿病视网膜病变异常区域定位~\cite{Gondaletal17}、胎盘超声影像中胎盘异常定位~\cite{Qi2017WeaklySL}、MRI图像~\cite{yang2018visual}中阿尔茨海默病的诊断等。与CAM和Grad-CAM同样作为一种可视化方法，特征图方法~\cite{simonyan2013deep}利用CNN中的梯度信息计算输入图像中的像素点对图像分类结果的重要性分数。在医学影像处理领域中，该方法可用于解决多通道脑部MRI图像中的肿瘤检测~\cite{banerjee2016novel}、脑部MRI图像中的肿瘤体积检测~\cite{mitra2017volumetric}、皮肤镜图像中的异常分割~\cite{jahanifar2018supervised}等诸多问题。
 
 \subsection{弱监督目标定位}
 弱监督目标定位任务需要在提供图像级标签的情况下，给出对应类别物体的相关区域。Oquab等人~\cite{Oquab2015IsOL}率先使用CNN描述并解决弱监督目标定位问题，随后一系列运用CNN解决弱监督目标定位问题的方法被提出。在弱监督条件下，解决目标定位任务最常见的思路是利用CNN分类器产生有关于目标位置的监督信号。目标位置的监督信号可以来自于网络本身，还可以由其他方法产生。前者可以理解为一种自监督方法~\cite{2015Hwang}，后者可以利用CAM或者Grad-CAM产生目标的位置信息~\cite{Kim_2017_ICCV, Krishna2018}。另外一种思路与CNN可视化中遮挡实验类似，设计多个网络进行对抗性擦除~\cite{WeiFLCZY17, ZhangWF0H18}，并采用递归方式生成定位结果，直到分类CNN训练失败。还可以引入注意力机制，指导分类器生成更具判别性区域。
@@ -297,7 +294,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 \end{figure}
 
 \subsubsection{对抗性擦除与注意力机制}
-对抗性擦除最初由Wei等人~\cite{WeiFLCZY17}提出，通过对抗性擦除，分类网络首先为特定图像类别标签挖掘最具区分性的区域。然后从图像中删除已发现的判别性区域，并且对分类网络进行了重新训练，以发现一个新的目标区域以尽量保证不会降低分类性能。他们采用递归方式、多次重复这种对抗性擦除过程，直到分类网络训练失败（可将分类网络训练失败定义为对分类网络的可视化结果性能较差），再将擦除的区域合并为一个完整的前景定位蒙版，其网络模型如图\ref{subfig:adversarial_erasing}所示。由于上述对抗性擦除擦除方法中设置了三个CNN分类器，并且不是端到端训练方式，Zhang等人~\cite{ZhangWF0H18}提出了上述对抗性擦除的改进版本，将这些独立的CNN集成到单个网络中，只需要设置两个CNN分类器，并进行端到端的训练，取得了更为优异的定位性能，其网络结构如图\ref{subfig:improved_adversarial_learning}所示。
+对抗性擦除最初由Wei等人~\cite{WeiFLCZY17}提出，通过对抗性擦除，分类网络首先为特定图像类别标签挖掘最具区分性的区域。然后从图像中删除已发现的判别性区域，并且对分类网络进行了重新训练，以发现一个新的目标区域以尽量保证不会降低分类性能。他们采用递归方式、多次重复这种对抗性擦除过程，直到分类网络训练失败（可将分类网络训练失败定义为对分类网络的可视化结果性能较差），再将擦除的区域合并为一个完整的前景定位蒙版，其网络模型如图\ref{subfig:adversarial_erasing}所示。由于上述对抗性擦除擦除方法中设置了三个CNN分类器，并且不是端到端训练方式，这需要分多阶段逐步训练CNN，这会造成网络训练时间较长、效率也不够高。Zhang等人~\cite{ZhangWF0H18}提出了上述对抗性擦除的改进版本，将这些独立的CNN集成到单个网络中，只需要设置两个CNN分类器，并进行端到端的训练，不仅缩短了网络训练周期，还取得了更为优异的定位性能，其网络结构如图\ref{subfig:improved_adversarial_learning}所示。
 
 \begin{figure}[h!]
 	\centering
@@ -318,8 +315,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 	\label{mul_fig:weakly_supervised_localization}
 \end{figure}
 
-注意力机制模仿了生物观察行为的内部过程，注意力机制可以快速提取稀疏数据的重要特征，因而最初被广泛用于自然语言处理任务，特别是机器翻译。Teh等人\cite{BMVC2016_52}将注意力机制用于弱监督目标定位，利用注意力机制产生每个特征图的注意力分数，其数值大小表示特征图的重要性程度，从而让分类器能够专注于与特定类最相关的特征或者模式，而目标定位结果可由特征图的加权平均给出，而权值便是对应特征图的注意力分数，其网络结构如图\ref{fig:attention_weakly_supervised_object_localization}所示。
-\vspace{-0.2cm}
+注意力机制模仿了生物观察行为的内部过程，注意力机制可以快速提取稀疏数据的重要特征，最初被广泛用于自然语言处理任务，特别是机器翻译，可帮助网络关注图像中辅助判断的部分信息，与此同时忽略不相关信息，因而也被广泛用于处理视觉问题。Teh等人\cite{BMVC2016_52}将注意力机制用于弱监督目标定位，利用注意力机制产生每个特征图的注意力分数，其数值大小表示特征图的重要性程度，从而让分类器能够专注于与特定类最相关的特征或者模式，而目标定位结果可由特征图的加权平均给出，而权值便是对应特征图的注意力分数，其网络结构如图\ref{fig:attention_weakly_supervised_object_localization}所示。
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/attention_weakly_supervised_object_localization}
@@ -327,16 +323,14 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 	\label{fig:attention_weakly_supervised_object_localization}
 \end{figure}
 
-近些年来，计算机视觉领域的提出的弱监督目标定位方法也被广泛用于定位医学影像中的异常区域，比如，胸部X射线影像中胸腔疾病病灶定位~\cite{WangPLLBS17}（预训练模型产生监督信号）、眼底图像中糖尿病性视网膜病变异常区域定位~\cite{GonzlezGonzalo2018ImprovingWL}、X射线图像中股骨近端骨折的定位~\cite{JimnezSnchez2018WeaklySupervisedLA}和X射线胸腔影像中异常区域定位~\cite{Yao2018WeaklySM, Tang2018AttentionGuidedCL}。
-
+近些年来，计算机视觉领域的提出的弱监督目标定位方法也被广泛用于定位医学影像中的异常区域。比如，Wang等人~\cite{WangPLLBS17}利用预训练模型产生监督信号辅助定位胸部X射线影像中胸腔疾病病灶，Zhuang等人~\cite{zhuang2019care}则是利用CAM产生异常区域的监督信号来辅助定位皮肤镜图像中黑色素瘤异常区域和X射线图像中肺炎异常区域。Gonz{\'a}lez-Gonzalo等人~\cite{GonzlezGonzalo2018ImprovingWL}采用循环递归擦除方式不断屏蔽眼底图像中的某些区域来发现判别性区域来定位眼底图像中糖尿病性视网膜病变异常区域，Jim{\'e}nez-S{\'a}nchez等人~\cite{JimnezSnchez2018WeaklySupervisedLA}整合了自迁移学习和CAM定位X射线图像中股骨近端骨折区域，Tang等人~\cite{Tang2018AttentionGuidedCL}直接引入注意力机制来定位X射线胸腔影像中异常区域。Xiao等人~\cite{chen2019cascade}同时添加两个注意力模块来分别关注图像空间信息和通道信息，在提高诊断肝脏异常性能的同时，还较好定位了肝脏病灶异常区域。
 
 %\subsection{本节小结}\label{subsec:related_work_summary}
-以上内容介绍了与疾病标记物相关的解决方案，包括MIL、CNN的可视化和弱监督目标定位，其中也不乏优秀精巧的方法，例如CAM和Grad-CAM，但是这些方法的共同劣势在于无法实现像素级的精确定位。一方面，这些方法最初并不是专门为解决疾病标记物定位任务而设计；另一方面，当这些方法被运用到在弱监督条件下疾病标记物定位任务上时，其背后实现原理决定了其无法实现精确的像素级定位，而只能定位到某个区域或者疾病标记物所在的区域或者所聚集的超像素。对于MIL中存在的取块操作，无论其取块尺寸大小，所得图像块都无法避免地包含正常区域。因此MIL方法无法精确定位到疾病标记物。CNN可视化方法中，扰动方法和遮挡方法与MIL一样均需要从图像中取块；激活最大化方法和网络逆转方法只能得到图像的最具判别性的图像特征或者模式；对于基于梯度的方法（比如Grad-CAM），由于在连续卷积作用下特征图通常会不断缩小，因此为了定位到疾病标记物，往往需要将卷积输出响应上采样到输入图像尺寸大小。不难想象，采样倍数越大，疾病标记物的定位越粗糙。如果将疾病标记物也看做是目标物体，那么弱监督目标定位任务的目标是用候选矩形框框出目标物体的位置，该任务目标要求本身就比本文目标低，另外以上弱监督目标定位方法往往需要是通过中间层目标物体相关的判别性区域来计算目标物体在原图中位置，这个计算过程也会涉及到上采样操作，因而弱监督目标定位方法也不无法精确定位疾病标记物。
+以上内容介绍了与疾病标记物相关的解决方案，包括MIL、CNN的可视化和弱监督目标定位，其中也不乏优秀精巧的方法，例如CAM和Grad-CAM，但是这些方法的共同劣势在于无法实现像素级的精确定位。一方面，这些方法最初并不是专门为解决疾病标记物定位任务而设计；另一方面，当这些方法被运用到在弱监督条件下疾病标记物定位任务上时，其背后实现原理决定了其无法实现精确的像素级定位，而只能定位到某个区域或者疾病标记物所在的区域或者所聚集的超像素。对于MIL中存在的取块操作，无论其取块尺寸大小，所得图像块都无法避免地包含正常区域。因此MIL方法无法精确定位到疾病标记物。CNN可视化方法中，扰动方法和遮挡方法与MIL一样均需要从图像中取块；激活最大化方法和网络逆转方法只能得到图像的最具判别性的图像特征或者模式；对于基于梯度的方法（比如Grad-CAM），由于在连续卷积作用下特征图通常会不断缩小，因此为了定位到疾病标记物，往往需要将卷积输出响应上采样到输入图像尺寸大小。不难想象，采样倍数越大，疾病标记物的定位越粗糙。如果将疾病标记物也看做是目标物体，那么弱监督目标定位任务的目标是用候选矩形框框出目标物体的位置，该任务目标要求本身就比本文目标低，另外以上弱监督目标定位方法往往需要是通过中间层目标物体相关的判别性区域来计算目标物体在原图中位置，这个计算过程也会涉及到上采样操作，因而弱监督目标定位方法也无法精确定位疾病标记物。
 
 综上所述，包括MIL、CNN的可视化和弱监督目标定位在内的系列方法都只能粗略定位疾病标记物，精确定位疾病标记物仍是一个有待解决的问题。在弱监督条件下，一种精确定位疾病标记物的新方法亟待提出，这也是本文所有工作的根本出发点。
-
 \section{评价标准}\label{sec:evaluation_metrics}
-本文衡量实验结果分为定性分析和定量分析，前者主要以可视化方式比较各种方法定位结果和标签，后者主要引入精确率-召回率曲线（Precision-Recall Curve，缩写为P-R Curve）和接收者操作特征曲线（Receiver Operating Characteristic Curve，缩写为ROC Curve）以及对应曲线下的面积（Area Under Curve）作为评价标准。下面分别进行介绍。
+本文衡量实验结果分为定性分析和定量分析，前者主要比较各种方法得到的定位热图，后者主要把精确率-召回率曲线（Precision-Recall Curve，缩写为P-R Curve）和接收者操作特征曲线（Receiver Operating Characteristic Curve，缩写为ROC Curve）以及对应曲线下的面积（Area Under Curve）看作评价标准。
 \subsection{接收者操作特征曲线}\label{subsec:roc_curve}
 接收者操作特征曲线或者ROC曲线\footnote{https://en.wikipedia.org/wiki/Receiver\_operating\_characteristic}是一个可以说明二元分类器系统的鉴别阈值变化时的诊断能力的图形。通过绘制各种阈值设置下的真阳率（True Positive Rate，缩写为TPR）与假阳率（False Positive Rate，缩写为FPR）来创建ROC曲线。真阳率在机器学习中也称为灵敏度（Sensitivity），表示模型预测的真正类个数占所有真实正例的比例。假阳率也称为假警报的概率，也可计算为（1-特异性（Specificity）），表示模型预测的假正类（实际为负例）个数占所有真实负例的比例。ROC曲线是以TPR作为衰减的函数。换句话说，ROC曲线的横轴是FPR或者（1-Specificity），纵轴是TPR或者Sensitivity。下面给出TPR、FPR、Sensitivity和Specificity的数学定义。
 
