@@ -73,7 +73,7 @@ CAM和Grad-CAM最为一种用于CNN可视化的方法，本身需要分两步完
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/retinal_image_res.pdf}
-	\caption{在二类视网膜糖尿病病变数据集上疾病标记物定位结果对比}
+	\caption{在二类视网膜糖尿病病变数据集上疾病标记物定位热图对比}
 	\label{fig:retinal_image_res}
 \end{figure}
 
@@ -96,7 +96,7 @@ CAM和Grad-CAM最为一种用于CNN可视化的方法，本身需要分两步完
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_skin_image.pdf}
-	\caption{在二类模拟皮肤病病变数据集上疾病标记物定位结果对比} 
+	\caption{在二类模拟皮肤病病变数据集上疾病标记物定位热图对比} 
 	\label{fig:simulated_skin}
 \end{figure}
 
@@ -183,8 +183,7 @@ CAM和Grad-CAM最为一种用于CNN可视化的方法，本身需要分两步完
 % 对比跨层 D_NSC no skiping connection
 % 去掉第一个下采样（高分辨率特征 用中间层 不用高分辨率特征融合） D_NLL no feature map from low layer
 % 去掉最后一个下采样（不用中间层特征 只用高分辨率）D_NML no feature map from middle layer
-在本节内容中，在保持其他设置不变的情况下，本文将设置一系列有关判别器结构的消融实验来探究不同判别结构对于最终定位结果的影响。判别器的网络结构可参见图\ref{fig:discrimintor_architecture}，为了后文叙述方便，将原始判别器记作$\mathrm{D}_\mathrm{FPN}(i,j)$。为了探究跨层结构的影响，本文将去掉所有跨层结构的判别器记作$\mathrm{D}_\mathrm{NSC}(i,j)$。在原始判别器中，最后一个全连接层是由第一个下采样单元输出特征、最后一个下采样单元输出特征和最后一个网络单元输出特征融合得到，为了探究来自不同层次和不同分辨率特征融合的影响，本文将去掉第一个下采样单元特征输出而进行特征融合的判别器记作$\mathrm{D}_\mathrm{NLL}(i,j)$，将去掉最后一个下采样单元而进行特征融合的判别器记作$\mathrm{D}_\mathrm{NML}(i,j)$，其中二元组$(i,j)$表示判别器卷积单元总数和其中的下采样单元个数，例如，$\mathrm{D}_\mathrm{FPN}(i,j)$表示一个总共有$7$个网络单元，其中前$4$个网络单元为下采样单元的原始判别器，这也是本文所有实验的默认判别器网络结构设置。关于以上二元组更为直观的含义可参考图\ref{fig:discrimintor_architecture}。另外，本节还探讨了不同深度和下采样单元个数对于原始判别器的影响。接下来，我们在保持其他实验设置不变的情况，按照上述判别器结构依次进行测试，选取了部分判别器网络模型，并在二类模拟皮肤病病变数据集上完成相关消融实验，最后我们根据实验结果绘制的P-R曲线如图\ref{fig:pr_curve_skin_dis_arch}所示。
-
+在本节内容中，在保持其他设置不变的情况下，本文将设置一系列有关判别器结构的消融实验来探究不同判别结构对于最终定位结果的影响。判别器的网络结构可参见图\ref{fig:discrimintor_architecture}，为了后文叙述方便，将原始判别器记作$\mathrm{D}_\mathrm{FPN}(i,j)$。为了探究跨层结构的影响，本文将去掉所有跨层结构的判别器记作$\mathrm{D}_\mathrm{NSC}(i,j)$。在原始判别器中，最后一个全连接层是由第一个下采样单元输出特征、最后一个下采样单元输出特征和最后一个网络单元输出特征融合得到，为了探究来自不同层次和不同分辨率特征融合的影响，本文将去掉第一个下采样单元特征输出而进行特征融合的判别器记作$\mathrm{D}_\mathrm{NLL}(i,j)$，将去掉最后一个下采样单元而进行特征融合的判别器记作$\mathrm{D}_\mathrm{NML}(i,j)$，其中二元组$(i,j)$表示判别器卷积单元总数和其中的下采样单元个数，例如，$\mathrm{D}_\mathrm{FPN}(i,j)$表示一个总共有$7$个网络单元，其中前$4$个网络单元为下采样单元的原始判别器，这也是本文所有实验的默认判别器网络结构设置。关于以上二元组更为直观的含义可参考图\ref{fig:discrimintor_architecture}。另外，本节还探讨了不同深度和下采样单元个数对于原始判别器的影响。接下来，我们在保持其他实验设置不变的情况，按照上述判别器结构依次在二类模拟皮肤病病变数据集上进行测试，最后我们根据实验结果绘制的P-R曲线如图\ref{fig:pr_curve_skin_dis_arch}所示。
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_dis_arch/pr_curve.pdf}

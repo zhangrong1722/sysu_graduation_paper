@@ -79,11 +79,11 @@
 %\end{figure}
 
 \section{模型结构介绍}\label{sec:model_architecture_intro}
-在\ref{sec:idea_thinking}小节中，本文已经介绍了解决疾病标记物的解决思路和理论建模。本小节内容将详细介绍整体模型结构和各个子模块模型结构，力求读者能清晰明了理解本文方法的核心思想。
+在\ref{sec:idea_thinking}小节中，本文已经介绍了解决疾病标记物的解决思路和理论建模。本小节内容将详细介绍本文提出的疾病标记物定位模型结构和各个子模块模型结构，力求读者能清晰明了理解本文方法的核心思想。
 
 %具体来说，本文将在\ref{subsec:model_architecture}小节中详细介绍整体模型结构及各个子模块在整体模型中所起到的作用和相互关系。接下来，在\ref{subsec:encoder_decoder_model}小节、\ref{subsec:cnn_classifier_model}小节和\ref{subsec:discrimintor_model}小节分别介绍编码器-解码器、CNN分类器和判别器的模型结构。下面展开相关内容的具体阐述。
 
-\subsection{模型结构介绍}\label{subsec:model_architecture}
+\subsection{疾病标记物定位模型}\label{subsec:model_architecture}
 本文提出的模型目的是在仅图像级别的标签可用时，精确定位异常图像中潜在的生物标志物或病变区域。我们的想法是设计一种可以学会直接查找疾病标记物的新架构。出于这种动机，我们提出了一种新颖的深度神经网络。这种网络结合了两种不同的学习架构（见图\ref{fig:our_model_architecture}）：发挥监督作用的CNN分类器和负责图像生成的GAN（由编码器-解码器和判别器组成）。CNN分类器和判别器可以共同帮助编码器-解码器更有效地从输入图像中除去疾病标记物。训练完成后，可以通过编码器-解码器的输入中减去其输出来定位疾病标记物。
 \begin{figure}[h]
 	\centering

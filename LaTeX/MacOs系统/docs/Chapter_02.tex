@@ -121,7 +121,7 @@ CNN可以很好避免多层感知机存在的问题，卷积操作首先可以�
 	\begin{equation*}
 	L(\ve{x},\ve{z};\vv{\theta})=\log D\left(\ve{x};\vv{\theta}\right)+\log \left(1-D\left(G\left(\ve{z};\vv{\theta}\right)\right);\vv{\theta}\right).
 	\end{equation*}
-	\item 固定判别器，更新生成器。这等价于用随机梯度下降算法最小化损失函数$L(\ve{z},\vv{\theta})$：
+	\item 固定判别器，更新生成器。这等价于用随机梯度下降算法最小化损失函数$L(\ve{z};\vv{\theta})$：
 	\begin{equation*}
 	L(\ve{z};\vv{\theta})=\log \left(1-D\left(G\left(\ve{z};\vv{\theta}\right);\vv{\theta}\right)\right).
 	\end{equation*}
@@ -129,7 +129,7 @@ CNN可以很好避免多层感知机存在的问题，卷积操作首先可以�
 
 以上朴素GAN中生成器和判别器均是多层感知机。在实际训练过程中存在参数量过大、训练困难、损失函数不具备可解释性、模式崩塌、容易出现梯度消失等问题，这些问题经常导致训练GAN失败。鉴于以上情况，各种改进模型相继提出，Alec等人~\cite{radford2015unsupervised}成功将CNN和GAN结合起来，提出了DCGAN，用CNN代替生成器和判别器中的多层感知机，使得训练GAN更加容易，生成图像的分辨率也更高。针对训练过程中存在的梯度消失和模式崩塌问题，Martin等人~\cite{arjovsky2017wasserstein}提出了WGAN，使用Wasserstein-1距离代替素朴GAN~\cite{goodfellow2014generative}中使用的Kullback-Leibler散度~\cite{Kullback1951ONIA}或者Jensen-Shannon散度~\cite{Kantor2001FoundationsOS}，并且采用权值截断（Weight Clipping）满足利普希茨连续条件\footnote{https://en.wikipedia.org/wiki/Lipschitz\_continuity}（Lipschitz Continuity），但这也会造成权值趋向两个截断阈值，导致GAN不容易收敛。为了更好满足利普希茨连续条件，Ishaan等人~\cite{gulrajani2017improved}采用梯度惩罚项（Gradient Penalty），提出了WGAN-GP。由于WGAN-GP可以有效避免GAN训练过程中的梯度消失问题，其训练过程也比较稳定，网络收敛得也较快。另外，Wasserstein-1距离还对训练过程有指示作用，Wasserstein-1距离越接近0，表示WGAN-GP训练得越好。基于以上诸多优势，本文网络模型中的GAN采用WGAN-GP。与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此判别器最后一层也不再有Sigmoid激活函数。设$\ve{y}\sim \text{p}_\text{g}(\ve{y})$表示给定噪音分布$\ve{z}\sim \text{p}_{\text{z}}(\ve{z})$时生成器所代表的数据分布。再加上梯度惩罚项，WGAN-GP的优化目标$V(D, G)$可写作：
 \begin{equation*}\label{wgan_gp_loss_func}
-\min _{G} \max _{D} V(D, G)=\mathbb{E}_{\ve{x} \sim \text{p}_{\text{data}}}[D(\ve{x};\vv{\theta})]-\mathbb{E}_{\ve{y} \sim \text{p}_{\text{g}}}[D(\ve{y};\vv{\theta})]+\lambda \mathbb{E}_{\hat{\ve{x}} \sim \text{p}_{\hat{\ve{x}}}}\left[\left(\left\|\nabla_{\hat{\ve{x}}}D(\hat{\ve{x}};\vv{\theta})\right\|_{2}-1\right)^{2}\right].
+\min _{G} \max _{D} V(D, G)=\mathbb{E}_{\ve{y} \sim \text{p}_{\text{g}}}[D(\ve{y};\vv{\theta})]-\mathbb{E}_{\ve{x} \sim \text{p}_{\text{data}}}[D(\ve{x};\vv{\theta})]+\lambda \mathbb{E}_{\hat{\ve{x}} \sim \text{p}_{\hat{\ve{x}}}}\left[\left(\left\|\nabla_{\hat{\ve{x}}}D(\hat{\ve{x}};\vv{\theta})\right\|_{2}-1\right)^{2}\right].
 \end{equation*}
 其中，$\lambda$为梯度惩罚项的权重，注意此处分布$\text{p}_{\hat{\ve{x}}}$不是对整个样本空间采样，而只对分布$\text{p}_{\text{data}}$和分布$\text{p}_{\text{g}}$之间的空间采样。与朴素GAN的损失函数相比,判别器的损失函数不再取$\log$，这是因为WGAN-GP中不再使用Kullback-Leibler散度或者Jensen-Shannon散度。在训练WGAN-GP时，同样判别器和生成器先后交替训练：
 \begin{itemize}
@@ -138,9 +138,9 @@ CNN可以很好避免多层感知机存在的问题，卷积操作首先可以�
 	\tilde{{\ve{x}}} = G({\ve{z}};\vv{\theta}), \\
 	L(\ve{x},\ve{z};\vv{\theta})=D(\tilde{{\ve{x}}};\vv{\theta})-D({\ve{x}};\vv{\theta})+\lambda\left(\left\|\nabla_{\hat{\ve{x}}} D(\hat{\ve{x}};\vv{\theta})\right\|_{2}-1\right)^{2}.
 	\end{gather*}
-	\item 固定判别器，更新生成器。这等效于最小化损失函数$L(\ve{z},\vv{\theta})$：
+	\item 固定判别器，更新生成器。这等效于最小化损失函数$L(\ve{z};\vv{\theta})$：
 	\begin{equation*}
-	L(\ve{z},\vv{\theta})=-D\left(G(\ve{z};\vv{\theta})\right).
+	L(\ve{z};\vv{\theta})=-D\left(G(\ve{z};\vv{\theta})\right).
 	\end{equation*}
 \end{itemize}
 \section{疾病标记物定位方法}\label{sec:related_work}
@@ -153,8 +153,13 @@ MIL是由Maron等人~\cite{maron1998framework}提出，是一种与监督学习�
 {-1} & {\text { if } \quad \forall \ve{y}_{i}: \ve{y}_{i}=-1.}
 \end{array}\right.
 \end{equation*}
+其中，$+1$和$-1$分别表示正包和负包。
+%https://link.springer.com/content/pdf/10.1007%2F978-3-319-07998-1_65.pdf
 
-多示例学习的目的是，通过对具有分类标签的多示例包的学习，建立多示例分类器，并将该分类器应用于未知多示例包的预测。在处理医学图像时，给定一张医学影像，根据MIL思想，将单张影像看作一个示例包，再对单张影像进行分块操作得到许多小方块，再将这些小方块看作一个个示例。从而将问题转化为在示例包标签已知情况下，找出示例（待选区域）的标签，最终将其中置信度最高的异常示例看作是疾病标记物定位结果。这在诸如没有细粒度标记训练数据的感兴趣区域定位的任务中特别有用。但是这种方法存在诸多缺点，首先对单张图像进行分块不易操作，分块尺寸过大时，精确度不够，小方块尺寸过大，很可能会包括较多正常区域；当分块尺寸过小时，小方块尺寸过小，会产生过多示例，大大增大后续训练的计算复杂度和计算量。因此，MIL方法只适合用于粗略定位图像中的目标物（例如，疾病标记物）。另外，当处理多类问题时，示例包就会出现多标签，使得问题的复杂度大大增加。因此，与其在算法和应用上的繁荣发展相反，因为分析的难度太大以及示例标签的不稳定性，近些年来，这种思路少有人问津，多示例学习的理论研究成果~\cite{gondra2014object, wu2015deep,Maron1998MultipleInstanceLF}也非常少。
+在处理图像问题时，根据MIL思想，将单张图像看作一个示例包，再对单张图像进行分块操作得到许多小方块，再将这些小方块看作一个个示例。多示例学习的目的是，通过对具有分类标签的多示例包的学习，建立多示例分类器，并将该分类器应用于未知多示例包的预测。MIL的目标是找到正包的原型，换句话说，找出所有正包的共同点。随后，在示例空间中，找出最能表现原型的示例。这在诸如没有细粒度标记训练数据的感兴趣区域定位的任务中特别有用。MIL也在医学图像处理领域得到广泛应用，比如，眼底图像中的玻璃疣定位~\cite{lu2015effective}、X射线图像中肺结核异常区域定位~\cite{melendez2014novel}、皮肤镜图像中~\cite{madooei2018learning}、病例图像中前列腺癌定位~\cite{campanella2018terabyte}。
+
+但是这种方法存在诸多缺点，首先对单张图像进行分块不易操作，分块尺寸过大时，精确度不够，小方块尺寸过大，很可能会包括较多正常区域；当分块尺寸过小时，小方块尺寸过小，会产生过多示例，大大增大后续训练的计算复杂度和计算量。因此，MIL方法只适合用于粗略定位图像中的目标物（例如，疾病标记物）。另外，当处理多类问题时，示例包就会出现多标签，使得问题的复杂度大大增加。因此，与其在算法和应用上的繁荣发展相反，因为分析的难度太大以及示例标签的不稳定性，近些年来，这种思路少有人问津。
+%~\cite{gondra2014object, wu2015deep,Maron1998MultipleInstanceLF}也非常少。
 
 \subsection{卷积神经网络的可视化}\label{subsec:visulization_methods}
 CNN在从语音识别到自主系统的本地化和映射等大规模任务中的取得相当大的成就，使其成为先进的人工智能系统中最受欢迎的工具。尽管只能将成功的部分原因归功于这种网络的训练过程中算法的进步，但是学习过程和所学内容的内在性仍然很模糊，即CNN一直是个“黑匣子”，我们始终不知道其内部运行机制，更无法得知其作出判断的背后依据。然而，CNN所做决定的依据很多时候与所做决定同样重要，比如，在医学领域，如果专业医师看不到人工智能系统给出诊断方法，专业医师也就无法接受人工智能系统所给提出的对患者的治疗方案。因此，我们需要有一种方式了解导致CNN失败或成功的原因。如果我们无法解释模型的工作原理，我们如何信任模型的结果？这是一个合理的问题。更重要的是，较差的网络可解释性极大地阻碍了对各个网络层的鲁棒性评估，进一步优化网络结构，以及对不同应用的网络适应性和可移植性，这也是CNN的可视化需要回答的直接动力和实际意义。
@@ -205,7 +210,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/cam_arichitecture}
-	\caption{CAM可视化（图片来自于对应原文~\cite{zhou2016learning}）}
+	\caption{CAM（图片来自于对应原文~\cite{zhou2016learning}）}
 	\label{fig:cam_arichitecture}
 \end{figure}
 
@@ -219,7 +224,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/grad_cam_architecture}
-	\caption{Grad-CAM可视化（图片来自于对应原文~\cite{selvaraju2017grad}）}
+	\caption{Grad-CAM（图片来自于对应原文~\cite{selvaraju2017grad}）}
 	\label{fig:grad_cam_architecture}
 \end{figure}
 %\begin{figure}[h]
@@ -228,8 +233,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 %	\caption{Grad-CAM可视化效果图示例（图片来自于原文）。} 
 %	\label{fig:grad_cam_example}
 %\end{figure}
-另外一种基于梯度，应用极为广泛的可视化方式是Grad-CAM，由于Grad-CAM是基于CAM~\cite{zhou2016learning}的。在此，先来介绍CAM。如图\ref{fig:cam_arichitecture}所示，全局均值池化（Global Average Pooling，缩写为GAP）输出最后一个卷积层每个单元的特征图的空间平均值，这些值的加权和用于生成最终输出。同样，我们计算最后一个卷积层的特征图的加权和，便可以得到类激活图（Class Activation Map）。下面我们以分类问题为例进行更为详细的描述（假设最后一层激活函数是Softmax）。对于给定的图像，令$\ve{F}_k(x, y)$表示激活空间位置最后一个卷积层中第$k$个特征图的$(x,y)$位置的激活值。对于第$k$个特征图执行GAP，则GAP结果$\hat{\ve{F}}_k=\sum_{x, y} \ve{F}_{k}(x,y)$。因此，对于类别$c$，被送到Softmax激活函数的输入$\ve{s}_c=\sum_{k} \ve{W}_{k}^{c} F_{k}$，其中$\ve{W}_k^c$是对应于第$k$个特征的类别$c$的权重。实质上，$\ve{W}_{k}^{c}$还可表示第$k$个特征图对于类别$c$的重要性。故类别$c$经过Softmax激活函数输出${\ve{p}}_c$可定义为$
-\ve{p}_c=\frac{\exp \left(\ve{s}_{c}\right)}{\sum_{c} \exp \left(\ve{s}_{c}\right)}$。根据以上定义，我们可以作出如下推导： 
+另外一种基于梯度，应用极为广泛的可视化方式是Grad-CAM，由于Grad-CAM是基于CAM~\cite{zhou2016learning}的。在此，先来介绍CAM。如图\ref{fig:cam_arichitecture}所示，全局均值池化（Global Average Pooling，缩写为GAP）输出最后一个卷积层每个单元的特征图的空间平均值，这些值的加权和用于生成最终输出。同样，我们计算最后一个卷积层的特征图的加权和，便可以得到类激活图（Class Activation Map）。下面我们以多分类问题（$N$表示类别个数）为例进行更为详细的描述（假设最后一层激活函数是Softmax）。对于给定的图像，令$\ve{F}_k(x, y)$表示激活空间位置最后一个卷积层中第$k$个特征图的$(x,y)$位置的激活值。对于第$k$个特征图执行GAP，则GAP结果$\hat{\ve{F}}_k=\sum_{x, y} \ve{F}_{k}(x,y)$。因此，对于类别$c$，被送到Softmax激活函数的输入$\ve{s}_c=\sum_{k} \ve{W}_{k}^{c} F_{k}$，其中$\ve{W}_k^c$是对应于第$k$个特征的类别$c$的权重。实质上，$\ve{W}_{k}^{c}$还可表示第$k$个特征图对于类别$c$的重要性。故类别$c$经过Softmax激活函数输出${\ve{p}}_c$可定义为$\ve{p}_c=\frac{\exp \left(\ve{s}_{c}\right)}{\sum_{i=1}^{i=N} \exp \left(\ve{s}_{i}\right)}$。根据以上定义，我们可以作出如下推导：
 \begin{equation*}
 \ve{s}_{c}=\sum_{k} \ve{W}_{k}^{c} \sum_{x, y} \ve{F}_{k}(x, y)=\sum_{x, y} \sum_{k} \ve{W}_{k}^{c} \ve{F}_{k}(x, y).
 \end{equation*}
@@ -267,7 +271,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 \begin{equation*}
 \ve{x}^{*}=\underset{x}{\operatorname{argmin}}\left(C \cdot \mathcal{L}\left(\ve{A}(\ve{x}), \ve{A}\left(\ve{x}_{0}\right)\right)-\lambda(\ve{x})\right).
 \end{equation*}
-其中，$\mathcal{L}$是计算输入特定层前后的特征图$\ve{A}(\ve{x}_0)$和$\ve{A}(\ve{x})$的损失函数，$\lambda(\ve{x})$是正则项，$C$是调节损失函数和正则项的超参数。为了让重建图像更像自然图像，$\lambda(\ve{x})$可取L2-范数、全变差范数（Total Variation Norm）~\cite{rudin1992nonlinear}等。其中，全变差范数可让重建图像更为平滑，较低的锐度。与激活最大化方法~\cite{simonyan2013deep}相同的是，网络逆转方法也是通过重建输入图像来查看网络层对那些像素或者图像模式更为敏感，但是网络逆转方法可应用到网络任意层，而不限于网络第一层，因而泛化性更强。
+其中，$\mathcal{L}$是计算输入特定层前后的特征图$\ve{A}(\ve{x}_0)$和$\ve{A}(\ve{x})$的损失函数，$\lambda(\ve{x})$是正则项，$C$是调节损失函数和正则项的超参数。为了让重建图像更像自然图像，$\lambda(\ve{x})$可取L2-范数、全变差范数~\cite{rudin1992nonlinear}等。其中，全变差范数可让重建的图像更为平滑。与激活最大化方法~\cite{simonyan2013deep}相同的是，网络逆转方法也是通过重建输入图像来查看网络层对那些像素或者图像模式更为敏感，但是网络逆转方法可应用到网络任意层，而不限于网络第一层，因而泛化性更强。
 
 如果将这些CNN的可视化方法用于定位疾病标记物，可通过可视化图像区域，将CNN分类器在预测图像类别时重点关注的区域看作是疾病标记物。其中，扰动方法~\cite{zintgraf2017visualizing}对每个可能的局部区域进行遮挡或遮罩，并检查分类器输出的变化，输出的下降量越大，说明在预测图像类时的重要性越高。相比之下，特征激活方法则是在特定卷积层输出的特征映射中，根据激活区域来定位重要的局部区域，如流行的类激活映射(CAM~\cite{zhou2016learning})及其变体Grad-CAM~\cite{selvaraju2017grad}等。近年来，基于CAM的方法在医学图像分析中得到了广泛的应用，如胸部X射线图像~\cite{rajpurkar2017chexnet}中肺炎的检测、数字病理图像~\cite{zhang2017mdnet}中膀胱癌的预测、眼底图像中糖尿病视网膜病变异常区域定位~\cite{Gondaletal17}、胎盘超声影像中胎盘异常定位~\cite{Qi2017WeaklySL}、MRI图像~\cite{yang2018visual}中阿尔茨海默病的诊断等。与CAM和Grad-CAM同样作为一种可视化方法，特征图方法~\cite{simonyan2013deep}利用CNN中的梯度信息计算输入图像中的像素点对图像分类结果的重要性分数。在医学影像处理领域中，该方法可用于解决多通道脑部MRI图像中的肿瘤检测~\cite{banerjee2016novel}、脑部MRI图像中的肿瘤体积检测~\cite{mitra2017volumetric}、皮肤镜图像中的异常分割~\cite{jahanifar2018supervised}等诸多问题。
 
@@ -323,7 +327,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 	\label{fig:attention_weakly_supervised_object_localization}
 \end{figure}
 
-近些年来，计算机视觉领域的提出的弱监督目标定位方法也被广泛用于定位医学影像中的异常区域。比如，Wang等人~\cite{WangPLLBS17}利用预训练模型产生监督信号辅助定位胸部X射线影像中胸腔疾病病灶，Zhuang等人~\cite{zhuang2019care}则是利用CAM产生异常区域的监督信号来辅助定位皮肤镜图像中黑色素瘤异常区域和X射线图像中肺炎异常区域。Gonz{\'a}lez-Gonzalo等人~\cite{GonzlezGonzalo2018ImprovingWL}采用循环递归擦除方式不断屏蔽眼底图像中的某些区域来发现判别性区域来定位眼底图像中糖尿病性视网膜病变异常区域，Jim{\'e}nez-S{\'a}nchez等人~\cite{JimnezSnchez2018WeaklySupervisedLA}整合了自迁移学习和CAM定位X射线图像中股骨近端骨折区域，Tang等人~\cite{Tang2018AttentionGuidedCL}直接引入注意力机制来定位X射线胸腔影像中异常区域。Xiao等人~\cite{chen2019cascade}同时添加两个注意力模块来分别关注图像空间信息和通道信息，在提高诊断肝脏异常性能的同时，还较好定位了肝脏病灶异常区域。
+近些年来，计算机视觉领域的提出的弱监督目标定位方法也被广泛用于定位医学影像中的异常区域。比如，Wang等人~\cite{WangPLLBS17}利用预训练模型产生监督信号辅助定位胸部X射线图像中胸腔疾病病灶，Zhuang等人~\cite{zhuang2019care}则是利用CAM产生异常区域的监督信号来辅助定位皮肤镜图像中黑色素瘤异常区域和X射线图像中肺炎异常区域。Gonz{\'a}lez-Gonzalo等人~\cite{GonzlezGonzalo2018ImprovingWL}采用循环递归擦除方式不断屏蔽眼底图像中的某些区域来发现判别性区域来定位眼底图像中糖尿病性视网膜病变异常区域，Jim{\'e}nez-S{\'a}nchez等人~\cite{JimnezSnchez2018WeaklySupervisedLA}整合了自迁移学习和CAM定位X射线图像中股骨近端骨折区域，Tang等人~\cite{Tang2018AttentionGuidedCL}直接引入注意力机制来定位X射线图像中胸腔异常区域。Xiao等人~\cite{chen2019cascade}同时添加两个注意力模块来分别关注图像空间信息和通道信息，在提高诊断肝脏异常性能的同时，还较好定位了肝脏病灶异常区域。
 
 %\subsection{本节小结}\label{subsec:related_work_summary}
 以上内容介绍了与疾病标记物相关的解决方案，包括MIL、CNN的可视化和弱监督目标定位，其中也不乏优秀精巧的方法，例如CAM和Grad-CAM，但是这些方法的共同劣势在于无法实现像素级的精确定位。一方面，这些方法最初并不是专门为解决疾病标记物定位任务而设计；另一方面，当这些方法被运用到在弱监督条件下疾病标记物定位任务上时，其背后实现原理决定了其无法实现精确的像素级定位，而只能定位到某个区域或者疾病标记物所在的区域或者所聚集的超像素。对于MIL中存在的取块操作，无论其取块尺寸大小，所得图像块都无法避免地包含正常区域。因此MIL方法无法精确定位到疾病标记物。CNN可视化方法中，扰动方法和遮挡方法与MIL一样均需要从图像中取块；激活最大化方法和网络逆转方法只能得到图像的最具判别性的图像特征或者模式；对于基于梯度的方法（比如Grad-CAM），由于在连续卷积作用下特征图通常会不断缩小，因此为了定位到疾病标记物，往往需要将卷积输出响应上采样到输入图像尺寸大小。不难想象，采样倍数越大，疾病标记物的定位越粗糙。如果将疾病标记物也看做是目标物体，那么弱监督目标定位任务的目标是用候选矩形框框出目标物体的位置，该任务目标要求本身就比本文目标低，另外以上弱监督目标定位方法往往需要是通过中间层目标物体相关的判别性区域来计算目标物体在原图中位置，这个计算过程也会涉及到上采样操作，因而弱监督目标定位方法也无法精确定位疾病标记物。
@@ -359,8 +363,8 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 	\mathrm{FPR}=\frac{\mathrm{FP}}{\mathrm{N}}=\frac{\mathrm{FP}}{\mathrm{FP}+\mathrm{TN}},\\
 	\mathrm{Specificity}=\frac{\mathrm{TN}}{\mathrm{FP}+\mathrm{TN}}=1-\mathrm{FPR}.
 \end{gather}
-设在二分类系统中，设$p(0\leq p \leq 1)$表示样本被分为正样本的概率。给定$N$个样本，该分类系统给出的预测值为$x=\{p_1,p_2,...,p_N
-\}$，设这些样本的真实标签为$y=\{y_1,y_2,...,y_N\}$，其中$y_i \in \{0,1\},0\leq i \le N$。随后，可依次将二分类系统给出的预测值作为阈值$T(0\leq T \leq 1)$，当$p_i$大于或等于阈值时，我们认为它为正样本，否则为负样本。对于多组不同的阈值，我们可以得到多组FPR和TPR，从而画出ROC曲线。
+设在二分类系统中，设$p(0\leq p \leq 1)$表示样本被分为正样本的概率。给定$N$个样本，该分类系统给出的预测值为$\ve{x}=\{p_1,p_2,...,p_N
+\}$，设这些样本的真实标签为$\ve{y}=\{y_1,y_2,...,y_N\}$，其中$y_i \in \{0,1\},0\leq i \le N$。随后，可依次将二分类系统给出的预测值作为阈值$T(0\leq T \leq 1)$，当$p_i$大于或等于阈值时，我们认为它为正样本，否则为负样本。对于多组不同的阈值，我们可以得到多组FPR和TPR，从而画出ROC曲线。
 
 我们将ROC曲线与横轴正半轴、纵轴正半轴共同围城的面积叫做AUC，AUC数值介于$0.5$与$1$之间，数值大小等于ROC曲线函数沿着FPR在$[0,1]$上的定积分。一般来说，如果一条ROC曲线$f_1$在另外一条ROC曲线$f_2$上方，我们称ROC曲线$f_1$“包围”ROC曲线$f_2$，说明$f_1$代表的分类系统性能优于$f_2$代表的分类系统。
 \subsection{精确率-召回率曲线}\label{subsec:pr_curve}
