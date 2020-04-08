@@ -7,7 +7,7 @@
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/multi_classes_simulated_skin.pdf}
-	\caption{多类模拟皮肤病病变数据集图像示例（红色矩形框表示疾病标记物）}
+	\caption[多类模拟皮肤病病变数据集图像示例]{多类模拟皮肤病病变数据集图像示例（红色矩形框表示疾病标记物）。}
 	\label{fig:mul_classes_simulated_ds}
 \end{figure}
 
@@ -18,7 +18,7 @@
 
 \begin{table}[h]
 	\centering
-	\caption{三类异常图像正负像素数量统计表}
+	\caption[多类模拟皮肤病病变数据集上三类异常图像正负像素数量统计表]{多类模拟皮肤病病变数据集上三类异常图像正负像素数量统计表。}
 	\label{tab:multi_ds_pixel_freqs}
 	\begin{tabular}{c|c|c|c}
 		\toprule[2pt]
@@ -30,7 +30,6 @@
 		\bottomrule[2pt]
 	\end{tabular}
 \end{table}
-
 \section{在多类模拟皮肤病病变数据集上的疾病标记物定位}\label{sec:multi_classes_experiments_res}
 本文将展示本文提出模型在多类模拟皮肤病病变数据集上的实验结果，本文提出的模型同样将与CAM和Grad-CAM共计两种用于卷积神经网络可视化方法作定性分析和定量分析。
 
@@ -38,7 +37,7 @@
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/multi_simulated_skin_res.pdf}
-	\caption{在多类模拟皮肤病病变数据集上疾病标记物定位热图对比}
+	\caption[在多类模拟皮肤病病变数据集上疾病标记物定位热图对比]{在多类模拟皮肤病病变数据集上疾病标记物定位热图对比。}
 	\label{fig:multi_simulated_skin_res}
 \end{figure}
 
@@ -51,21 +50,21 @@
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin/IMAGE_NET_pr_curve.png}
-	\caption{第一类异常图像上P-R曲线对比} 
+	\caption[第一类异常图像上P-R曲线对比]{第一类异常图像上P-R曲线对比。} 
 	\label{fig:multi_simulate_pr_curve_image_net}
 \end{figure}
 \vspace{-0.5cm}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin/SKIN_pr_curve.png}
-	\caption{第二类异常图像上P-R曲线对比} 
+	\caption[第二类异常图像上P-R曲线对比]{第二类异常图像上P-R曲线对比。} 
 	\label{fig:multi_simulate_pr_curve_skin}
 \end{figure}
 %\vspace{-0.8cm}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin/CIRCLE_pr_curve.png}
-	\caption{第三类异常图像上P-R曲线对比}
+	\caption[第三类异常图像上P-R曲线对比]{第三类异常图像上P-R曲线对比。}
 	\label{fig:multi_simulate_pr_curve_circle}
 \end{figure}
 
@@ -102,7 +101,7 @@
 
 \begin{table}[h!]
 	\centering
-	\caption{原始四类数据集和“正常”四类数据集分类结果} 
+	\caption[ResNet18-四分类器对原始四类数据集和“正常”四类数据集的分类结果]{ResNet18-四分类器对原始四类数据集和“正常”四类数据集的分类结果。} 
 	\label{tab:quantitative_simulated_skin}
 	\begin{tabular}{c|cc|cc}
 		\toprule[2pt]
@@ -121,7 +120,7 @@
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/simulated_skin_score_distribution.pdf}
-	\caption{判别器输出分数频率分布直方图（“正常”四类数据集作为输入）}
+	\caption[判别器输出分数频率分布直方图（“正常”四类数据集作为输入）]{判别器输出分数频率分布直方图（“正常”四类数据集作为输入）。}
 	\label{fig:simulated_skin_hist_freq}
 \end{figure}
 
@@ -133,26 +132,26 @@
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin_hyper_paras/IMAGE_NET_pr_curve.png}
-	\caption{不同超参数组合下第一类异常图像上P-R曲线对比} 
+	\caption[不同超参数组合下第一类异常图像上P-R曲线对比]{在多类模拟皮肤病病变数据集上，不同超参数组合下第一类异常图像上P-R曲线对比。} 
 	\label{fig:multi_simulate_pr_curve_image_net_hyper_paras}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin_hyper_paras/SKIN_pr_curve.png}
-	\caption{不同超参数组合下第二类异常图像上P-R曲线对比}
+	\caption[不同超参数组合下第二类异常图像上P-R曲线对比]{在多类模拟皮肤病病变数据集上，不同超参数组合下第二类异常图像上P-R曲线对比。}
 	\label{fig:multi_simulate_pr_curve_skin_hyper_paras}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_multi_skin_hyper_paras/CIRCLE_pr_curve.png}
-	\caption{不同超参数组合下第三类异常图像上P-R曲线对比} 
+	\caption[不同超参数组合下第三类异常图像上P-R曲线对比]{在多类模拟皮肤病病变数据集上，不同超参数组合下第三类异常图像上P-R曲线对比。} 
 	\label{fig:multi_simulate_pr_curve_circle_hyper_paras}
 \end{figure}
 
 从图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}可以看出，绿色P-R曲线明显在其他曲线上方，这说明本文提出的模型（以下简称“模型”）在默认参数（$\lambda_{1}=4,\lambda_{2}=20$）下，定位第一类异常和第二类异常对应的疾病标记物的性能最佳。相反，在图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}中，黄色P-R曲线（$\lambda_{1}=10,\lambda_{2}=20$）刚好能够包围其他P-R曲线，其AUC（AUC=$0.823$）也略微大于绿色P-R曲线（黄色和绿色P-R曲线的AUC分别为$0.823$和$0.805$），这主要是因为因为第三类异常对应的疾病标记物相比第一类异常和第二类异常在图像中的更多、分布的范围也更广，因而CNN分类器权重（超参数$\lambda_{2}$）较大更有利于模型更全面、更准确地定位到第三类异常对应的疾病标记物。但是从平均AUC分数来看（见表\ref{tab:simulated_skin_diff_parameters}），模型在默认参数下平均AUC分数最高（AUC=$0.668$，表中第一列），可说明模型在默认参数下定位疾病标记物性能最佳。相比于默认参数（绿色P-R曲线），当超参数$\lambda_{1}$偏小甚至取$0$时，在图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}中，深红色P-R曲线（$\lambda_{1}=1$）和粉红色P-R曲线（$\lambda_{1}=0$）的AUC分数均较低，尤其是极端情况$\lambda_{1}=0$，图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}中深红色P-R曲线的AUC最低（AUC=$0.135$）。这说明，一旦CNN分类器在模型中占的权重（$\lambda_{1}$）较小，这会导致模型定位疾病标记物的性能有所下降，在极端情况（$\lambda_{1}=0$）下，CNN分类器没有发挥任何作用，此时模型定位性能最差。对于L1损失权重即超参数$\lambda_{2}$，当超参数$\lambda_{2}$偏小时，此时L1损失函数所占权重较小，则模型对图像修改的约束将会降低，那么模型在修改疾病标记物所在的像素强度的同时显然会不可避免地修改正常区域的像素强度，比如青色P-R曲线（$\lambda_{2}=10$）和黑色P-R曲线（$\lambda_2=0$），两条P-R曲线的AUC分数都较低，尤其是图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}中青色P-R曲线，其AUC最低（AUC=$0.084$）。反之，当超参数$\lambda_{2}$偏大时，比如蓝色P-R曲线（$\lambda_{2}=50$），通过图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}、图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}，我们均可以发现蓝色P-R曲线被绿色P-R曲线包围，更为直观的是看表\ref{tab:simulated_skin_diff_parameters}中的平均AUC分数，两者分别为$0.668$和$0.628$，这主要是因为当超参数$\lambda_{2}$取值过大时，L1损失权重过大，限制了判别器网络对图像的修改，最终导致模型定位性能下降。表\ref{tab:simulated_skin_diff_parameters}中第$2$列（$\lambda_{1}=4,\lambda_{2}=20$）、第$4$列（$\lambda_{1}=10,\lambda_{2}=20$）和$6$列（$\lambda_{1}=4,\lambda_{2}=50$）的平均AUC较为接近，分别为$0.668$、$0.659$、$0.628$，可说明模型的超参数适用范围较广，具有较好的鲁棒性。
 \begin{table}[H]
 	\centering
-	\caption{不同超参数组合下三类异常图像P-R曲线平均AUC分数}
+	\caption[不同超参数组合下三类异常图像P-R曲线的平均AUC分数]{在多类模拟皮肤病病变数据集上，不同超参数组合下三类异常图像P-R曲线的平均AUC分数。}
 	\label{tab:simulated_skin_diff_parameters}
 	\resizebox{1.0\textwidth}{!}{
 		\begin{tabular}{c|c|c|c|c|c|c|c}

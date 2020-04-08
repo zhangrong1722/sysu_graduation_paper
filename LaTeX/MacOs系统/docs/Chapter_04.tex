@@ -20,17 +20,17 @@
 	\begin{subfigure}{0.48\textwidth}
 		\centering
 		\includegraphics[width=1\textwidth]{figure/bin_dr_ds_example}
-		\caption{二类视网膜糖尿病病变数据集部分图像示例（第1、2列是异常图像，第3、4列是正常图像）}
+		\caption{二类视网膜糖尿病病变数据集部分图像示例（第1、2列是异常图像，第3、4列是正常图像）。}
 		\label{subfig:bin_dr_ds_example}
 	\end{subfigure}
 	\quad
 	\begin{subfigure}{0.48\textwidth}
 		\centering
 		\includegraphics[width=1\textwidth]{figure/bin_simulate_skin_example}
-		\caption{二类模拟皮肤病病变数据集部分图像示例（第1、2列是异常图像，第3、4列是正常图像）}
+		\caption{二类模拟皮肤病病变数据集部分图像示例（第1、2列是异常图像，第3、4列是正常图像）。}
 		\label{subfig:bin_simulate_skin_example}
 	\end{subfigure}
-	\caption{本文实验数据集部分图像示例（红色矩形框表示疾病标记物）}
+	\caption[本文实验数据集部分图像示例]{二类视网膜糖尿病病变数据集和二类模拟皮肤病病变数据集部分图像示例和部分图像示例（红色矩形框表示疾病标记物）。}
 	\label{mul_fig:bin_ds_example}
 \end{figure}
 \section{评价标准}\label{sec:exper_evaluation_metrics}
@@ -43,7 +43,7 @@
 \begin{table}[h]
 	\centering
 	%\caption{二类视网膜糖尿病病变数据集和二类模拟皮肤病病变数据集正负像素数量统计表}
-	\caption{两个实验数据集正负像素数量统计表}
+	\caption[本文实验数据集正负像素数量统计表]{二类视网膜糖尿病病变数据集和二类模拟皮肤病病变数据集正负像素数量统计表。}
 	\label{tab:bin_ds_pixel_freqs}
 	\begin{tabular}{c|c|c|c}
 		\toprule[2pt]
@@ -73,7 +73,7 @@ CAM和Grad-CAM最为一种用于CNN可视化的方法，本身需要分两步完
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/retinal_image_res.pdf}
-	\caption{在二类视网膜糖尿病病变数据集上疾病标记物定位热图对比}
+	\caption[在二类视网膜糖尿病病变数据集上疾病标记物定位热图对比]{在二类视网膜糖尿病病变数据集上疾病标记物定位热图对比。}
 	\label{fig:retinal_image_res}
 \end{figure}
 
@@ -83,7 +83,7 @@ CAM和Grad-CAM最为一种用于CNN可视化的方法，本身需要分两步完
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_retinal_image/pr_curve}
-	\caption{在$40$张视网膜糖尿病病变图像上P-R曲线对比}
+	\caption[在$40$张视网膜糖尿病病变图像上P-R曲线对比]{在$40$张视网膜糖尿病病变图像上P-R曲线对比。}
 	\label{fig:retinal_image_pr_curve}
 \end{figure}
 
@@ -96,7 +96,7 @@ CAM和Grad-CAM最为一种用于CNN可视化的方法，本身需要分两步完
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_skin_image.pdf}
-	\caption{在二类模拟皮肤病病变数据集上疾病标记物定位热图对比} 
+	\caption[在二类模拟皮肤病病变数据集上疾病标记物定位热图对比]{在二类模拟皮肤病病变数据集上疾病标记物定位热图对比。} 
 	\label{fig:simulated_skin}
 \end{figure}
 
@@ -106,7 +106,7 @@ CAM和Grad-CAM最为一种用于CNN可视化的方法，本身需要分两步完
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_skin_image/pr_curve}
-	\caption{在二类模拟皮肤病病变数据集上P-R曲线对比}
+	\caption[在二类模拟皮肤病病变数据集上P-R曲线对比]{在二类模拟皮肤病病变数据集上P-R曲线对比。}
 	\label{fig:simulated_skin_pr_curve}
 \end{figure}
 
@@ -116,7 +116,7 @@ CAM和Grad-CAM最为一种用于CNN可视化的方法，本身需要分两步完
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/u_d_c_comparation.pdf}
-	\caption{G-D-C模型、G-C模型和G-D模型定位热图对比} 
+	\caption[G-D-C模型、G-C模型和G-D模型定位热图对比]{G-D-C模型、G-C模型和G-D模型在二类视网膜糖尿病病变数据集上定位热图对比。} 
 	\label{fig:u_d_c_comparation}
 \end{figure}
 
@@ -126,7 +126,7 @@ CAM和Grad-CAM最为一种用于CNN可视化的方法，本身需要分两步完
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_cureve_u_d_u_c_u_d_c_components.pdf}
-	\caption{G-D-C模型、G-C模型和G-D模型P-R曲线对比}
+	\caption[G-D-C模型、G-C模型和G-D模型P-R曲线对比]{G-D-C模型、G-C模型和G-D模型在二类视网膜糖尿病病变数据集上P-R曲线对比。}
 	\label{fig:u_d_c_comparation_pr_curve}
 \end{figure}
 
@@ -152,7 +152,7 @@ CAM和Grad-CAM最为一种用于CNN可视化的方法，本身需要分两步完
 
 \begin{table}[h!]
 	\begin{center}
-		\caption{原始正常数据集和“正常”数据集分类结果} 
+		\caption[原始数据集和“正常”数据集分类结果]{ResNet-18二分类器对原始数据集和“正常”数据集的分类结果。} 
 		\label{tab:quantitative_retinal}
 		\begin{tabular}{c|cc|cc}
 			\toprule[2pt]
@@ -170,7 +170,7 @@ CAM和Grad-CAM最为一种用于CNN可视化的方法，本身需要分两步完
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/score_distribution}
-	\caption{判别器输出分数频率分布直方图（“正常”数据集作为输入）}
+	\caption[判别器输出分数频率分布直方图（“正常”数据集作为输入）]{判别器输出分数频率分布直方图（“正常”数据集作为输入）。}
 	\label{fig:hist_freq}
 \end{figure}
 另外，训练结束后，我们还将“正常”数据集中的正常图像和异常图像均送入判别器，判别器输出分数的频率分布直方图如图\ref{fig:hist_freq}所示。图中黄色柱子表示判别器“真”图像输入端的输出分数，蓝色柱子表示判别器“假”图像输入端的输出分数。
@@ -187,7 +187,7 @@ CAM和Grad-CAM最为一种用于CNN可视化的方法，本身需要分两步完
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_dis_arch/pr_curve.pdf}
-	\caption{不同判别器模型结构P-R曲线对比} 
+	\caption[不同判别器模型结构下P-R曲线对比]{在二类模拟皮肤病病变数据集上，不同判别器模型结构下P-R曲线对比。} 
 	\label{fig:pr_curve_skin_dis_arch}
 \end{figure}
 
@@ -213,11 +213,11 @@ CAM和Grad-CAM最为一种用于CNN可视化的方法，本身需要分两步完
 %\end{table}
 
 \section{不同超参数下的实验结果分析}\label{sec:hyper_paras}
-为了验证本文提出的模型的超参数鲁棒性（损失函数见等式\ref{equ:model_loss_func}），本文对损失函数中的两个超参数$\lambda_{1}$和$\lambda_{2}$进行测试，旨在找出比较鲁邦的超参数范围。为此，在保证学习率、迭代次数、网络参数初始化等所有相关设置相同的情况下，本文取了$7$种不同的$\lambda_{1}$和$\lambda_{2}$超参数取值，在二类糖尿病病变数据进行了相关测试。这里同样使用P-R曲线及其AUC分数作为评价标准。相关实验结果如图\ref{fig:pr_curve_retinal_hyper_paras}所示。
+为了验证本文提出的模型的超参数鲁棒性（损失函数见等式\ref{equ:model_loss_func}），本文对损失函数中的两个超参数$\lambda_{1}$和$\lambda_{2}$进行测试，旨在找出比较鲁邦的超参数范围。为此，在保证学习率、迭代次数、网络参数初始化等所有相关设置相同的情况下，本文取了$7$种不同的$\lambda_{1}$和$\lambda_{2}$超参数取值，在视网膜糖尿病病变图像上进行了相关测试。这里同样使用P-R曲线及其AUC分数作为评价标准。相关实验结果如图\ref{fig:pr_curve_retinal_hyper_paras}所示。
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/pr_curve_retinal_hyper_paras/pr_curve.pdf}
-	\caption{不同超参数组合下P-R曲线对比} 
+	\caption[不同超参数组合下P-R曲线对比]{在二类视网膜糖尿病病变数据集上，不同超参数组合下P-R曲线对比。}
 	\label{fig:pr_curve_retinal_hyper_paras}
 \end{figure}
 

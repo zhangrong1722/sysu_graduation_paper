@@ -16,24 +16,23 @@
 	\item 如果输入图像是异常图像，可以想象，生成器输出图像与输入图像相比，只有极少数像素强度发生改变，而绝大部分像素强度没有发生改变，那么我们完全有理由认为这些发生改变了的像素便是疾病标记物，此时我们可以认为生成器输出图像是异常输入图像去除疾病标记物之后的“正常”版本，且疾病标记物的准确位置可由生成器输出图像减去输入图像给出。 
 \end{itemize}
 
-\noindent 一旦GAN具有以上功能，我们就可以很好地定位图像中的疾病标记物。考虑到GAN在图像中能较好去除遮挡物，如去除单张图像中的雨滴~\cite{qian2018attentive}（见图\ref{subfig:attention_gan}），去除人脸中的遮挡物~\cite{yuan2019face}（见图\ref{subfig:face_de_occulusion}），尤其是对于雨滴这种相对较小、分布较为广泛的物体仍能处理的相当好，足以证明GAN强大的图像生成能力。接下来，本文将详细介绍本文提出的方法整体及其子模块的网络结构。
+\noindent 一旦GAN具有以上功能，我们就可以很好地定位图像中的疾病标记物。考虑到GAN在图像中能较好去除遮挡物，如去除单张图像中的雨滴~\cite{qian2018attentive}（见图\ref{subfig:attention_gan}），去除人脸中的遮挡物~\cite{yuan2019face}（见图\ref{subfig:face_de_occulusion}），尤其是对于雨滴这种相对较小、分布较为广泛的物体仍能处理的相当好，足以证明GAN强大的图像生成能力，因此可借助GAN的图像生成能力，去完成疾病标记物定位任务。
 \begin{figure}[h!]
 	\begin{subfigure}{0.45\textwidth}
 		\centering
 		\includegraphics[width=0.75\textwidth]{figure/attention_gan_example.png}
-		\caption{去除图像中的雨滴~\cite{qian2018attentive}}
+		\caption{GAN去除图像中的雨滴~\cite{qian2018attentive}。}
 		\label{subfig:attention_gan}
 	\end{subfigure}
 	\begin{subfigure}{0.45\textwidth}
 		\centering
 		\includegraphics[width=1.5\textwidth]{figure/face_de_occulusion.png}
-		\caption{去除人脸中的遮挡物~\cite{yuan2019face}}
+		\caption{GAN去除人脸中的遮挡物~\cite{yuan2019face}。}
 		\label{subfig:face_de_occulusion}
 	\end{subfigure}
-	\caption{GAN去除图像遮挡物示例（图片均来自于对应原文~\cite{qian2018attentive,yuan2019face}）}
+	\caption[GAN去除图像遮挡物示例]{GAN去除图像遮挡物示例（图片均来自于对应原文~\cite{qian2018attentive,yuan2019face}）。}
 	\label{mul_fig:gan_auto_encoder_example}
 \end{figure}
-
 
 %\paragraph{解决思路} 面对弱监督条件下，疾病标记物的精确定位这一问题，鉴于已有方法只能粗略定位到疾病标记物，我们最先想到用图像生成即对抗生成网络的思路去做，并且输入输出图像尺寸相等，这样就避免了CAM和Grad-CAM中由于上采样所造成的定位不精确的问题。如果用映射$H$来表示生成器，给定输入图片$I^{h\times w\times d}$（图像的高、宽和深度分别为$h$，$w$，$d$），则$H$是一个图像到图像的映射，可形式化为：
 %\begin{equation*}
@@ -88,7 +87,7 @@
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/method.pdf}
-	\caption{本文提出的疾病标记物定位网络} 
+	\caption[本文提出的疾病标记物定位网络]{本文提出的疾病标记物定位网络。} 
 	\label{fig:our_model_architecture}
 \end{figure}
 在提出的体系结构中，编码器-解码器网络尝试从输入图像中删除任何潜在的生物标记，为异常的输入图像生成伪造的正常图像，或者在输入正常的情况下将输出图像与输入保持相同。通过从其输入中减去编码器-解码器的输出，可以轻松地对任何疾病标记物进行定位和分析。尽管可以仅使用正常图像来训练这种编码器-解码器，但这并没有利用现有的异常图像，因此不能直接学习生物标记特征以进行定位。取而代之的是，为了更有效地实现编码器-解码器的目标，在编码器-解码器的顶部添加了CNN分类器，其中输入是从其输入中减去编码器-解码器的输出，而期望的输出是原始输入图像的标签。为了准确地对图像进行分类，CNN分类器与编码器-解码器必须将异常图像与正常图像区分开。理想情况下，如果分类器的输入仅包含异常原始图像的生物标记，而对于正常图像则不包含任何生物标记（各处均为零），则分类器将更容易，也更准确地预测原始图像的类别。换句话说，训练更准确的分类器可以帮助编码器-解码器的输出保持正常区域，并从原始图像中移除疾病标记物，从而使分类器的输入仅包含疾病标记物的信号。
@@ -104,7 +103,7 @@
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/auto_encoder_architecture}
-	\caption{本文编码器-解码器模块}
+	\caption[本文编码器-解码器模块]{本文编码器-解码器模块。}
 	\label{fig:auto_encoder_architecture}
 \end{figure}
 \begin{itemize}
@@ -123,7 +122,7 @@ CNN分类器主要考虑的问题是如何选择一个较为优秀的分类网�
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/classifier_architecture.png}
-	\caption{本文CNN分类器模块}
+	\caption[本文CNN分类器模块]{本文CNN分类器模块。}
 	\label{fig:classifier_architecture}
 \end{figure}
 \subsection{判别器模块}\label{subsec:discrimintor_model}
@@ -132,7 +131,7 @@ CNN分类器主要考虑的问题是如何选择一个较为优秀的分类网�
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/discrimintor_architecture.png}
-	\caption{本文判别器模块}
+	\caption[本文判别器模块]{本文判别器模块。}
 	\label{fig:discrimintor_architecture}
 \end{figure}
 
