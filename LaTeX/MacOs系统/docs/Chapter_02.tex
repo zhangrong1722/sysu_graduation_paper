@@ -111,48 +111,49 @@ CNN可以很好避免多层感知机存在的问题，卷积操作首先可以�
 对抗生成网络（Generative Adversarial Networks，缩写为GAN）最初于2014年由Goodfellow等人~\cite{goodfellow2014generative}提出，就越来越受到学术界和工业界的重视。而随着GAN在理论与模型上的高速发展，它在计算机视觉~\cite{zhu2017unpaired}、自然语言处理~\cite{qin2018dsgan}、人机交互~\cite{qiao2018emotional}等领域有着越来越深入的应用，在医学影像领域更是大放异彩（比如图像重构~\cite{bhadra2020medical}、异常检测~\cite{Kohl2017AdversarialNF}、图像去噪~\cite{Yang2018LowDoseCI}和图像分割~\cite{Han2018SpineGANSS}）。GAN是生成式模型，由生成网络（以下简称“生成器”）和判别网络（以下简称“判别器”）组成，受博弈论中的零和博弈启发，将生成问题视作判别器和生成器这两个网络的对抗和博弈。生成器努力生成新数据，判别器努力区分生成器生成的数据（一般记为“假”）和真实数据（一般记为“真”）。生成器尽量产生更真实的数据，而判别器尽量更完美地把真实数据与生成数据区分开来。由此，生成器和判别器形成对抗关系，彼此进步。在不断的迭代训练过程中，生成器生成的数据也就越来越逼近真实数据，即生成器学到的分布越来越接近真实数据代表的分布。在理想情况下，判别器无法区分生成的数据和真实的数据。
 
 设真实数据分布为$\ve{x}\sim \text{p}_{\text{data}}(\ve{x})$，噪音分布为$\ve{z}\sim \text{p}_{\text{z}}(\ve{z})$，$G$和$D$分别表示生成器和判别器。$\vv{\theta}_{g}$和$\vv{\theta}_{d}$分别表示生成器$G$和判别器$D$的训练参数。在GAN中，判别器被看做一个二类分类器，通常在器最后一层加上Sigmod激活函数，因而一般将交叉熵当做损失函数。判别器输出$D(\ve{x};\vv{\theta})$是一个数值，范围在$0$到$1$之间，表示样本来自于真实数据分布的可能性。运用极大极小优化理论，GAN的优化目标$V(D, G)$可写成：
-\begin{eqnarray*}\label{equ:gan_loss_func}
+\begin{eqnarray}\label{equ:gan_loss_func}
 \min _{G} \max _{D} V(D, G)=\mathbb{E}_{ \ve{x} \sim \text{p}_{\text {data }}(\ve{x})}[\log D(\ve{x};\vv{\theta})]+\mathbb{E}_{\ve{z} \sim \text{p}_{\ve{z}}(\ve{z})}[\log (1-D(G(\ve {z};\vv{\theta});\vv{\theta}))].
-\end{eqnarray*}
+\end{eqnarray}
 \noindent 其中，$D(G(\ve {z};\vv{\theta});\vv{\theta})$表示生成器生成的数据样本。根据GAN的思想，通常先更新判别器，使判别器尽可能将来自真实数据分布的样本和来自生成器生成的数据分布的样本区分开来。随后更新生成器，使生成器生成的样本尽可能接近来自真实数据分布的样本，使得判别器无法区分样本来自真实数据分布还是生成器生成的数据分布。在实际训练时，一般采用判别器和生成器先后交替训练的策略：
 
 \begin{itemize}
 	\item 固定生成器，更新判别器。这等价于用随机梯度上升算法最大化损失函数$L(\ve{x},\ve{z};\vv{\theta})$：
-	\begin{equation*}
+	\begin{equation}
 	L(\ve{x},\ve{z};\vv{\theta})=\log D\left(\ve{x};\vv{\theta}\right)+\log \left(1-D\left(G\left(\ve{z};\vv{\theta}\right)\right);\vv{\theta}\right).
-	\end{equation*}
+	\end{equation}
 	\item 固定判别器，更新生成器。这等价于用随机梯度下降算法最小化损失函数$L(\ve{z};\vv{\theta})$：
-	\begin{equation*}
+	\begin{equation}
 	L(\ve{z};\vv{\theta})=\log \left(1-D\left(G\left(\ve{z};\vv{\theta}\right);\vv{\theta}\right)\right).
-	\end{equation*}
+	\end{equation}
 \end{itemize}
 
 以上朴素GAN中生成器和判别器均是多层感知机。在实际训练过程中存在参数量过大、训练困难、损失函数不具备可解释性、模式崩塌、容易出现梯度消失等问题，这些问题经常导致训练GAN失败。鉴于以上情况，各种改进模型相继提出，Alec等人~\cite{radford2015unsupervised}成功将CNN和GAN结合起来，提出了DCGAN，用CNN代替生成器和判别器中的多层感知机，使得训练GAN更加容易，生成图像的分辨率也更高。针对训练过程中存在的梯度消失和模式崩塌问题，Martin等人~\cite{arjovsky2017wasserstein}提出了WGAN，使用Wasserstein-1距离代替素朴GAN~\cite{goodfellow2014generative}中使用的Kullback-Leibler散度~\cite{Kullback1951ONIA}或者Jensen-Shannon散度~\cite{Kantor2001FoundationsOS}，并且采用权值截断（Weight Clipping）满足利普希茨连续条件\footnote{https://en.wikipedia.org/wiki/Lipschitz\_continuity}（Lipschitz Continuity），但这也会造成权值趋向两个截断阈值，导致GAN不容易收敛。为了更好满足利普希茨连续条件，Ishaan等人~\cite{gulrajani2017improved}采用梯度惩罚项（Gradient Penalty），提出了WGAN-GP。由于WGAN-GP可以有效避免GAN训练过程中的梯度消失问题，其训练过程也比较稳定，网络收敛得也较快。另外，Wasserstein-1距离还对训练过程有指示作用，Wasserstein-1距离越接近0，表示WGAN-GP训练得越好。基于以上诸多优势，本文网络模型中的GAN采用WGAN-GP。与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此判别器最后一层也不再有Sigmoid激活函数。设$\ve{y}\sim \text{p}_\text{g}(\ve{y})$表示给定噪音分布$\ve{z}\sim \text{p}_{\text{z}}(\ve{z})$时生成器所代表的数据分布。再加上梯度惩罚项，WGAN-GP的优化目标$V(D, G)$可写作：
-\begin{equation*}\label{wgan_gp_loss_func}
-\min _{G} \max _{D} V(D, G)=\mathbb{E}_{\ve{y} \sim \text{p}_{\text{g}}}[D(\ve{y};\vv{\theta})]-\mathbb{E}_{\ve{x} \sim \text{p}_{\text{data}}}[D(\ve{x};\vv{\theta})]+\lambda \mathbb{E}_{\hat{\ve{x}} \sim \text{p}_{\hat{\ve{x}}}}\left[\left(\left\|\nabla_{\hat{\ve{x}}}D(\hat{\ve{x}};\vv{\theta})\right\|_{2}-1\right)^{2}\right].
-\end{equation*}
+\begin{equation}\label{wgan_gp_loss_func}
+  \begin{aligned}
+	\min _{G} \max _{D} V(D, G)=&\mathbb{E}_{\ve{y} \sim \text{p}_{\text{g}}}[D(\ve{y};\vv{\theta})]-\mathbb{E}_{\ve{x} \sim \text{p}_{\text{data}}}[D(\ve{x};\vv{\theta})] \\ & +\lambda \mathbb{E}_{\hat{\ve{x}} \sim \text{p}_{\hat{\ve{x}}}}\left[\left(\left\|\nabla_{\hat{\ve{x}}}D(\hat{\ve{x}};\vv{\theta})\right\|_{2}-1\right)^{2}\right].
+  \end{aligned}
+\end{equation}
 其中，$\lambda$为梯度惩罚项的权重，注意此处分布$\text{p}_{\hat{\ve{x}}}$不是对整个样本空间采样，而只对分布$\text{p}_{\text{data}}$和分布$\text{p}_{\text{g}}$之间的空间采样。与朴素GAN的损失函数相比,判别器的损失函数不再取$\log$，这是因为WGAN-GP中不再使用Kullback-Leibler散度或者Jensen-Shannon散度。在训练WGAN-GP时，同样判别器和生成器先后交替训练：
-\begin{itemize}
-	\item 固定生成器，更新判别器。这等效于最小化损失函数$L(\ve{x},\ve{z};\vv{\theta})$：
-	\begin{gather*}
+
+\noindent 1）固定生成器，更新判别器。这等效于最小化损失函数$L(\ve{x},\ve{z};\vv{\theta})$：
+\begin{gather}
 	\tilde{{\ve{x}}} = G({\ve{z}};\vv{\theta}), \\
 	L(\ve{x},\ve{z};\vv{\theta})=D(\tilde{{\ve{x}}};\vv{\theta})-D({\ve{x}};\vv{\theta})+\lambda\left(\left\|\nabla_{\hat{\ve{x}}} D(\hat{\ve{x}};\vv{\theta})\right\|_{2}-1\right)^{2}.
-	\end{gather*}
-	\item 固定判别器，更新生成器。这等效于最小化损失函数$L(\ve{z};\vv{\theta})$：
-	\begin{equation*}
+\end{gather}
+\noindent 2）固定判别器，更新生成器。这等效于最小化损失函数$L(\ve{z};\vv{\theta})$：
+\begin{equation}
 	L(\ve{z};\vv{\theta})=-D\left(G(\ve{z};\vv{\theta})\right).
-	\end{equation*}
-\end{itemize}
+\end{equation}
 \section{疾病标记物定位方法}\label{sec:related_work}
 随着计算机计算在医学影像领域的广泛应用，目前已有可用于疾病标记物定位的方法提出，主要有多示例学习（Multiple Instance Learning，缩写为MIL）、CNN可视化和弱监督目标定位。本小节将选取部分经典方法进行详细介绍，重点突出这些方法处理疾病标记物定位任务的优势和劣势，力求读者对这些方法有全面而又清晰的认识。
 \subsection{多示例学习}
 MIL是由Maron等人~\cite{maron1998framework}提出，是一种与监督学习、半监督学习和非监督学习有所不同的不确切监督，也可用于处理弱监督问题。在医学影像中，MIL方法可通过训练一个二分类器，不仅完成对异常影像的判断任务（异常/正常），还能粗略定位异常影像中的显著性区域（即待选疾病标记物）。因此，MIL方法可解决医学影像领域中的诸多问题，比如，眼底图像中的视网膜神经纤维分割~\cite{manivannan2017subcategory}和数字病理图像中的癌症诊断~\cite{kandemir2014empowering}。MIL中是以多示例包（Bag）为训练单元，训练集由许多具有分类标签（Label）的多示例包组成，每个多示例包含有若干个没有分类标签的示例（Instance）。如果多示例包至少含有一个正示例，则该包被标记为正类多示例包（正包）。如果多示例包的所有示例都是负示例，则该包被标记为负类多示例包（负包）。设$\ve{X}=\{\ve{x}_1,\ve{x}_2,...,\ve{x}_N\}$，其中每一个$\ve{x}_i$均是从图像中相应第$i$个区域中提取出来的特征向量，$N$是图像被分割出的区域（示例）个数。拿二类问题来说，设示例${\ve{x}_1}$，$\ve{x}_2$，...，$\ve{x}_N$对应的标签为示例${y_1}$，${y_2}$，...，${y_N}$。则包$\ve{X}$的标签$\ve{y}\in \{-1,+1\}$可用形式化语言定义为：
-\begin{equation*}
+\begin{equation}
 \ve{y}=\left\{\begin{array}{ll}
 {+1} & {\text { if } \quad \exists {y}_{i}: {y}_{i}=+1;} \\
 {-1} & {\text { if } \quad \forall {y}_{i}: {y}_{i}=-1.}
 \end{array}\right.
-\end{equation*}
+\end{equation}
 其中，$+1$和$-1$分别表示正包和负包。
 %https://link.springer.com/content/pdf/10.1007%2F978-3-319-07998-1_65.pdf
 
@@ -181,7 +182,7 @@ CNN在从语音识别到自主系统的本地化和映射等大规模任务中�
 \end{table}
 
 CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，有很多研究者提出了解决方法。最简便也是最直接的方法是利用PyTorch\footnote{https://pytorch.org/}、TensorFlow\footnote{https://www.tensorflow.org/}等工具直接观察其网络结构可视化图，查看卷积核大小、输入和输出特征图尺寸、卷积层参数等相关信息。除此之外，还能通过t-SNE方法~\cite{maaten2008visualizing}对图像的特征向量进行降维操作，以在低维空间中查看数据的宏观分布。另一种可视化技术是获取大型数据集，通过网络输入图像，并跟踪哪些图像最大程度地激活了某些神经元。然后，我们可以将图像可视化，以了解神经元在其感受野中正在寻找什么。Girshick等人~\cite{girshick2014rich}提出了这样一种可视化技术，用于精确的对象检测和语义分割。这种方法的一个问题是ReLU神经元本身不一定具有任何语义，只有输入特征图沿着沿着与过滤器权重相对应轴方向的可视化结果。不需要专门去获取大型数据集，Zeiler等人提出的方法可以更为直接的了解到神经元真正感兴趣的区域或者物体，通过依次遮挡图像每一部分来绘制感兴趣类别的概率与遮挡物位置的关系图。以上可视化方法主要关注浅层特征。随着CNN的快速发展和实现，可视化已被扩展到解释CNN的整体工作机制。表\ref{tab:typical_visualization_methods}回顾了三类有代表性的可视化方法。
-\subsubsection{激活最大化方法}
+\subsubsection*{激活最大化方法}
 激活最大化（Activation Maximization）是一种通过合成特定输入图像，从而最大化特定神经元在任意层中的激活的方法。最初是由Erhan等人~\cite{erhan2009visualizing}提出的，被用于深度置信网络~\cite{hinton2006fast}高层神经元的可视化。随后，Simonyan等人~\cite{simonyan2013deep}将其扩展，用于解释CNN。以多分类问题为例，设$\ve{s}_{c}(\ve{x})(0\leq \ve{s}_{c}(\ve{x}) \leq 1)$表示为输入图像$\ve{x}$被CNN分到类别$c$的分数，使用L-2范数作为正则化项，则激活最大化方法用于解释CNN可形式化为：
 %设输入图像为$\ve{x}$，模式图像为$\ve{x}^*$，可形式化表示为：
 %\begin{equation*}
@@ -189,9 +190,9 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 %\end{equation*}
 %其中，$\theta$表示网络参数，
 %$S_{c}(x)(0\leq S_{c}(x) \leq 1)$是经过Softmax激活函数得到的类别分数，
-\begin{equation*}
+\begin{equation}
 \arg \max _{\ve{x}} {\ve{s}}_{c}(\ve{x})-\lambda\|\ve{x}\|_{2}^{2}.
-\end{equation*}
+\end{equation}
 注意，正则项有多种选择，L-2范数通常会将图像平滑。除此之外，高斯模糊也是常见的正则项，通常会抑制图像中的高频信息。此类方法通常都会固定网络参数，只是根据反向传播算法不断更新输入图像$\ve{x}$，从而合成具有特定模式的输入图像，还能得到类别$c$的原型图。
 
 %\subsubsection{反卷积网络}
@@ -203,7 +204,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 %\end{figure}
 %激活最大化方法从最大化特定神经元的激活来解释CNN。反卷积网络（DeconvNet）~\cite{zeiler2014visualizing, zeiler2010deconvolutional, zeiler2011adaptive}从输入图像的角度解释了CNN。它从输入图像中找到激活卷积层中特定神经元的选择性模式。通过将低维神经元的特征图逐层映射回原始图像尺寸来重建图像。这个投影这个过程由反卷积网络实现，这种网络包含反卷积层、反池化层、反ReLU激活函数等逆运算。基于DeconvNet的可视化并不仅仅是分析神经元的兴趣，而是展示了一种直接的特征分析方法。DeconvNet模型结构图如图\ref{fig:deconvnet_architecture}所示，可以发现，DeconvNet是CNN网络的逆过程，CNN中存在的操作在DeconvNet中均有对应逆操作。DeconvNet将图片特征从特征空间转化到像素空间，以发现是哪些像素激活了特定的特征，达到分析解释CNN的目的。另外，用DeconvNet还有可用于可视化一个已经训练好的网络模型，无须没有学习训练的优点。所以DeconvNet使用起来比较简单。
 
-\subsubsection{基于梯度}\label{subsec:gradient_based_methods}
+\subsubsection*{基于梯度的可视化方法}
 梯度是CNN中非常重要的概念，CNN在前向传播阶段计算损失。回传的过程，实质上是梯度的计算和回传的过程，从而更新网络参数。不难理解，流过神经元的梯度越大，则代表前向传播时该神经元激活值越大，进而说明该神经元越重要。基于梯度的网络可视化方法就是充分利用CNN中流动的梯度，从梯度角度来解释每一个神经元在网络中所起到的作用，相对上述激活最大化方法，基于梯度的方法可得到更为精细的可视化结果。另外，由于CNN每一层均有梯度，因而通常基于梯度的方法还更为灵活，可以实现位于任意层的任意神经元的可视化。在本小节，我们将介绍常见的三种方法：反卷积网络~\cite{zeiler2010deconvolutional}、Guided-Backpropagation~\cite{springenberg2014striving}和Grad-CAM~\cite{selvaraju2017grad}。
 
 反卷积网络引入了卷积操作的逆运算：反卷积，将特征空间映射回像素空间，来揭示什么样的输入模式能够产生特定的输出特征，但是这种方法也会额外引入物体以外的噪声。为了避免这一问题，对于ReLU反向传播，与一般梯度回传法则不同的是，Guided-Backpropagation组合了反卷积网络~\cite{zeiler2010deconvolutional}和一般梯度回传中ReLU函数梯度计算法则。此外，Guided-Backpropagation还用带步长的卷积层（如步长为2，卷积核为$3\times 3$的卷积层也可达到输入尺寸减半的效果）代替池化操作，使得Guided-Backpropagation不仅可以得到更为精细、细节更为丰富的可视化结果，还能可视化高层的特征（在这种情况下，反卷积网络可视化经常会失效）。
@@ -233,9 +234,9 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 %	\label{fig:grad_cam_example}
 %\end{figure}
 另外一种基于梯度，应用极为广泛的可视化方式是Grad-CAM，由于Grad-CAM是基于CAM~\cite{zhou2016learning}的。在此，先来介绍CAM。如图\ref{fig:cam_arichitecture}所示，全局均值池化（Global Average Pooling，缩写为GAP）输出最后一个卷积层每个单元的特征图的空间平均值，这些值的加权和用于生成最终输出。同样，我们计算最后一个卷积层的特征图的加权和，便可以得到类激活图（Class Activation Map）。下面我们以多分类问题（$N$表示类别个数）为例进行更为详细的描述（假设最后一层激活函数是Softmax）。对于给定的图像，令$\ve{F}_k(x, y)$表示激活空间位置最后一个卷积层中第$k$个特征图的$(x,y)$位置的激活值。对于第$k$个特征图执行GAP，则GAP结果$\hat{\ve{F}}_k=\sum_{x, y} \ve{F}_{k}(x,y)$。因此，对于类别$c$，被送到Softmax激活函数的输入$\ve{s}_c=\sum_{k} \ve{W}_{k}^{c} F_{k}$，其中$\ve{W}_k^c$是对应于第$k$个特征的类别$c$的权重。实质上，$\ve{W}_{k}^{c}$还可表示第$k$个特征图对于类别$c$的重要性。故类别$c$经过Softmax激活函数输出${\ve{p}}_c$可定义为$\ve{p}_c=\frac{\exp \left(\ve{s}_{c}\right)}{\sum_{i=1}^{i=N} \exp \left(\ve{s}_{i}\right)}$。根据以上定义，我们可以作出如下推导：
-\begin{equation*}
+\begin{equation}
 \ve{s}_{c}=\sum_{k} \ve{W}_{k}^{c} \sum_{x, y} \ve{F}_{k}(x, y)=\sum_{x, y} \sum_{k} \ve{W}_{k}^{c} \ve{F}_{k}(x, y).
-\end{equation*}
+\end{equation}
 我们定义$\ve{M}_c$为类别$c$的类激活图，则：
 \begin{equation}\label{equ:cam_heatmap_compute}
 \ve{M}_{c}(x, y)=\sum_{k} \ve{W}_{k}^{c} \ve{F}_{k}(x, y).
@@ -265,11 +266,11 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 %	\caption{多子图}
 %	\label{subfig}
 %\end{figure}
-\subsubsection{网络逆转}
+\subsubsection*{网络逆转}
 网络逆转方法会根据任意层中所有神经元的特征图重建图像，从而揭示该图层中保留了哪些图像信息，也是从网络层角度来解释CNN。网络逆转方法最先用于传统计算机视觉领域，如方向梯度直方图（Histogram of Oriented Gradients）~\cite{dalal2005histograms}。随着CNN的提出与发展，其变体方法开始用于解释CNN~\cite{mahendran2015understanding, mahendran2016visualizing, dosovitskiy2016inverting}。不同的是，Mahendran等人~\cite{mahendran2015understanding, mahendran2016visualizing}通过使用梯度下降方法和正则项从每一层重建图像，而Dosovitskiy等人~\cite{dosovitskiy2016inverting}通过训练专用的向上卷积神经网络（UpconvNet）来重建图像。前者更易于实现，因为它不需要训练额外的专用网络。后者可以通过额外的专用网络可视化更高层的更多现有信息，但是计算成本显著提高。总而言之，这两种算法的主要目标都是从网络层特征图的特定激活中重建原始输入图像。由于基于正则项的网络逆转方法实现相对容易，在此进行更深入的介绍。设给定原始图像$\ve{x}_0$和输入图像$\ve{x}$，基于正则项的网络逆转方法的目标在于重建最优输入图像$\ve{x}^*$，使得损失函数最小，形式化表达为：
-\begin{equation*}
+\begin{equation}
 \ve{x}^{*}=\underset{x}{\operatorname{argmin}}\left(C \cdot \mathcal{L}\left(\ve{A}(\ve{x}), \ve{A}\left(\ve{x}_{0}\right)\right)-\lambda(\ve{x})\right).
-\end{equation*}
+\end{equation}
 其中，$\mathcal{L}$是计算输入特定层前后的特征图$\ve{A}(\ve{x}_0)$和$\ve{A}(\ve{x})$的损失函数，$\lambda(\ve{x})$是正则项，$C$是调节损失函数和正则项的超参数。为了让重建图像更像自然图像，$\lambda(\ve{x})$可取L2-范数、全变差范数~\cite{rudin1992nonlinear}等。其中，全变差范数可让重建的图像更为平滑。与激活最大化方法~\cite{simonyan2013deep}相同的是，网络逆转方法也是通过重建输入图像来查看网络层对那些像素或者图像模式更为敏感，但是网络逆转方法可应用到网络任意层，而不限于网络第一层，因而泛化性更强。
 
 如果将这些CNN的可视化方法用于定位疾病标记物，可通过可视化图像区域，将CNN分类器在预测图像类别时重点关注的区域看作是疾病标记物。其中，扰动方法~\cite{zintgraf2017visualizing}对每个可能的局部区域进行遮挡或遮罩，并检查分类器输出的变化，输出的下降量越大，说明在预测图像类时的重要性越高。相比之下，特征激活方法则是在特定卷积层输出的特征映射中，根据激活区域来定位重要的局部区域，如流行的类激活映射(CAM~\cite{zhou2016learning})及其变体Grad-CAM~\cite{selvaraju2017grad}等。近年来，基于CAM的方法在医学图像分析中得到了广泛的应用，如胸部X射线图像~\cite{rajpurkar2017chexnet}中肺炎的检测、数字病理图像~\cite{zhang2017mdnet}中膀胱癌的预测、眼底图像中糖尿病视网膜病变异常区域定位~\cite{Gondaletal17}、胎盘超声影像中胎盘异常定位~\cite{Qi2017WeaklySL}、MRI图像~\cite{yang2018visual}中阿尔茨海默病的诊断等。与CAM和Grad-CAM同样作为一种可视化方法，特征图方法~\cite{simonyan2013deep}利用CNN中的梯度信息计算输入图像中的像素点对图像分类结果的重要性分数。在医学影像处理领域中，该方法可用于解决多通道脑部MRI图像中的肿瘤检测~\cite{banerjee2016novel}、脑部MRI图像中的肿瘤体积检测~\cite{mitra2017volumetric}、皮肤镜图像中的异常分割~\cite{jahanifar2018supervised}等诸多问题。
@@ -277,7 +278,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 \subsection{弱监督目标定位}
 弱监督目标定位任务需要在提供图像级标签的情况下，给出对应类别物体的相关区域。Oquab等人~\cite{Oquab2015IsOL}率先使用CNN描述并解决弱监督目标定位问题，随后一系列运用CNN解决弱监督目标定位问题的方法被提出。在弱监督条件下，解决目标定位任务最常见的思路是利用CNN分类器产生有关于目标位置的监督信号。目标位置的监督信号可以来自于网络本身，还可以由其他方法产生。前者可以理解为一种自监督方法~\cite{2015Hwang}，后者可以利用CAM或者Grad-CAM产生目标的位置信息~\cite{Kim_2017_ICCV, Krishna2018}。另外一种思路与CNN可视化中遮挡实验类似，设计多个网络进行对抗性擦除~\cite{WeiFLCZY17, ZhangWF0H18}，并采用递归方式生成定位结果，直到分类CNN训练失败。还可以引入注意力机制，指导分类器生成更具判别性区域。
 
-\subsubsection{生成目标位置的监督信号}
+\subsubsection*{生成目标位置的监督信号}
 当CNN分类器能够准确地对输入图像分类时，也就能表明CNN分类器已经能够很好学到各个类别图像中具有判别性的特征或者模式，此时便可以利用CNN产生与类别标签相关的目标物体位置信息，从而引入有关目标物体位置的监督信号。Sangheum等人~\cite{2015Hwang}用CNN完成分类任务的同时，用自身CNN产生目标物体的位置信息作为监督信号，借鉴多任务学习思想，同时完成了分类任务和目标定位任务，提出了自迁移学习方法。如图\ref{fig:self_transfer_learning}所示，自迁移学习的损失函数由分类损失和定位损失组成，两者之间设置超参数来平衡权重。在训练的开始阶段，分类网络的损失函数所占权重起着主导作用，因为对于定位器的成功训练，网络权值的初始值是非常重要的，因为定位器位置信息的监督信号由分类器和定位器共享的CNN特征提取器产生，没有训练良好的特征提取器，就无法产生具有判别性的类别相关区域充当监督信号。随着分类器的性能不断提升，CNN特征提取器产生的监督信号也就越来越可靠，此时需要增加定位损失函数的权重。注意，定位器的监督信号是来自CNN特征提取器本身的，这也是此方法称作自迁移学习的原因。
 
 \begin{figure}[h]
@@ -296,7 +297,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 	\label{fig:cam_based_weakly_supervised_localization}
 \end{figure}
 
-\subsubsection{对抗性擦除与注意力机制}
+\subsubsection*{对抗性擦除与注意力机制}
 对抗性擦除最初由Wei等人~\cite{WeiFLCZY17}提出，通过对抗性擦除，分类网络首先为特定图像类别标签挖掘最具区分性的区域。然后从图像中删除已发现的判别性区域，并且对分类网络进行了重新训练，以发现一个新的目标区域以尽量保证不会降低分类性能。他们采用递归方式、多次重复这种对抗性擦除过程，直到分类网络训练失败（可将分类网络训练失败定义为对分类网络的可视化结果性能较差），再将擦除的区域合并为一个完整的前景定位蒙版，其网络模型如图\ref{subfig:adversarial_erasing}所示。由于上述对抗性擦除擦除方法中设置了三个CNN分类器，并且不是端到端训练方式，这需要分多阶段逐步训练CNN，这会造成网络训练时间较长、效率也不够高。Zhang等人~\cite{ZhangWF0H18}提出了上述对抗性擦除的改进版本，将这些独立的CNN集成到单个网络中，只需要设置两个CNN分类器，并进行端到端的训练，不仅缩短了网络训练周期，还取得了更为优异的定位性能，其网络结构如图\ref{subfig:improved_adversarial_learning}所示。
 
 \begin{figure}[h!]
@@ -337,10 +338,24 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 \subsection{接收者操作特征曲线}\label{subsec:roc_curve}
 接收者操作特征曲线或者ROC曲线\footnote{https://en.wikipedia.org/wiki/Receiver\_operating\_characteristic}是一个可以说明二元分类器系统的鉴别阈值变化时的诊断能力的图形。通过绘制各种阈值设置下的真阳率（True Positive Rate，缩写为TPR）与假阳率（False Positive Rate，缩写为FPR）来创建ROC曲线。真阳率在机器学习中也称为灵敏度（Sensitivity），表示模型预测的真正类个数占所有真实正例的比例。假阳率也称为假警报的概率，也可计算为（1-特异性（Specificity）），表示模型预测的假正类（实际为负例）个数占所有真实负例的比例。ROC曲线是以TPR作为衰减的函数。换句话说，ROC曲线的横轴是FPR或者（1-Specificity），纵轴是TPR或者Sensitivity。下面给出TPR、FPR、Sensitivity和Specificity的数学定义。
 
-考虑两类预测问题（二分类），其中标签被标记为正（p）或负（n）。二分类器有四个可能的结果。如果预测的结果为p，而实际值也为p，则称为真正（True Positive，缩写为TP）。但是，如果实际值为n，则称其为误报（False Positive，缩写为FP）。相反，当预测结果和实际值均为n时，则为“真”（True Negative，缩写为TN），而当预测结果和实际值均为p时，为“假”（False Negative，缩写为FN）。由此我们可以定义以下概念：
+考虑两类预测问题（二分类），其中标签被标记为正或负，根据分类器给出的预测标签与实际标签是否一致，我们通常有如下定义：
 
+\noindent 1）真阳（True Positive，缩写为TP）:被分类器判定为正样本，实际上也是正样本。
+
+\noindent 2）假阳（False Positive，缩写为FP）：被分类器判定为正样本，但实际上是负样本。
+
+\noindent 3）真阴（True Negative，缩写为TN）：被分类器判定为负样本，实际上也是负样本。
+
+\noindent 4）假阴（False Negative，缩写为FN）：被分类器判定为负样本，但实际上是正样本。
+
+\noindent 由此，我们可进一步定义TPR、FPR等概念：
+%\begin{itemize}
+%	\item 真阳（True Positive，缩写为TP）:被分类器判定为正样本，实际上也是正样本。
+%	\item 假阳（False Positive，缩写为FP）：被分类器判定为正样本，但实际上是负样本。
+%	\item 真阴（True Negative，缩写为TN）：被分类器判定为负样本，实际上也是负样本。
+%	\item 假阴（False Negative，缩写为FN）：被分类器判定为负样本，但实际上是正样本。
+%\end{itemize}
 %可用表\ref{tab:confusion_mateix}表示以上关系：
-
 %\begin{table}[h]
 %	\centering
 %	\caption{TP、TN、FP和FN概念定义。}
@@ -357,21 +372,22 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 %\end{table}
 
 %\noindent 表\ref{tab:confusion_mateix}也叫混淆矩阵（Confusion Matrix）\footnote{https://en.wikipedia.org/wiki/Confusion\_matrix}。
-\begin{gather}
-	\mathrm{TPR}=\mathrm{Sensitivity}=\frac{\mathrm{TP}}{\mathrm{P}}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}},\\
-	\mathrm{FPR}=\frac{\mathrm{FP}}{\mathrm{N}}=\frac{\mathrm{FP}}{\mathrm{FP}+\mathrm{TN}},\\
-	\mathrm{Specificity}=\frac{\mathrm{TN}}{\mathrm{FP}+\mathrm{TN}}=1-\mathrm{FPR}.
-\end{gather}
+\vspace{-0.7cm}
+\begin{align}
+	&\mathrm{TPR}=\mathrm{Sensitivity}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}},\\
+	&\mathrm{FPR}=\frac{\mathrm{FP}}{\mathrm{FP}+\mathrm{TN}},\\
+	&\mathrm{Specificity}=\frac{\mathrm{TN}}{\mathrm{FP}+\mathrm{TN}}=1-\mathrm{FPR}.
+\end{align}
 设在二分类系统中，设$p(0\leq p \leq 1)$表示样本被分为正样本的概率。给定$N$个样本，该分类系统给出的预测值为$\ve{x}=\{p_1,p_2,...,p_N
 \}$，设这些样本的真实标签为$\ve{y}=\{y_1,y_2,...,y_N\}$，其中$y_i \in \{0,1\},0\leq i \le N$。随后，可依次将二分类系统给出的预测值作为阈值$T(0\leq T \leq 1)$，当$p_i$大于或等于阈值时，我们认为它为正样本，否则为负样本。对于多组不同的阈值，我们可以得到多组FPR和TPR，从而画出ROC曲线。
 
 我们将ROC曲线与横轴正半轴、纵轴正半轴共同围城的面积叫做AUC，AUC数值介于$0.5$与$1$之间，数值大小等于ROC曲线函数沿着FPR在$[0,1]$上的定积分。一般来说，如果一条ROC曲线$f_1$在另外一条ROC曲线$f_2$上方，我们称ROC曲线$f_1$“包围”ROC曲线$f_2$，说明$f_1$代表的分类系统性能优于$f_2$代表的分类系统。
 \subsection{精确率-召回率曲线}\label{subsec:pr_curve}
 精确率-召回率曲线或者P-R曲线显示了不同阈值时精确率和召回率之间的权衡，是以精确率（Precision）为横轴，召回率（Recall）为纵轴的一条曲线。精确率也叫准确率，表示真正样本在被模型识别的正样本中的比例，反映了模型识别正样本的准确性。召回率也叫检出率，表示被正确识别的正样本占所有正样本的比例，反映了模型对正样本的检索能力。根据\ref{subsec:roc_curve}小节中相关定义，精确率和召回率可定义为：
-\begin{gather}
-	\mathrm{Precision}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FP}},\\
-	\mathrm{Recall}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}}.
-\end{gather}
+\begin{align}
+	&\mathrm{Precision}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FP}},\\
+	&\mathrm{Recall}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}}.
+\end{align}
 
 %以挑选“好”西瓜为例，极端情况下，可以认为所有西瓜都是“好”瓜，则所有“好”瓜都能选出来，不难想象，此时Precision=0，Recall=1;反之，认为所有西瓜都不是“好”瓜，则所有“好”瓜都不能选出来，不难想象，此时Recall=0，Precision$\to 1$。故P-R曲线能反应模型平衡准确率和检出率的能力。
 
