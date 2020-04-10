@@ -15,7 +15,7 @@
 %\end{figure}
 %生物标志物是开发新疗法和辅助诊断的关键，受到研究人员的不断关注，其目标是为合适的病人开发合适的药物。随着计算机视觉技术不断应用到医学领域，疾病标记物定位任务自然也变成了研究热点。在医学影像处理领域，一旦一张医学影像被诊断为某种特定疾病，疾病标记物定位任务的目标便是寻找其患病区域，或者说在图像上找到诊断依据，该依据或者患病区域即可看作是疾病标记物。如图\ref{fig:biomarker_localization_example}，该图像被诊断为患有糖尿病视网膜病变，疾病标记物定位任务便是找到其异常表现，并给出其准确位置。可以发现，糖尿病视网膜病变有多种异常表现，疾病标记物定位任务要求不能漏检。另外，可以发现从颜色特征上看，出血(图中黄色矩形框)异常和眼底血管非常相似，因而将微小血管看作异常表现的假阳现象也可能发现。以上均给疾病标记物定位任务增加了不少难度。如果将CNN手段，根据以上介绍，疾病标记物定位任务的目标是找出疾病诊断背后的诊断依据，这与CNN的可视化/可解释性的目标恰好一致，因此CNN的可视化/可解释性是疾病标记物定位任务的主要解决方案之一。相关内容将会在\ref{subsec:visulization_methods}小节详细叙述。
 \subsection{卷积神经网络}\label{subsec:cnn_introduction}
-CNN最初是为了避免传统神经网络（多层感知机~\cite{gardner1998artificial}）在处理图像时的缺点而提出的。多层感知机在处理图像数据时，多层感知机对每张输入图像中的每个像素点都使用一个感知器。对于较大的图像，权重的数量很快就变得难以管理。例如，对于一个有3个彩色通道的224$\times$224像素图像，大约需要训练150,000个权值。此时，多层感知机的训练将变得十分困难。另外，多层感知机不具备平移不变性。例如，如果一张猫出现在一张图像的左上角和另一张图像的右下角，多层感知机将假设猫总是出现在图片的这个位置。再加上，多层感知机在处理图像时需要将二维图像数据将会以一维向量形式存在，因此无法利用二维空间的相对位置信息。
+CNN最初是为了避免传统神经网络（多层感知机）在处理图像时的缺点而提出的。多层感知机在处理图像数据时，多层感知机对每张输入图像中的每个像素点都使用一个感知器。对于较大的图像，权重的数量很快就变得难以管理。例如，对于一个有3个彩色通道的224$\times$224像素图像，大约需要训练150,000个权值。此时，多层感知机的训练将变得十分困难。另外，多层感知机不具备平移不变性。例如，如果一张猫出现在一张图像的左上角和另一张图像的右下角，多层感知机将假设猫总是出现在图片的这个位置。再加上，多层感知机在处理图像时需要将二维图像数据将会以一维向量形式存在，因此无法利用二维空间的相对位置信息。
 
 \begin{figure}[h!] % image examples & compare
 	\centering
@@ -43,7 +43,7 @@ CNN最初是为了避免传统神经网络（多层感知机~\cite{gardner1998ar
 
 %CNN便可以很好避免多层感知机存在的问题，卷积操作可以很好的捕捉图像的空间信息。另外，卷机操作还具有平移不变性。权值共享机制可以大大降低参数量。随着计算机算力的快速提升，运用反向传播算法~\cite{hecht1992theory}，CNN的大规模训练变得切实可行。自Hinton等人利用两块GPU成功训练AlexNet~\cite{krizhevsky2012imagenet}后，很多优秀网络结构被提出，比如VGG~\cite{simonyan2014very}，ResNet~\cite{he2016deep, he2016identity}，DenseNet~\cite{huang2017densely}，Inception系列网络~\cite{szegedy2015going, szegedy2016rethinking, szegedy2017inception}。CNN除了在分类问题上取得出色性能外，还在自然语言处理~\cite{dos2014deep, mou2016convolutional, li2019knowledge}、无人驾驶~\cite{lee2017deep, csillik2018identification, tang2017vehicle}、语音识别~\cite{abdel2013exploring, swietojanski2014convolutional, robertson2019exploring}等领域表现不凡，越来越受到研究者们的青睐。
 
-CNN可以很好避免多层感知机存在的问题，卷积操作首先可以很好的捕捉图像的空间信息。除此之外，卷机操作还具有平移不变性。再加上权值共享机制可以大大降低参数量。随着计算机算力的快速提升，运用反向传播算法~\cite{hecht1992theory}，CNN的大规模训练也变得切实可行。因此，自从Hinton等人利用两块GPU成功训练AlexNet~\cite{krizhevsky2012imagenet}后，很多优秀网络结构相继被提出，比如，VGG~\cite{simonyan2014very}，ResNet~\cite{he2016deep, he2016identity}和DenseNet~\cite{huang2017densely}。CNN除了在分类问题上取得出色性能外，还在自然语言处理~\cite{dos2014deep, mou2016Convolutional}、无人驾驶~\cite{lee2017deep}、语音识别~\cite{abdel2013exploring}等领域表现不凡，越来越受到研究者们的青睐。
+CNN可以很好避免多层感知机存在的问题，卷积操作首先可以很好的捕捉图像的空间信息。除此之外，卷机操作还具有平移不变性。再加上权值共享机制可以大大降低参数量。随着计算机算力的快速提升，运用反向传播算法~\cite{hecht1992theory}，CNN的大规模训练也变得切实可行。因此，自从Hinton等人利用两块GPU成功训练AlexNet~\cite{krizhevsky2012imagenet}后，很多优秀网络结构相继被提出，比如，VGG~\cite{simonyan2014very}，ResNet~\cite{he2016deep, he2016identity}和DenseNet~\cite{huang2017densely}。CNN除了在分类问题上取得出色性能外，还在自然语言处理~\cite{dos2014deep, mou2016Convolutional}、无人驾驶~\cite{lee2017deep}等领域表现不凡，越来越受到研究者们的青睐。
 
 三种经典的CNN的模型结构如图~\ref{mulfig:popular_networks}所示。图中从左到右，三种网络结构依次为AlexNet~\cite{krizhevsky2012imagenet}、ResNet残差单元（ResNet实际上是由多个残差单元堆叠组成）~\cite{he2016deep, he2016identity}和DenseNet~\cite{huang2017densely}。可以看出，CNN都是由一系列卷积操作组成的，在卷积操作之后再接上激活函数以增强非线性表达能力。为了减少参数量，CNN引入了权值共享机制。除此之外，CNN还引入了池化操作，使得输入图像尺寸随着深度不断增加而减小，进一步减少参数量，与此同时池化操作还起到过滤无关信息的的作用。最后，再接上全连接层对提取到的特征进行分类（视不同任务而改变）。在此过程中，CNN实际上充当特征提取器的角色。那么我们可以这样理解CNN：CNN是一种层次化结构，单纯卷积操作提取的是图像的局部信息，随着一系列卷积操作的堆叠，CNN的感受野越来越大，比如两个3$\times$3的卷积核堆叠相当于一个5$\times$5卷积核的感受野，CNN便能提取到图像的全局信息。激活函数增强CNN的非线性表达能力。随着深度增加，输入卷积层的尺寸大小会变得越来越小，通常以2倍关系减小，CNN便可逐步提取到高层语义特征并且过滤掉与任务无关的信息。在损失函数（比如交叉熵）的监督指导下，根据反向梯度传播算法更新网络参数，CNN便能被训练成一个良好的特征提取器。
 
@@ -103,12 +103,14 @@ CNN可以很好避免多层感知机存在的问题，卷积操作首先可以�
 
 2)解码器：解码器和编码器相反，是将特征不断扩大，最终恢复到原图像大小的过程。通常会使用上采样或者反卷积~\cite{zeiler2010deconvolutional}操作以2倍关系逐步扩大，从而达到融合不同层次、不同尺寸的特征的目的。
 
-由于本文使用到了U-Net~\cite{ronneberger2015u}，故最后在此简单介绍U-Net。除了以上特点之外，U-Net中还存在从编码器直接到解码器的跨层连接，这些跨层连接使网络可以将上下文信息传播到更高分辨率的层，从而使得特征融合更加充分。在网络可视化图上（见图\ref{subfig:popular_encoder_decoder_unet}右子图），由于编码器和解码器相互对称，形成一个U型结构。U-Net中只含有卷积层，不含任何全连接层，最后视不同任务而接上不同激活函数。U-Net作为一种巧妙的网络模型，更启发了后续诸多优秀网络模型~\cite{zhou2018unet++, oktay2018attention, ibtehaz2020multiresunet, alom2019recurrent, milletari2016v}。
+由于本文使用到了U-Net~\cite{ronneberger2015u}，故最后在此简单介绍U-Net。除了以上特点之外，U-Net中还存在从编码器直接到解码器的跨层连接，这些跨层连接使网络可以将上下文信息传播到更高分辨率的层，从而使得特征融合更加充分。在网络可视化图上（见图\ref{subfig:popular_encoder_decoder_unet}右子图），由于编码器和解码器相互对称，形成一个U型结构。U-Net中只含有卷积层，不含任何全连接层，最后视不同任务而接上不同激活函数。U-Net作为一种巧妙的网络模型，更启发了后续诸多优秀网络模型~\cite{zhou2018unet++, oktay2018attention, alom2019recurrent}，
+被广泛用于语义分割任务~\cite{cciccek20163d,dong2017automatic,li2018h}。
 
-%被广泛应用于医学影像处理领域~\cite{cciccek20163d, han2018framing, dong2017automatic, sevastopolsky2017optic, zhang2018ct}
-
+%被广泛用于语义分割任务~\cite{cciccek20163d, han2018framing, dong2017automatic, sevastopolsky2017optic, zhang2018ct}
+%在医学影像领域更是大放异彩（比如图像重构~\cite{bhadra2020medical}、异常检测~\cite{Kohl2017AdversarialNF}、图像去噪~\cite{Yang2018LowDoseCI}和图像分割~\cite{Han2018SpineGANSS}）。
+%对抗生成网络（Generative Adversarial Networks，缩写为GAN）最初于2014年由Goodfellow等人~\cite{goodfellow2014generative}提出，就越来越受到学术界和工业界的重视。而随着GAN在理论与模型上的高速发展，GAN不仅在计算机视觉~\cite{zhu2017unpaired}、自然语言处理~\cite{qin2018dsgan}、人机交互~\cite{qiao2018emotional}等领域有着越来越深入的应用，还在医学影像领域大放异彩（比如图像重构~\cite{bhadra2020medical}、异常检测~\cite{Kohl2017AdversarialNF}、图像去噪~\cite{Yang2018LowDoseCI}和图像分割~\cite{Han2018SpineGANSS}）。
 \subsection{对抗生成网络}\label{subsec:gan_introduction}
-对抗生成网络（Generative Adversarial Networks，缩写为GAN）最初于2014年由Goodfellow等人~\cite{goodfellow2014generative}提出，就越来越受到学术界和工业界的重视。而随着GAN在理论与模型上的高速发展，它在计算机视觉~\cite{zhu2017unpaired}、自然语言处理~\cite{qin2018dsgan}、人机交互~\cite{qiao2018emotional}等领域有着越来越深入的应用，在医学影像领域更是大放异彩（比如图像重构~\cite{bhadra2020medical}、异常检测~\cite{Kohl2017AdversarialNF}、图像去噪~\cite{Yang2018LowDoseCI}和图像分割~\cite{Han2018SpineGANSS}）。GAN是生成式模型，由生成网络（以下简称“生成器”）和判别网络（以下简称“判别器”）组成，受博弈论中的零和博弈启发，将生成问题视作判别器和生成器这两个网络的对抗和博弈。生成器努力生成新数据，判别器努力区分生成器生成的数据（一般记为“假”）和真实数据（一般记为“真”）。生成器尽量产生更真实的数据，而判别器尽量更完美地把真实数据与生成数据区分开来。由此，生成器和判别器形成对抗关系，彼此进步。在不断的迭代训练过程中，生成器生成的数据也就越来越逼近真实数据，即生成器学到的分布越来越接近真实数据代表的分布。在理想情况下，判别器无法区分生成的数据和真实的数据。
+对抗生成网络（Generative Adversarial Networks，缩写为GAN）最初于2014年由Goodfellow等人~\cite{goodfellow2014generative}提出，就越来越受到学术界和工业界的重视。而随着GAN在理论与模型上的高速发展，GAN不仅在计算机视觉~\cite{zhu2017unpaired}领域有着越来越深入的应用，还在医学影像领域大放异彩（比如图像重构~\cite{bhadra2020medical}、异常检测~\cite{Kohl2017AdversarialNF}、图像去噪~\cite{Yang2018LowDoseCI}和图像分割~\cite{Han2018SpineGANSS}）。GAN是生成式模型，由生成网络（以下简称“生成器”）和判别网络（以下简称“判别器”）组成，受博弈论中的零和博弈启发，将生成问题视作判别器和生成器这两个网络的对抗和博弈。生成器努力生成新数据，判别器努力区分生成器生成的数据（一般记为“假”）和真实数据（一般记为“真”）。生成器尽量产生更真实的数据，而判别器尽量更完美地把真实数据与生成数据区分开来。由此，生成器和判别器形成对抗关系，彼此进步。在不断的迭代训练过程中，生成器生成的数据也就越来越逼近真实数据，即生成器学到的分布越来越接近真实数据代表的分布。在理想情况下，判别器无法区分生成的数据和真实的数据。
 
 设真实数据分布为$\ve{x}\sim \text{p}_{\text{data}}(\ve{x})$，噪音分布为$\ve{z}\sim \text{p}_{\text{z}}(\ve{z})$，$G$和$D$分别表示生成器和判别器。$\vv{\theta}_{g}$和$\vv{\theta}_{d}$分别表示生成器$G$和判别器$D$的训练参数。在GAN中，判别器被看做一个二类分类器，通常在器最后一层加上Sigmod激活函数，因而一般将交叉熵当做损失函数。判别器输出$D(\ve{x};\vv{\theta})$是一个数值，范围在$0$到$1$之间，表示样本来自于真实数据分布的可能性。运用极大极小优化理论，GAN的优化目标$V(D, G)$可写成：
 \begin{eqnarray}\label{equ:gan_loss_func}
@@ -116,18 +118,18 @@ CNN可以很好避免多层感知机存在的问题，卷积操作首先可以�
 \end{eqnarray}
 \noindent 其中，$D(G(\ve {z};\vv{\theta});\vv{\theta})$表示生成器生成的数据样本。根据GAN的思想，通常先更新判别器，使判别器尽可能将来自真实数据分布的样本和来自生成器生成的数据分布的样本区分开来。随后更新生成器，使生成器生成的样本尽可能接近来自真实数据分布的样本，使得判别器无法区分样本来自真实数据分布还是生成器生成的数据分布。在实际训练时，一般采用判别器和生成器先后交替训练的策略：
 
-\begin{itemize}
-	\item 固定生成器，更新判别器。这等价于用随机梯度上升算法最大化损失函数$L(\ve{x},\ve{z};\vv{\theta})$：
+
+\noindent 1）固定生成器，更新判别器。这等价于用随机梯度上升算法最大化损失函数$L(\ve{x},\ve{z};\vv{\theta})$：
 	\begin{equation}
 	L(\ve{x},\ve{z};\vv{\theta})=\log D\left(\ve{x};\vv{\theta}\right)+\log \left(1-D\left(G\left(\ve{z};\vv{\theta}\right)\right);\vv{\theta}\right).
 	\end{equation}
-	\item 固定判别器，更新生成器。这等价于用随机梯度下降算法最小化损失函数$L(\ve{z};\vv{\theta})$：
+\noindent 2)固定判别器，更新生成器。这等价于用随机梯度下降算法最小化损失函数$L(\ve{z};\vv{\theta})$：
 	\begin{equation}
 	L(\ve{z};\vv{\theta})=\log \left(1-D\left(G\left(\ve{z};\vv{\theta}\right);\vv{\theta}\right)\right).
 	\end{equation}
-\end{itemize}
+%Kullback-Leibler散度~\cite{Kullback1951ONIA}或者Jensen-Shannon散度~\cite{Kantor2001FoundationsOS}
 
-以上朴素GAN中生成器和判别器均是多层感知机。在实际训练过程中存在参数量过大、训练困难、损失函数不具备可解释性、模式崩塌、容易出现梯度消失等问题，这些问题经常导致训练GAN失败。鉴于以上情况，各种改进模型相继提出，Alec等人~\cite{radford2015unsupervised}成功将CNN和GAN结合起来，提出了DCGAN，用CNN代替生成器和判别器中的多层感知机，使得训练GAN更加容易，生成图像的分辨率也更高。针对训练过程中存在的梯度消失和模式崩塌问题，Martin等人~\cite{arjovsky2017wasserstein}提出了WGAN，使用Wasserstein-1距离代替素朴GAN~\cite{goodfellow2014generative}中使用的Kullback-Leibler散度~\cite{Kullback1951ONIA}或者Jensen-Shannon散度~\cite{Kantor2001FoundationsOS}，并且采用权值截断（Weight Clipping）满足利普希茨连续条件\footnote{https://en.wikipedia.org/wiki/Lipschitz\_continuity}（Lipschitz Continuity），但这也会造成权值趋向两个截断阈值，导致GAN不容易收敛。为了更好满足利普希茨连续条件，Ishaan等人~\cite{gulrajani2017improved}采用梯度惩罚项（Gradient Penalty），提出了WGAN-GP。由于WGAN-GP可以有效避免GAN训练过程中的梯度消失问题，其训练过程也比较稳定，网络收敛得也较快。另外，Wasserstein-1距离还对训练过程有指示作用，Wasserstein-1距离越接近0，表示WGAN-GP训练得越好。基于以上诸多优势，本文网络模型中的GAN采用WGAN-GP。与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此判别器最后一层也不再有Sigmoid激活函数。设$\ve{y}\sim \text{p}_\text{g}(\ve{y})$表示给定噪音分布$\ve{z}\sim \text{p}_{\text{z}}(\ve{z})$时生成器所代表的数据分布。再加上梯度惩罚项，WGAN-GP的优化目标$V(D, G)$可写作：
+以上朴素GAN中生成器和判别器均是多层感知机。在实际训练过程中存在参数量过大、训练困难、损失函数不具备可解释性、模式崩塌、容易出现梯度消失等问题，这些问题经常导致训练GAN失败。鉴于以上情况，各种改进模型相继提出，Alec等人~\cite{radford2015unsupervised}成功将CNN和GAN结合起来，提出了DCGAN，用CNN代替生成器和判别器中的多层感知机，使得训练GAN更加容易，生成图像的分辨率也更高。针对训练过程中存在的梯度消失和模式崩塌问题，Martin等人~\cite{arjovsky2017wasserstein}提出了WGAN，使用Wasserstein-1距离代替素朴GAN~\cite{goodfellow2014generative}中使用的Kullback-Leibler散度\footnote{https://en.wikipedia.org/wiki/Kullback\%E2\%80\%93Leibler\_divergence}或者Jensen-Shannon散度\footnote{https://en.wikipedia.org/wiki/Jensen\%E2\%80\%93Shannon\_divergence}，并且采用权值截断（Weight Clipping）满足利普希茨连续条件\footnote{https://en.wikipedia.org/wiki/Lipschitz\_continuity}（Lipschitz Continuity），但这也会造成权值趋向两个截断阈值，导致GAN不容易收敛。为了更好满足利普希茨连续条件，Ishaan等人~\cite{gulrajani2017improved}采用梯度惩罚项（Gradient Penalty），提出了WGAN-GP。由于WGAN-GP可以有效避免GAN训练过程中的梯度消失问题，其训练过程也比较稳定，网络收敛得也较快。另外，Wasserstein-1距离还对训练过程有指示作用，Wasserstein-1距离越接近0，表示WGAN-GP训练得越好。基于以上诸多优势，本文网络模型中的GAN采用WGAN-GP。与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此判别器最后一层也不再有Sigmoid激活函数。设$\ve{y}\sim \text{p}_\text{g}(\ve{y})$表示给定噪音分布$\ve{z}\sim \text{p}_{\text{z}}(\ve{z})$时生成器所代表的数据分布。再加上梯度惩罚项，WGAN-GP的优化目标$V(D, G)$可写作：
 \begin{equation}\label{wgan_gp_loss_func}
   \begin{aligned}
 	\min _{G} \max _{D} V(D, G)=&\mathbb{E}_{\ve{y} \sim \text{p}_{\text{g}}}[D(\ve{y};\vv{\theta})]-\mathbb{E}_{\ve{x} \sim \text{p}_{\text{data}}}[D(\ve{x};\vv{\theta})] \\ & +\lambda \mathbb{E}_{\hat{\ve{x}} \sim \text{p}_{\hat{\ve{x}}}}\left[\left(\left\|\nabla_{\hat{\ve{x}}}D(\hat{\ve{x}};\vv{\theta})\right\|_{2}-1\right)^{2}\right].
