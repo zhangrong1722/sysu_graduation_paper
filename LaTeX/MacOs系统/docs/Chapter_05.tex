@@ -7,7 +7,7 @@
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/multi_classes_simulated_skin.pdf}
-	\caption[多类模拟皮肤病病变数据集图像示例]{多类模拟皮肤病病变数据集图像示例（红色矩形框表示疾病标记物）。}
+	\caption[多类模拟皮肤病病变数据集部分图像示例]{多类模拟皮肤病病变数据集部分图像示例（红色矩形框表示疾病标记物）。}
 	\label{fig:mul_classes_simulated_ds}
 \end{figure}
 
@@ -36,7 +36,7 @@
 我们同样先训练得到了一个ResNet-18分类器，分类器最终的分类准确率达到了$99.9\%$，从而保证ResNet-18本身良好的分类性能。随后，与\ref{sec:bin_dr_ds_experiment}小节一样，我们分别使用CAM（见图\ref{fig:multi_simulated_skin_res}第$3$行）、Grad-CAM（见图\ref{fig:multi_simulated_skin_res}第$4$行和第$5$行）在多类模拟皮肤病病变数据集上完成了疾病标记物的定位任务。
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=1.0\textwidth]{figure/multi_simulated_skin_res.pdf}
+	\includegraphics[width=0.975\textwidth]{figure/multi_simulated_skin_res.pdf}
 	\caption[在多类模拟皮肤病病变数据集上疾病标记物定位热图对比]{在多类模拟皮肤病病变数据集上疾病标记物定位热图对比。}
 	\label{fig:multi_simulated_skin_res}
 \end{figure}

@@ -15,7 +15,7 @@
 %\end{figure}
 %生物标志物是开发新疗法和辅助诊断的关键，受到研究人员的不断关注，其目标是为合适的病人开发合适的药物。随着计算机视觉技术不断应用到医学领域，疾病标记物定位任务自然也变成了研究热点。在医学影像处理领域，一旦一张医学影像被诊断为某种特定疾病，疾病标记物定位任务的目标便是寻找其患病区域，或者说在图像上找到诊断依据，该依据或者患病区域即可看作是疾病标记物。如图\ref{fig:biomarker_localization_example}，该图像被诊断为患有糖尿病视网膜病变，疾病标记物定位任务便是找到其异常表现，并给出其准确位置。可以发现，糖尿病视网膜病变有多种异常表现，疾病标记物定位任务要求不能漏检。另外，可以发现从颜色特征上看，出血(图中黄色矩形框)异常和眼底血管非常相似，因而将微小血管看作异常表现的假阳现象也可能发现。以上均给疾病标记物定位任务增加了不少难度。如果将CNN手段，根据以上介绍，疾病标记物定位任务的目标是找出疾病诊断背后的诊断依据，这与CNN的可视化/可解释性的目标恰好一致，因此CNN的可视化/可解释性是疾病标记物定位任务的主要解决方案之一。相关内容将会在\ref{subsec:visulization_methods}小节详细叙述。
 \subsection{卷积神经网络}\label{subsec:cnn_introduction}
-CNN最初是为了避免传统神经网络（多层感知机）在处理图像时的缺点而提出的。多层感知机在处理图像数据时，多层感知机对每张输入图像中的每个像素点都使用一个感知器。对于较大的图像，权重的数量很快就变得难以管理。例如，对于一个有3个彩色通道的224$\times$224像素图像，大约需要训练150,000个权值。此时，多层感知机的训练将变得十分困难。另外，多层感知机不具备平移不变性。例如，如果一张猫出现在一张图像的左上角和另一张图像的右下角，多层感知机将假设猫总是出现在图片的这个位置。再加上，多层感知机在处理图像时需要将二维图像数据将会以一维向量形式存在，因此无法利用二维空间的相对位置信息。
+CNN最初是为了避免传统神经网络（多层感知机）在处理图像时的缺点而提出的。多层感知机在处理图像数据时，多层感知机对每张输入图像中的每个像素点都使用一个感知器。对于较大的图像，权重的数量很快就变得难以管理。例如，对于一个有3个彩色通道的224$\times$224像素图像，大约需要训练150,000个参数。此时，巨大参数量导致多层感知机的训练变得十分困难。另外，多层感知机不具备平移不变性。例如，如果一张猫出现在一张图像的左上角和另一张图像的右下角，多层感知机将假设猫总是出现在图片的这个位置。再加上多层感知机在处理图像时需要将二维图像数据转为一维向量形式存在，这导致多层感知机无法利用二维空间的相对位置信息。
 
 \begin{figure}[h!] % image examples & compare
 	\centering
@@ -41,11 +41,11 @@ CNN最初是为了避免传统神经网络（多层感知机）在处理图像�
 	\label{mulfig:popular_networks}
 \end{figure}
 
-%CNN便可以很好避免多层感知机存在的问题，卷积操作可以很好的捕捉图像的空间信息。另外，卷机操作还具有平移不变性。权值共享机制可以大大降低参数量。随着计算机算力的快速提升，运用反向传播算法~\cite{hecht1992theory}，CNN的大规模训练变得切实可行。自Hinton等人利用两块GPU成功训练AlexNet~\cite{krizhevsky2012imagenet}后，很多优秀网络结构被提出，比如VGG~\cite{simonyan2014very}，ResNet~\cite{he2016deep, he2016identity}，DenseNet~\cite{huang2017densely}，Inception系列网络~\cite{szegedy2015going, szegedy2016rethinking, szegedy2017inception}。CNN除了在分类问题上取得出色性能外，还在自然语言处理~\cite{dos2014deep, mou2016convolutional, li2019knowledge}、无人驾驶~\cite{lee2017deep, csillik2018identification, tang2017vehicle}、语音识别~\cite{abdel2013exploring, swietojanski2014convolutional, robertson2019exploring}等领域表现不凡，越来越受到研究者们的青睐。
+%CNN便可以很好避免多层感知机存在的问题，卷积操作可以很好的捕捉图像的空间信息。另外，卷积操作还具有平移不变性。权值共享机制可以大大降低参数量。随着计算机算力的快速提升，运用反向传播算法~\cite{hecht1992theory}，CNN的大规模训练变得切实可行。自Hinton等人利用两块GPU成功训练AlexNet~\cite{krizhevsky2012imagenet}后，很多优秀网络结构被提出，比如VGG~\cite{simonyan2014very}，ResNet~\cite{he2016deep, he2016identity}，DenseNet~\cite{huang2017densely}，Inception系列网络~\cite{szegedy2015going, szegedy2016rethinking, szegedy2017inception}。CNN除了在分类问题上取得出色性能外，还在自然语言处理~\cite{dos2014deep, mou2016convolutional, li2019knowledge}、无人驾驶~\cite{lee2017deep, csillik2018identification, tang2017vehicle}、语音识别~\cite{abdel2013exploring, swietojanski2014convolutional, robertson2019exploring}等领域表现不凡，越来越受到研究者们的青睐。
 
-CNN可以很好避免多层感知机存在的问题，卷积操作首先可以很好的捕捉图像的空间信息。除此之外，卷机操作还具有平移不变性。再加上权值共享机制可以大大降低参数量。随着计算机算力的快速提升，运用反向传播算法~\cite{hecht1992theory}，CNN的大规模训练也变得切实可行。因此，自从Hinton等人利用两块GPU成功训练AlexNet~\cite{krizhevsky2012imagenet}后，很多优秀网络结构相继被提出，比如，VGG~\cite{simonyan2014very}，ResNet~\cite{he2016deep, he2016identity}和DenseNet~\cite{huang2017densely}。CNN除了在分类问题上取得出色性能外，还在自然语言处理~\cite{dos2014deep, mou2016Convolutional}、无人驾驶~\cite{lee2017deep}等领域表现不凡，越来越受到研究者们的青睐。
+CNN可以很好避免多层感知机存在的问题，首先用CNN处理图像时直接用矩阵来表示图像数据，无须将其转化为一维向量，因此卷积操作可以很好地捕捉图像的空间信息和上下文信息。除此之外，卷积操作还具有平移不变性，CNN中权值共享机制可以大大降低参数量。随着图形处理器（Graphics Processing Unit，缩写为GPU）的广泛应用和快速迭代，计算机的算力也快速提升，运用反向传播算法~\cite{hecht1992theory}，CNN的大规模部署与训练变得切实可行。因此，自从Hinton等人~\cite{krizhevsky2012imagenet}利用两块GPU成功训练AlexNet后，很多优秀网络结构相继被提出，比如，VGG~\cite{simonyan2014very}，ResNet~\cite{he2016deep, he2016identity}和DenseNet~\cite{huang2017densely}。CNN除了在分类问题上表现出出色性能外，还在自然语言处理~\cite{dos2014deep, mou2016Convolutional}、无人驾驶~\cite{lee2017deep}等领域表现不凡，越来越受到研究者们的青睐。
 
-三种经典的CNN的模型结构如图~\ref{mulfig:popular_networks}所示。图中从左到右，三种网络结构依次为AlexNet~\cite{krizhevsky2012imagenet}、ResNet残差单元（ResNet实际上是由多个残差单元堆叠组成）~\cite{he2016deep, he2016identity}和DenseNet~\cite{huang2017densely}。可以看出，CNN都是由一系列卷积操作组成的，在卷积操作之后再接上激活函数以增强非线性表达能力。为了减少参数量，CNN引入了权值共享机制。除此之外，CNN还引入了池化操作，使得输入图像尺寸随着深度不断增加而减小，进一步减少参数量，与此同时池化操作还起到过滤无关信息的的作用。最后，再接上全连接层对提取到的特征进行分类（视不同任务而改变）。在此过程中，CNN实际上充当特征提取器的角色。那么我们可以这样理解CNN：CNN是一种层次化结构，单纯卷积操作提取的是图像的局部信息，随着一系列卷积操作的堆叠，CNN的感受野越来越大，比如两个3$\times$3的卷积核堆叠相当于一个5$\times$5卷积核的感受野，CNN便能提取到图像的全局信息。激活函数增强CNN的非线性表达能力。随着深度增加，输入卷积层的尺寸大小会变得越来越小，通常以2倍关系减小，CNN便可逐步提取到高层语义特征并且过滤掉与任务无关的信息。在损失函数（比如交叉熵）的监督指导下，根据反向梯度传播算法更新网络参数，CNN便能被训练成一个良好的特征提取器。
+三种经典的CNN的模型结构如图~\ref{mulfig:popular_networks}所示。图中从左到右，三种网络结构依次为AlexNet~\cite{krizhevsky2012imagenet}、ResNet残差单元（ResNet实际上是由多个残差单元堆叠组成）~\cite{he2016deep, he2016identity}和DenseNet~\cite{huang2017densely}。可以看出，CNN都是由一系列卷积操作组成的，在卷积操作之后再接上激活函数以增强非线性表达能力。为了减少参数量，CNN除了引入权值共享机制外，还引入了池化操作，使得输入图像尺寸随着深度不断增加而减小，与此同时池化操作还起到过滤无关信息的的作用。为了增强CNN的非线性表达能力，可在CNN中添加激活函数。最后，再接上全连接层对提取到的特征进行分类（视不同任务而改变）。在此过程中，CNN实际上充当特征提取器的角色。那么我们可以这样理解CNN：CNN是一种层次化结构，单纯卷积操作提取的是图像的局部信息，随着一系列卷积操作的堆叠，CNN的感受野越来越大，比如两个3$\times$3的卷积核堆叠相当于一个5$\times$5卷积核的感受野，CNN便能提取到图像的全局信息。激活函数增可强CNN的非线性表达能力。随着深度增加，可添加池化层使输入卷积层的尺寸大小会变得越来越小，CNN便可逐步提取到高层语义特征并且过滤掉与任务无关的信息。在损失函数（比如交叉熵）的监督指导下，运用梯度反向传播算法计算梯度更新网络参数，CNN便能被训练成一个良好的特征提取器。
 
 %以上便是CNN的一般结构和工作原理，由于ResNet-18在本文提出的方法充当重要角色，下面将详细介绍ResNet模型。随着VGG-19~\cite{simonyan2014very}的出现，一个CNN的深度越深，学出来的效果是否越好的问题摆在了研究者们的面前。由于CNN的深度越深，原本就存在的过拟合和梯度消失问题变得越严重。何凯明等人便设计了一种在深度远大于VGG-19，效果也由于VGG-19的网络模型。设$\mathcal{H}(x)$是CNN拟合的函数，$x$表示网络输入。如果假设多个非线性层可以渐近逼近复杂函数并且假设输入和输出尺寸相同，那么就可以假设它们可以渐近逼近残差函数$\mathcal{F}(x)$，即$\mathcal{F}(x)=\mathcal{H}(x)− x$。因此，ResNet没有让网络直接拟合$\mathcal{H}(x)$，而是明确地让这些层近似为残差函数$\mathcal{F}(x)=\mathcal{H}(x)-x$。 因此，原始函数变为$\mathcal{F}(x)+x$。尽管两种形式都应能够渐近地逼近所需的功能（如假设），但是近似拟合残差函数要容易得多。另外，为了表示加号，残差单元中通常加入跳接操作。
 
@@ -95,15 +95,15 @@ CNN可以很好避免多层感知机存在的问题，卷积操作首先可以�
 	\label{mulfig:popular_encoder_decoder}
 \end{figure}
 
-编码-解码器自Hinton等人~\cite{hinton2006reducing}提出以来被广泛应用。编码-解码器不是某一种网络，而是代表了一类网络。随后便有降噪编码器-解码器~\cite{vincent2008extracting}、稀疏编码器-解码器~\cite{coates2011analysis}、变分贝叶斯编码器-解码器~\cite{kingma2013auto}等变体。将卷积操作应用到编码器-解码器中，启发了全卷积神经网络~\cite{long2015fully}、U-Net~\cite{ronneberger2015u}等诸多优秀网络结构。全卷积神经网络和U-Net均是分割分割领域（包括自然图像和医学图像）最为基础的网络结构。为了读者对编码器-解码器模型结构由较为直观的认识，包括原始编码器-解码器和U-Net在内的两种经典网络结构如图\ref{mulfig:popular_encoder_decoder}所示。
+编码器-解码器自Hinton等人~\cite{hinton2006reducing}提出以来被广泛应用。编码器-解码器不是某一种网络，而是代表了一类网络。随后降噪编码器-解码器~\cite{vincent2008extracting}、稀疏编码器-解码器~\cite{coates2011analysis}、变分贝叶斯编码器-解码器~\cite{kingma2013auto}等不同用途的变体也相继被提出。编码器-解码器与CNN的结合启发了全卷积神经网络~\cite{long2015fully}、U-Net~\cite{ronneberger2015u}等经典网络结构。全卷积神经网络和U-Net均是分割分割领域（包括自然图像和医学图像）最为基础的网络结构。为了读者对编码器-解码器模型结构由较为直观的认识，包括原始编码器-解码器和U-Net在内的两种经典网络结构如图\ref{mulfig:popular_encoder_decoder}所示。
 
 在深度学学习领域，编码器-解码器是一种无监督的神经网络。从图\ref{mulfig:popular_encoder_decoder}可看出，编码器-解码器共同特点是由编码器和解码器组成：
 
-1)编码器：编码器在网络结构图中是将卷积操作输入不断变小的过程，U-Net中是运用池化层实现下采样，不断将卷积操作输入以2倍关系缩小，从而达到提取图像特征的目的。由于通过编码器，可将输入维度不断降低，因此编码器-解码器最直观的应用便是图像压缩和图像去燥。在实际使用过程中，为了让编码器提取到输入较好的特征表达，通常会利用深度学习网络知识可迁移的优点，用Image-Net~\cite{deng2009imagenet}上的预训练模型参数来初始化编码器~\cite{iglovikov2018ternausnet}。
+1)编码器：编码器在网络结构图中是不断将输入尺寸变小的过程，U-Net中是运用池化层实现下采样，不断将卷积操作输入以2倍关系缩小，从而达到提取图像特征达到稀疏的目的。由于通过编码器可将输入维度不断降低，因此编码器-解码器最直观的应用便是图像压缩和图像去燥。在实际使用过程中，为了让编码器提取到输入较好的特征表达，通常会利用深度学习网络知识可迁移的优点，用Image-Net~\cite{deng2009imagenet}上的预训练模型参数来初始化编码器~\cite{iglovikov2018ternausnet}。
 
-2)解码器：解码器和编码器相反，是将特征不断扩大，最终恢复到原图像大小的过程。通常会使用上采样或者反卷积~\cite{zeiler2010deconvolutional}操作以2倍关系逐步扩大，从而达到融合不同层次、不同尺寸的特征的目的。
+2)解码器：解码器和编码器相反，是将输入尺寸不断扩大，最终恢复到原图像大小的过程。通常会使用上采样或者反卷积~\cite{zeiler2010deconvolutional}操作以2倍关系逐步扩大，从而达到融合不同层次、不同尺寸的特征的目的。
 
-由于本文使用到了U-Net~\cite{ronneberger2015u}，故最后在此简单介绍U-Net。除了以上特点之外，U-Net中还存在从编码器直接到解码器的跨层连接，这些跨层连接使网络可以将上下文信息传播到更高分辨率的层，从而使得特征融合更加充分。在网络可视化图上（见图\ref{subfig:popular_encoder_decoder_unet}右子图），由于编码器和解码器相互对称，形成一个U型结构。U-Net中只含有卷积层，不含任何全连接层，最后视不同任务而接上不同激活函数。U-Net作为一种巧妙的网络模型，更启发了后续诸多优秀网络模型~\cite{zhou2018unet++, oktay2018attention, alom2019recurrent}，
+本文使用到了U-Net~\cite{ronneberger2015u}，故在此专门再介绍U-Net。除了以上特点之外，U-Net中还存在从编码器直接到解码器的跨层连接，这些跨层连接使网络可以将上下文信息传播到更高分辨率的层，使得特征融合更加充分。在网络可视化图上（见图\ref{subfig:popular_encoder_decoder_unet}），编码器和解码器相互对称，形成一个U型结构，这也是U-Net名称的由来。U-Net中只含有卷积层，不含任何全连接层，最后视不同任务而接上不同激活函数。U-Net启发了后续诸多优秀网络模型~\cite{zhou2018unet++, oktay2018attention, alom2019recurrent}，
 被广泛用于语义分割任务~\cite{cciccek20163d,dong2017automatic,li2018h}。
 
 %被广泛用于语义分割任务~\cite{cciccek20163d, han2018framing, dong2017automatic, sevastopolsky2017optic, zhang2018ct}
@@ -116,7 +116,7 @@ CNN可以很好避免多层感知机存在的问题，卷积操作首先可以�
 \begin{eqnarray}\label{equ:gan_loss_func}
 \min _{G} \max _{D} V(D, G)=\mathbb{E}_{ \ve{x} \sim \text{p}_{\text {data }}(\ve{x})}[\log D(\ve{x};\vv{\theta})]+\mathbb{E}_{\ve{z} \sim \text{p}_{\ve{z}}(\ve{z})}[\log (1-D(G(\ve {z};\vv{\theta});\vv{\theta}))].
 \end{eqnarray}
-\noindent 其中，$D(G(\ve {z};\vv{\theta});\vv{\theta})$表示生成器生成的数据样本。根据GAN的思想，通常先更新判别器，使判别器尽可能将来自真实数据分布的样本和来自生成器生成的数据分布的样本区分开来。随后更新生成器，使生成器生成的样本尽可能接近来自真实数据分布的样本，使得判别器无法区分样本来自真实数据分布还是生成器生成的数据分布。在实际训练时，一般采用判别器和生成器先后交替训练的策略：
+\noindent 其中，$G(\ve {z};\vv{\theta})$表示生成器生成的数据样本。根据GAN的思想，通常先更新判别器，使判别器尽可能将来自真实数据分布的样本和来自生成器生成的数据分布的样本区分开来。随后更新生成器，使生成器生成的样本尽可能接近来自真实数据分布的样本，使得判别器无法区分样本来自真实数据分布还是生成器生成的数据分布。在实际训练时，一般采用判别器和生成器先后交替训练的策略：
 
 
 \noindent 1）固定生成器，更新判别器。这等价于用随机梯度上升算法最大化损失函数$L(\ve{x},\ve{z};\vv{\theta})$：
@@ -129,13 +129,13 @@ CNN可以很好避免多层感知机存在的问题，卷积操作首先可以�
 	\end{equation}
 %Kullback-Leibler散度~\cite{Kullback1951ONIA}或者Jensen-Shannon散度~\cite{Kantor2001FoundationsOS}
 
-以上朴素GAN中生成器和判别器均是多层感知机。在实际训练过程中存在参数量过大、训练困难、损失函数不具备可解释性、模式崩塌、容易出现梯度消失等问题，这些问题经常导致训练GAN失败。鉴于以上情况，各种改进模型相继提出，Alec等人~\cite{radford2015unsupervised}成功将CNN和GAN结合起来，提出了DCGAN，用CNN代替生成器和判别器中的多层感知机，使得训练GAN更加容易，生成图像的分辨率也更高。针对训练过程中存在的梯度消失和模式崩塌问题，Martin等人~\cite{arjovsky2017wasserstein}提出了WGAN，使用Wasserstein-1距离代替素朴GAN~\cite{goodfellow2014generative}中使用的Kullback-Leibler散度\footnote{https://en.wikipedia.org/wiki/Kullback\%E2\%80\%93Leibler\_divergence}或者Jensen-Shannon散度\footnote{https://en.wikipedia.org/wiki/Jensen\%E2\%80\%93Shannon\_divergence}，并且采用权值截断（Weight Clipping）满足利普希茨连续条件\footnote{https://en.wikipedia.org/wiki/Lipschitz\_continuity}（Lipschitz Continuity），但这也会造成权值趋向两个截断阈值，导致GAN不容易收敛。为了更好满足利普希茨连续条件，Ishaan等人~\cite{gulrajani2017improved}采用梯度惩罚项（Gradient Penalty），提出了WGAN-GP。由于WGAN-GP可以有效避免GAN训练过程中的梯度消失问题，其训练过程也比较稳定，网络收敛得也较快。另外，Wasserstein-1距离还对训练过程有指示作用，Wasserstein-1距离越接近0，表示WGAN-GP训练得越好。基于以上诸多优势，本文网络模型中的GAN采用WGAN-GP。与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此判别器最后一层也不再有Sigmoid激活函数。设$\ve{y}\sim \text{p}_\text{g}(\ve{y})$表示给定噪音分布$\ve{z}\sim \text{p}_{\text{z}}(\ve{z})$时生成器所代表的数据分布。再加上梯度惩罚项，WGAN-GP的优化目标$V(D, G)$可写作：
+以上朴素GAN中生成器和判别器均是多层感知机。在实际训练过程中存在参数量过大、训练困难、损失函数不具备可解释性、模式崩塌、容易出现梯度消失等问题，这些问题经常导致训练GAN失败。鉴于以上情况，各种改进模型相继提出，Alec等人~\cite{radford2015unsupervised}成功将CNN和GAN结合起来，提出了DCGAN，用CNN代替生成器和判别器中的多层感知机，使得训练GAN更加容易，生成图像的分辨率和质量也更高。针对训练过程中存在的梯度消失和模式崩塌问题，Martin等人~\cite{arjovsky2017wasserstein}提出了WGAN，使用Wasserstein-1距离代替素朴GAN~\cite{goodfellow2014generative}中使用的Kullback-Leibler散度\footnote{https://en.wikipedia.org/wiki/Kullback\%E2\%80\%93Leibler\_divergence}或者Jensen-Shannon散度\footnote{https://en.wikipedia.org/wiki/Jensen\%E2\%80\%93Shannon\_divergence}，并且采用权值截断（Weight Clipping）满足利普希茨连续条件\footnote{https://en.wikipedia.org/wiki/Lipschitz\_continuity}（Lipschitz Continuity），但这也会造成权值趋向两个截断阈值，导致GAN不容易收敛。为了更好满足利普希茨连续条件，Ishaan等人~\cite{gulrajani2017improved}采用梯度惩罚项（Gradient Penalty），提出了WGAN-GP。WGAN-GP可以有效避免GAN训练过程中的梯度消失问题，其训练过程也比较稳定，网络收敛得也较快。此外，Wasserstein-1距离还对训练过程有指示作用，Wasserstein-1距离越接近0，表示WGAN-GP训练得越好。基于以上诸多优势，本文网络模型中的GAN采用WGAN-GP。与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此判别器最后一层也不再有Sigmoid激活函数。设$\ve{y}\sim \text{p}_\text{g}(\ve{y})$表示给定噪音分布$\ve{z}\sim \text{p}_{\text{z}}(\ve{z})$时生成器所代表的数据分布。再加上梯度惩罚项，WGAN-GP的优化目标$L(\ve{x},\hat{\ve{x}},\ve{y};\vv{\theta})$可写作：
 \begin{equation}\label{wgan_gp_loss_func}
   \begin{aligned}
-	\min _{G} \max _{D} V(D, G)=&\mathbb{E}_{\ve{y} \sim \text{p}_{\text{g}}}[D(\ve{y};\vv{\theta})]-\mathbb{E}_{\ve{x} \sim \text{p}_{\text{data}}}[D(\ve{x};\vv{\theta})] \\ & +\lambda \mathbb{E}_{\hat{\ve{x}} \sim \text{p}_{\hat{\ve{x}}}}\left[\left(\left\|\nabla_{\hat{\ve{x}}}D(\hat{\ve{x}};\vv{\theta})\right\|_{2}-1\right)^{2}\right].
+	L(\ve{x},\hat{\ve{x}},\ve{y};\vv{\theta})=&\mathbb{E}_{\ve{y} \sim \text{p}_{\text{g}}}[D(\ve{y};\vv{\theta})]-\mathbb{E}_{\ve{x} \sim \text{p}_{\text{data}}}[D(\ve{x};\vv{\theta})] +\lambda \mathbb{E}_{\hat{\ve{x}} \sim \text{p}_{\hat{\ve{x}}}}\left[\left(\left\|\nabla_{\hat{\ve{x}}}D(\hat{\ve{x}};\vv{\theta})\right\|_{2}-1\right)^{2}\right].
   \end{aligned}
 \end{equation}
-其中，$\lambda$为梯度惩罚项的权重，注意此处分布$\text{p}_{\hat{\ve{x}}}$不是对整个样本空间采样，而只对分布$\text{p}_{\text{data}}$和分布$\text{p}_{\text{g}}$之间的空间采样。与朴素GAN的损失函数相比,判别器的损失函数不再取$\log$，这是因为WGAN-GP中不再使用Kullback-Leibler散度或者Jensen-Shannon散度。在训练WGAN-GP时，同样判别器和生成器先后交替训练：
+其中，$\lambda$为梯度惩罚项的权重，注意此处分布$\text{p}_{\hat{\ve{x}}}$不是对整个样本空间采样，而只对分布$\text{p}_{\text{data}}$和分布$\text{p}_{\text{g}}$之间的空间采样。与朴素GAN的损失函数相比,判别器的损失函数不再取$\log$，这是因为WGAN-GP损失函数中不再使用Kullback-Leibler散度或者Jensen-Shannon散度。在训练WGAN-GP时，判别器和生成器同样先后交替训练：
 
 \noindent 1）固定生成器，更新判别器。这等效于最小化损失函数$L(\ve{x},\ve{z};\vv{\theta})$：
 \begin{gather}
@@ -149,23 +149,23 @@ CNN可以很好避免多层感知机存在的问题，卷积操作首先可以�
 \section{疾病标记物定位方法}\label{sec:related_work}
 随着计算机计算在医学影像领域的广泛应用，目前已有可用于疾病标记物定位的方法提出，主要有多示例学习（Multiple Instance Learning，缩写为MIL）、CNN可视化和弱监督目标定位。本小节将选取部分经典方法进行详细介绍，重点突出这些方法处理疾病标记物定位任务的优势和劣势，力求读者对这些方法有全面而又清晰的认识。
 \subsection{多示例学习}
-MIL是由Maron等人~\cite{maron1998framework}提出，是一种与监督学习、半监督学习和非监督学习有所不同的不确切监督，也可用于处理弱监督问题。在医学影像中，MIL方法可通过训练一个二分类器，不仅完成对异常影像的判断任务（异常/正常），还能粗略定位异常影像中的显著性区域（即待选疾病标记物）。因此，MIL方法可解决医学影像领域中的诸多问题，比如，眼底图像中的视网膜神经纤维分割~\cite{manivannan2017subcategory}和数字病理图像中的癌症诊断~\cite{kandemir2014empowering}。MIL中是以多示例包（Bag）为训练单元，训练集由许多具有分类标签（Label）的多示例包组成，每个多示例包含有若干个没有分类标签的示例（Instance）。如果多示例包至少含有一个正示例，则该包被标记为正类多示例包（正包）。如果多示例包的所有示例都是负示例，则该包被标记为负类多示例包（负包）。设$\ve{X}=\{\ve{x}_1,\ve{x}_2,...,\ve{x}_N\}$，其中每一个$\ve{x}_i$均是从图像中相应第$i$个区域中提取出来的特征向量，$N$是图像被分割出的区域（示例）个数。拿二类问题来说，设示例${\ve{x}_1}$，$\ve{x}_2$，...，$\ve{x}_N$对应的标签为示例${y_1}$，${y_2}$，...，${y_N}$。则包$\ve{X}$的标签$\ve{y}\in \{-1,+1\}$可用形式化语言定义为：
+MIL是由Maron等人~\cite{maron1998framework}提出，是一种与监督学习、半监督学习和非监督学习有所不同的不确切监督，也可用于处理弱监督问题。在医学影像中，MIL方法可通过训练一个二分类器，不仅完成对异常影像的判断任务（异常/正常），还能粗略定位异常影像中的显著性区域（即待选疾病标记物）。
+
+MIL中是以多示例包（Bag）为训练单元，训练集由许多具有分类标签（Label）的多示例包组成，每个多示例包含有若干个没有分类标签的示例（Instance）。如果多示例包至少含有一个正示例，则该包被标记为正类多示例包（正包）。如果多示例包的所有示例都是负示例，则该包被标记为负类多示例包（负包）。设$\ve{X}=\{\ve{x}_1,\ve{x}_2,...,\ve{x}_N\}$，其中每一个$\ve{x}_i$均是从图像中相应第$i$个区域中提取出来的特征向量，$N$是图像被分割出的区域（示例）个数。拿二类问题来说，设示例${\ve{x}_1}$，$\ve{x}_2$，...，$\ve{x}_N$对应的标签为${y_1}$，${y_2}$，...，${y_N}$。则包$\ve{X}$的标签$y\in \{-1,+1\}$可用形式化语言定义为：
 \begin{equation}
-\ve{y}=\left\{\begin{array}{ll}
+y=\left\{\begin{array}{ll}
 {+1} & {\text { if } \quad \exists {y}_{i}: {y}_{i}=+1;} \\
 {-1} & {\text { if } \quad \forall {y}_{i}: {y}_{i}=-1.}
 \end{array}\right.
 \end{equation}
-其中，$+1$和$-1$分别表示正包和负包。
 %https://link.springer.com/content/pdf/10.1007%2F978-3-319-07998-1_65.pdf
+其中，$+1$和$-1$分别表示正包和负包。在处理图像问题时，根据MIL思想，将单张图像看作一个示例包，再对单张图像进行分块操作得到许多小方块，再将这些小方块看作一个个示例。多示例学习的目的是，通过对具有分类标签的多示例包的学习，建立多示例分类器，并将该分类器应用于未知多示例包的预测。MIL的目标是找到正包的原型，换句话说，找出所有正包的共同点。随后，在示例空间中，找出最能表现原型的示例。这在诸如没有细粒度标记训练数据的感兴趣区域定位的任务中特别有用。MIL也在医学图像处理领域得到广泛应用，可解决医学影像领域中的诸多问题，比如，眼底图像中的玻璃疣定位~\cite{lu2015effective}、X射线图像中肺结核异常区域定位~\cite{melendez2014novel}、皮肤镜图像中~\cite{madooei2018learning}、病例图像中前列腺癌定位~\cite{campanella2018terabyte}，眼底图像中的视网膜神经纤维分割~\cite{manivannan2017subcategory}和数字病理图像中的癌症诊断~\cite{kandemir2014empowering}。
 
-在处理图像问题时，根据MIL思想，将单张图像看作一个示例包，再对单张图像进行分块操作得到许多小方块，再将这些小方块看作一个个示例。多示例学习的目的是，通过对具有分类标签的多示例包的学习，建立多示例分类器，并将该分类器应用于未知多示例包的预测。MIL的目标是找到正包的原型，换句话说，找出所有正包的共同点。随后，在示例空间中，找出最能表现原型的示例。这在诸如没有细粒度标记训练数据的感兴趣区域定位的任务中特别有用。MIL也在医学图像处理领域得到广泛应用，比如，眼底图像中的玻璃疣定位~\cite{lu2015effective}、X射线图像中肺结核异常区域定位~\cite{melendez2014novel}、皮肤镜图像中~\cite{madooei2018learning}、病例图像中前列腺癌定位~\cite{campanella2018terabyte}。
-
-但是这种方法存在诸多缺点，首先对单张图像进行分块不易操作，分块尺寸过大时，精确度不够，小方块尺寸过大，很可能会包括较多正常区域；当分块尺寸过小时，小方块尺寸过小，会产生过多示例，大大增大后续训练的计算复杂度和计算量。因此，MIL方法只适合用于粗略定位图像中的目标物（例如，疾病标记物）。另外，当处理多类问题时，示例包就会出现多标签，使得问题的复杂度大大增加。因此，与其在算法和应用上的繁荣发展相反，因为分析的难度太大以及示例标签的不稳定性，近些年来，这种思路少有人问津。
+但是这种方法存在诸多缺点，首先对单张图像进行分块不易操作，分块尺寸过大时，很可能会包括较多正常区域，导致精确度不够；反之，当分块尺寸过小时，会产生过多示例，这将大大增大后续训练的计算复杂度和计算量。因此，MIL方法只适合用于粗略定位图像中的目标物（例如，疾病标记物）。另外，当处理多类问题时，示例包就会出现多标签，使得问题的复杂度大大增加，造成分析的难度太大。因此，与其在算法和应用上的繁荣发展相反，近些年来，这种思路少有人问津。
 %~\cite{gondra2014object, wu2015deep,Maron1998MultipleInstanceLF}也非常少。
 
 \subsection{卷积神经网络的可视化}\label{subsec:visulization_methods}
-CNN在从语音识别到自主系统的本地化和映射等大规模任务中的取得相当大的成就，使其成为先进的人工智能系统中最受欢迎的工具。尽管只能将成功的部分原因归功于这种网络的训练过程中算法的进步，但是学习过程和所学内容的内在性仍然很模糊，即CNN一直是个“黑匣子”，我们始终不知道其内部运行机制，更无法得知其作出判断的背后依据。然而，CNN所做决定的依据很多时候与所做决定同样重要，比如，在医学领域，如果专业医师看不到人工智能系统给出诊断方法，专业医师也就无法接受人工智能系统所给提出的对患者的治疗方案。因此，我们需要有一种方式了解导致CNN失败或成功的原因。如果我们无法解释模型的工作原理，我们如何信任模型的结果？这是一个合理的问题。更重要的是，较差的网络可解释性极大地阻碍了对各个网络层的鲁棒性评估，进一步优化网络结构，以及对不同应用的网络适应性和可移植性，这也是CNN的可视化需要回答的直接动力和实际意义。
+CNN在图像分类、语音识别、自然语言处理等大规模任务中的取得了相当大的成就，使其成为先进的人工智能系统中最受欢迎的工具。尽管只能将成功的部分原因归功于这种网络的训练过程中算法的进步，但是学习过程和所学内容的内在性仍然很模糊，即CNN一直是个“黑匣子”，我们始终不知道其内部运行机制，更无法得知其作出判断的背后依据。然而，CNN所做决定的依据很多时候与所做决定同样重要，比如，在医学领域，如果专业医师看不到人工智能系统给出诊断方法，专业医师也就无法接受人工智能系统所给提出的对患者的治疗方案。因此，我们需要有一种方式了解导致CNN失败或成功的原因。如果我们无法解释模型的工作原理，我们也就无法信任模型的给出的结果与判断。更重要的是，较差的网络可解释性极大地阻碍了对各个网络层的鲁棒性评估，进一步优化网络结构，以及对不同应用的网络适应性和可移植性，这也是CNN的可视化需要回答的直接动力和实际意义。
 \begin{table}[h]
 	% reference: https://arxiv.org/pdf/1804.11191.pdf
 	\centering
@@ -295,7 +295,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/cam_based_weakly_supervised_localization}
-	\caption[利用CAM产生抑制掩码的目标定位网络]{利用CAM产生抑制掩码的目标定位网络（图片来自于对应原文~\cite{Krishna2018}）。}
+	\caption[利用CAM产生抑制掩码的弱监督目标定位网络]{利用CAM产生抑制掩码的弱监督目标定位网络（图片来自于对应原文~\cite{Krishna2018}）。}
 	\label{fig:cam_based_weakly_supervised_localization}
 \end{figure}
 
@@ -325,7 +325,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/attention_weakly_supervised_object_localization}
-	\caption[引入注意力机制的目标定位网络]{引入注意力机制的目标定位网络（图像来自于对应原文~\cite{BMVC2016_52}）。}
+	\caption[引入注意力机制的弱监督目标定位网络]{引入注意力机制的弱监督目标定位网络（图像来自于对应原文~\cite{BMVC2016_52}）。}
 	\label{fig:attention_weakly_supervised_object_localization}
 \end{figure}
 
@@ -438,7 +438,7 @@ IDRiD\footnote{https://idrid.grand-challenge.org/Data/}眼底图像是由印度�
 眼底病变往往病变区域较大小不一，病变区域数量较多，病变区域分布较分散。眼底部分病变区域之间容易混淆。眼底图像通常也较为精细，各种细节纹理比较丰富。
 
 
-\subsection{黑色素瘤皮肤病变数据集}\label{subsec:original_dermatoscope_ds_intro}
+\subsection{黑色素瘤皮肤病病变数据集}\label{subsec:original_dermatoscope_ds_intro}
 黑色素瘤是多种皮肤癌中最致命的一种。黑色素瘤是发生在皮肤表面的色素性病变，可以通过专业医师的视觉检查早期发现。黑色素瘤也适用于自动检测与图像分析。皮肤镜检查是一种皮肤成像方法，与无辅助的视觉检查相比，已证明可改善皮肤癌的诊断。在这里，我们介绍三个图像质量较高，可用于疾病标记物定位的黑色素瘤病变皮肤镜图像数据集。数据集名称、图像数量等基本信息如表~\ref{tab:skin_datasets_info}所示。
 
 \begin{table}[h]
@@ -467,6 +467,6 @@ ISIC2019数据集\footnote{https://challenge2019.isic-archive.com/}中有25,331�
 %各种病变类型之间的区别主要表现在病变区域细微纹理区间上。
 
 \section{本章小结}
-本章主要先介绍了本文后续内容涉及到的基本知识要点（比如，CNN和GAN）。接着介绍了与疾病标记物定位任务相关的研究进展（例如，CAM和Grad-CAM）并阐述了这些方法的劣势。与此同时，也定义了本文实验相关评价标准（ROC曲线及其AUC和P-R曲线及其AUC）以及与疾病标记物定位任务相关的数据集。鉴于以上相关工作无法精确定位疾病标记物这一问题，本文将在第\ref{sec:method}章详细介绍我们提出的解决方法。
+本章主要先介绍了本文后续内容涉及到的基本知识要点（比如，CNN和GAN）。接着介绍了与疾病标记物定位任务相关的研究进展（例如，CAM和Grad-CAM）并阐述了这些方法的劣势。与此同时，也定义了本文实验相关评价标准（ROC曲线及其AUC和P-R曲线及其AUC）以及与疾病标记物定位任务相关的数据集。鉴于以上相关工作均无法精确定位疾病标记物这一问题，本文将在第\ref{sec:method}章详细介绍我们提出的解决方法。
 
 %随后，为了验证模型在疾病标记物定位任务上的有效性和鲁棒性，我们在二类问题和多类问题上均进行了相关实验，从P-R曲线和AUC等评价标准上来看，远远超过了CAM和Grad-CAM，验证了我们的模型的先进水平。相关内容我们将会在第\ref{sec:experiments}章进行阐述。
