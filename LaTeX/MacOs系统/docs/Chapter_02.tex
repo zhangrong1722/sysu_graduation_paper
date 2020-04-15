@@ -109,8 +109,8 @@ CNN可以很好避免多层感知机存在的问题，首先用CNN处理图像�
 %被广泛用于语义分割任务~\cite{cciccek20163d, han2018framing, dong2017automatic, sevastopolsky2017optic, zhang2018ct}
 %在医学影像领域更是大放异彩（比如图像重构~\cite{bhadra2020medical}、异常检测~\cite{Kohl2017AdversarialNF}、图像去噪~\cite{Yang2018LowDoseCI}和图像分割~\cite{Han2018SpineGANSS}）。
 %对抗生成网络（Generative Adversarial Networks，缩写为GAN）最初于2014年由Goodfellow等人~\cite{goodfellow2014generative}提出，就越来越受到学术界和工业界的重视。而随着GAN在理论与模型上的高速发展，GAN不仅在计算机视觉~\cite{zhu2017unpaired}、自然语言处理~\cite{qin2018dsgan}、人机交互~\cite{qiao2018emotional}等领域有着越来越深入的应用，还在医学影像领域大放异彩（比如图像重构~\cite{bhadra2020medical}、异常检测~\cite{Kohl2017AdversarialNF}、图像去噪~\cite{Yang2018LowDoseCI}和图像分割~\cite{Han2018SpineGANSS}）。
-\subsection{对抗生成网络}\label{subsec:gan_introduction}
-对抗生成网络（Generative Adversarial Networks，缩写为GAN）最初于2014年由Goodfellow等人~\cite{goodfellow2014generative}提出，就越来越受到学术界和工业界的重视。而随着GAN在理论与模型上的高速发展，GAN不仅在计算机视觉~\cite{zhu2017unpaired}领域有着越来越深入的应用，还在医学影像领域大放异彩（比如图像重构~\cite{bhadra2020medical}、异常检测~\cite{Kohl2017AdversarialNF}、图像去噪~\cite{Yang2018LowDoseCI}和图像分割~\cite{Han2018SpineGANSS}）。GAN是生成式模型，由生成网络（以下简称“生成器”）和判别网络（以下简称“判别器”）组成，受博弈论中的零和博弈启发，将生成问题视作判别器和生成器这两个网络的对抗和博弈。生成器努力生成新数据，判别器努力区分生成器生成的数据（一般记为“假”）和真实数据（一般记为“真”）。生成器尽量产生更真实的数据，而判别器尽量更完美地把真实数据与生成数据区分开来。由此，生成器和判别器形成对抗关系，彼此进步。在不断的迭代训练过程中，生成器生成的数据也就越来越逼近真实数据，即生成器学到的分布越来越接近真实数据代表的分布。在理想情况下，判别器无法区分生成的数据和真实的数据。
+\subsection{生成对抗网络}\label{subsec:gan_introduction}
+生成对抗网络（Generative Adversarial Networks，缩写为GAN）最初于2014年由Goodfellow等人~\cite{goodfellow2014generative}提出，就越来越受到学术界和工业界的重视。而随着GAN在理论与模型上的高速发展，GAN不仅在计算机视觉~\cite{zhu2017unpaired}领域有着越来越深入的应用，还在医学影像领域大放异彩（比如图像重构~\cite{bhadra2020medical}、异常检测~\cite{Kohl2017AdversarialNF}、图像去噪~\cite{Yang2018LowDoseCI}和图像分割~\cite{Han2018SpineGANSS}）。GAN是生成式模型，由生成网络（以下简称“生成器”）和判别网络（以下简称“判别器”）组成，受博弈论中的零和博弈启发，将生成问题视作判别器和生成器这两个网络的对抗和博弈。生成器努力生成新数据，判别器努力区分生成器生成的数据（一般记为“假”）和真实数据（一般记为“真”）。生成器尽量产生更真实的数据，而判别器尽量更完美地把真实数据与生成数据区分开来。由此，生成器和判别器形成对抗关系，彼此进步。在不断的迭代训练过程中，生成器生成的数据也就越来越逼近真实数据，即生成器学到的分布越来越接近真实数据代表的分布。在理想情况下，判别器无法区分生成的数据和真实的数据。
 
 设真实数据分布为$\ve{x}\sim \text{p}_{\text{data}}(\ve{x})$，噪音分布为$\ve{z}\sim \text{p}_{\text{z}}(\ve{z})$，$G$和$D$分别表示生成器和判别器。$\vv{\theta}_{g}$和$\vv{\theta}_{d}$分别表示生成器$G$和判别器$D$的训练参数。在GAN中，判别器被看做一个二类分类器，通常在器最后一层加上Sigmod激活函数，因而一般将交叉熵当做损失函数。判别器输出$D(\ve{x};\vv{\theta})$是一个数值，范围在$0$到$1$之间，表示样本来自于真实数据分布的可能性。运用极大极小优化理论，GAN的优化目标$V(D, G)$可写成：
 \begin{eqnarray}\label{equ:gan_loss_func}
@@ -182,8 +182,8 @@ CNN在图像分类、语音识别、自然语言处理等大规模任务中的�
 	\end{tabular}
 	\label{tab:four_visulization_types}
 \end{table}
-
-CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，有很多研究者提出了解决方法。最简便也是最直接的方法是利用PyTorch\footnote{https://pytorch.org/}、TensorFlow\footnote{https://www.tensorflow.org/}等工具直接观察其网络结构可视化图，查看卷积核大小、输入和输出特征图尺寸、卷积层参数等相关信息。除此之外，还能通过t-SNE方法~\cite{maaten2008visualizing}对图像的特征向量进行降维操作，以在低维空间中查看数据的宏观分布。另一种可视化技术是获取大型数据集，通过网络输入图像，并跟踪哪些图像最大程度地激活了某些神经元。然后，我们可以将图像可视化，以了解神经元在其感受野中正在寻找什么。Girshick等人~\cite{girshick2014rich}提出了这样一种可视化技术，用于精确的对象检测和语义分割。这种方法的一个问题是ReLU神经元本身不一定具有任何语义，只有输入特征图沿着沿着与过滤器权重相对应轴方向的可视化结果。不需要专门去获取大型数据集，Zeiler等人提出的方法可以更为直接的了解到神经元真正感兴趣的区域或者物体，通过依次遮挡图像每一部分来绘制感兴趣类别的概率与遮挡物位置的关系图。以上可视化方法主要关注浅层特征。随着CNN的快速发展和实现，可视化已被扩展到解释CNN的整体工作机制。表\ref{tab:typical_visualization_methods}回顾了三类有代表性的可视化方法。
+%除此之外，还能通过t-SNE方法~\cite{maaten2008visualizing}对图像的特征向量进行降维操作，以在低维空间中查看数据的宏观分布。
+CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，有很多研究者提出了解决方法。最简便也是最直接的方法是利用PyTorch\footnote{https://pytorch.org/}、TensorFlow\footnote{https://www.tensorflow.org/}等工具直接观察其网络结构可视化图，查看卷积核大小、输入和输出特征图尺寸、卷积层参数等相关信息。除此之外，还能对图像的特征向量进行降维操作，以在低维空间中查看数据的宏观分布。另一种可视化技术是获取大型数据集，通过网络输入图像，并跟踪哪些图像最大程度地激活了某些神经元。然后，我们可以将图像可视化，以了解神经元在其感受野中正在寻找什么。Girshick等人~\cite{girshick2014rich}提出了这样一种可视化技术，用于精确的对象检测和语义分割。这种方法的一个问题是ReLU神经元本身不一定具有任何语义，只有输入特征图沿着沿着与过滤器权重相对应轴方向的可视化结果。不需要专门去获取大型数据集，Zeiler等人提出的方法可以更为直接的了解到神经元真正感兴趣的区域或者物体，通过依次遮挡图像每一部分来绘制感兴趣类别的概率与遮挡物位置的关系图。以上可视化方法主要关注浅层特征。随着CNN的快速发展和实现，可视化已被扩展到解释CNN的整体工作机制。表\ref{tab:typical_visualization_methods}回顾了三类有代表性的可视化方法。
 \subsubsection*{激活最大化方法}
 激活最大化（Activation Maximization）是一种通过合成特定输入图像，从而最大化特定神经元在任意层中的激活的方法。最初是由Erhan等人~\cite{erhan2009visualizing}提出的，被用于深度置信网络~\cite{hinton2006fast}高层神经元的可视化。随后，Simonyan等人~\cite{simonyan2013deep}将其扩展，用于解释CNN。以多分类问题为例，设$\ve{s}_{c}(\ve{x})(0\leq \ve{s}_{c}(\ve{x}) \leq 1)$表示为输入图像$\ve{x}$被CNN分到类别$c$的分数，使用L-2范数作为正则化项，则激活最大化方法用于解释CNN可形式化为：
 %设输入图像为$\ve{x}$，模式图像为$\ve{x}^*$，可形式化表示为：
