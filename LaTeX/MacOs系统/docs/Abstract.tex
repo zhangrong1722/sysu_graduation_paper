@@ -3,28 +3,33 @@
 % 摘要内容应概括地反映出本论文的主要内容，主要说明本论文的研究目的、内容、方法、成果和结论。要突出本论文的创造性成果或新见解，不要与引言相 混淆。语言力求精练、准确，以 300—500 字为宜。
 % 关键词是供检索用的主题词条，应采用能覆盖论文主要内容的通用技术词条(参照相应的技术术语 标准)。按词条的外延层次排列（外延大的排在前面）。
 \cabstract{
-医学影像中的视觉疾病标记物是专业医师评估特定疾病的风险，类别和状态的重要指标。因此，定位生物标记物具有很强的现实意义。对于专业医师，在医学影像中标出疾病标记物的大概位置（例如，矩形边界框）相对容易，但是标出疾病标记物的精确位置是极具挑战性的甚至是不可能的，尤其在疾病标记物分布广泛、大小各异、边界模糊的情况下。因而获取图像级标注（正常/异常）要比像素级标注容易得多，仅仅依靠图像级标注来定位疾病标记物也更具可行性。鉴于以上情况，本文只使用图像级标注，提出一种组合卷积神经网络分类器和生成对抗网络的新方法定位疾病标记物，本文主要贡献如下：
+医学影像中的视觉疾病标记物是医生评估特定疾病的风险、类别和状态的重要指标。对各种医学图像中现有或潜在新型生物标记进行自动定位和分割，是智能诊断和疾病治疗的关键步骤。对于医生，在医学影像中标出疾病标记物的大概位置相对容易，但是标出疾病标记物的精确位置是极具挑战性的甚至是不可能的，尤其在疾病标记物分布广泛的情况下。仅仅依靠图像级标注来定位疾病标记物更具可行性。本文只使用图像级标注，提出一种组合卷积神经网络分类器和生成对抗网络的新方法定位疾病标记物，本文主要贡献如下：
 	
-\noindent 1）本文极具创造性地组合了卷积神经网络分类器和生成对抗网络，其中生成对抗网络由编码器-解码器和判别器组成。生成对抗网络中的判别器和卷积神经网络分类器有效帮助生成对抗网络中的编码器-解码器去除异常图像中的疾病标记物。生成器输出减去输入就可以获得疾病标记物的准确位置。
+1）本文极具创造性地组合了卷积神经网络分类器和生成对抗网络，其中生成对抗网络由编码器-解码器和判别器组成。生成对抗网络中的判别器和卷积神经网络分类器有效帮助生成对抗网络中的编码器-解码器去除异常图像中的疾病标记物。生成器输出减去输入就可以获得疾病标记物的准确位置。
 	
-\noindent 2）本文提出了一种交替训练卷积神经网络分类器和生成对抗网络的策略，卷积神经网络分类器尽量定位并去除疾病标记物，生成对抗网络进一步彻底去除卷积神经网络分类器遗漏的疾病标记物，这种交替训练方法可以充分发挥出这两个模块的作用。
+2）本文提出了一种交替训练卷积神经网络分类器和生成对抗网络的策略，卷积神经网络分类器尽量定位并去除疾病标记物，生成对抗网络进一步彻底去除疾病标记物。
 	
-\noindent 3）本文不仅将本文提出的方法处理二类问题（一类正常和一类异常），还将其推广到处理多类问题（一类正常和多类异常）。与当下流行的卷积神经网络可视化方法相比，本文提出的方法在精确定位疾病标记物的同时还不会漏掉极其微小、难以察觉的疾病标记物，表现出了目前最佳的性能。
+3）本文不仅将本文提出的方法处理二类问题（一类正常和一类异常），还将其推广到处理多类问题（一类正常和多类异常）。与当下流行的卷积神经网络可视化方法相比，即使在疾病标记物分布广泛、尺寸大小各异的情况下，本文提出的方法也能精确定位疾病标记物，表现出了目前最佳的性能。
 
-疾病标记物可用于处理疾病筛查、疾病诊断、疾病分级等临床问题。定位疾病标记物不仅为发现更多潜在疾病标记物提供了技术基础，还能辅助专业医师诊断疾病，这有利于缓解专业医师繁重的工作。
+本文提出的方法为检测各种疾病现有或者潜在新的生物标志物提供了一种新的方法，这有助于医生更高效地诊断疾病、提供治疗方案。
+%疾病标记物可用于处理疾病筛查、疾病诊断、疾病分级等临床问题。精确定位疾病标记物是发现现有或者潜在新型疾病标记物的必不可少的步骤。
+
+%定位现有或者潜在疾病标记物为发现更多疾病标记物提供了技术基础。
+
+%，还能辅助专业医师诊断疾病。
 }
 % 中文关键词(每个关键词之间用“;”分开,最后一个关键词不打标点符号。)
 \ckeywords{弱监督疾病标记物定位；编码器-解码器；生成对抗网络 }
 \eabstract{
-Visual biomarkers in medical images are important indicators for radiologists to investigate the risks, categories, and status of particular diseases. Hence localizing biomarkers has strongly practical significance. It is relatively easy for human experts to roughly locate biomarkers in medical images (for example, bounding boxes), but it is challenging, if not impossible, for humans experts to precisely localize biomarkers particularly when they are irregularly scattered and have various sizes and blurred borders. As a result, image-level annotations (normal/abnormal) are much easier to acquire than pixel-level annotations. And it is highly desirable to precisely localize biomarkers only based on weak annotations. In view of the above, only image-level annotations are available, we propose a new framework by combining convolutional neural networks (CNN) and generative adversarial networks (GAN) to localize biomarkers. The main contributions of this paper are as follows:
+Visual biomarkers in medical images are important indicators for radiologists to investigate the risks, categories, and status of particular diseases. Therefore, automatic localization and segmentation of existing or potentially novel biomarkers from various medical images would be a key step for intelligent diagnosis and treatment of diseases. It is relatively easy for human experts to roughly locate biomarkers in medical images, but it is challenging, if not impossible, for humans experts to precisely localize biomarkers particularly when they are irregularly scattered. As a result, it is highly desirable to precisely localize biomarkers only based on weak annotations. Only using image-level annotations, we propose a new framework by combining convolutional neural networks (CNN) and generative adversarial networks (GAN) to localize biomarkers. The main contributions of this paper are as follows:
 
-\noindent 1) We novelly combine a CNN and a GAN, where the encoder-decoder and discriminator form GAN together. And the CNN classifier and the discriminator in the GAN can effectively help the encoder-decoder in the GAN to remove biomarkers. Biomarkers in abnormal images can then be easily localized by subtracting the output of the encoder-decoder from its original input.
+1) We novelly combine a CNN and a GAN, where the encoder-decoder and discriminator form GAN together. And the CNN classifier and the discriminator in the GAN can effectively help the encoder-decoder in the GAN to remove biomarkers. Biomarkers in abnormal images can then be easily localized by subtracting the output of the encoder-decoder from its original input.
 
-\noindent 2) We propose a strategy of training CNN classifier and GAN alternately. CNN classifier precisely locates and removes biomarkers as much as possible, and GAN further completely removes biomarkers. Such alternate strategy can make full use of this two modules.
+2) We propose a strategy of training CNN classifier and GAN alternately. CNN classifier precisely locates and removes biomarkers as much as possible, and GAN further completely removes biomarkers.
 
-\noindent 3) We not only apply our proposed method to deal with two-classes problem (one normal class and one abnormal class), but also extend it to handle multiple-classes problem (one normal class and multiple abnormal classes). Compared with the currently popular methods of visualizing CNN, our proposed method achieves state-of-art performances.
+3) We not only apply our proposed method to deal with two-classes problem (one normal class and one abnormal class), but also extend it to deal with multiple-classes problem (one normal class and multiple abnormal classes). Compared with the currently popular methods of visualizing CNN, our proposed method shows state-of-the-art performance in precisely localizing biomarkers even if biomarkers are irregularly scattered and are of various sizes in images.
 
-Biomarkers can be used to deal with many clinical problems. The technology of localizing biomarkers not only provides the basis for the discovery of more potential biomarkers but also assists human experts in diagnosing diseases, which is beneficial to alleviate the heavy work of human experts.
+Biomarkers can be used to deal with many clinical problems such as disease screening, disease diagnosis, and disease rating. The technology of localizing biomarkers provides the basis for the discovery of more potential biomarkers.
 }
 % 英文文关键词（关键词之间用逗号隔开，最后一个关键词不打标点符号。）
 \ekeywords{ Weakly-Supervised Biomarkers Localization, Encoder-Decoder, GAN}
