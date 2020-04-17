@@ -1,5 +1,4 @@
 \chapter{相关研究基础}
-
 自从计算机技术应用到医学影像分析以来，有许许多多医学影像分析难题因其具有的重大临床应用价值和实际意义而引起研究者的浓厚兴趣并为之投入大量时间和精力，疾病标记物的精确定位便是其中之一。本章将会介绍本文后续内容涉及到的基本知识点。接着，我们将会介绍与疾病标记物定位任务相关的研究进展，力求将相关方法阐述得清晰明了，突出比较各种方法在疾病标记物定位任务上的长处和不足。在本章最后，我们将给出实验结果的评判标准并介绍与疾病标记物定位任务相关的数据集。
 
 \section{相关基础}
@@ -112,9 +111,9 @@ CNN可以很好避免多层感知机存在的问题，首先用CNN处理图像�
 \subsection{生成对抗网络}\label{subsec:gan_introduction}
 生成对抗网络（Generative Adversarial Networks，缩写为GAN）最初于2014年由Goodfellow等人~\cite{goodfellow2014generative}提出，就受到学术界和工业界的重视。随着GAN在理论与模型上的高速发展，GAN不仅在计算机视觉~\cite{zhu2017unpaired}领域有着越来越深入的应用，还在医学影像领域大放异彩（比如图像重构~\cite{bhadra2020medical}、异常检测~\cite{Kohl2017AdversarialNF}、图像去噪~\cite{Yang2018LowDoseCI}和图像分割~\cite{Han2018SpineGANSS}）。GAN是生成式模型，由生成网络（以下简称“生成器”）和判别网络（以下简称“判别器”）组成，受博弈论中的零和博弈启发，将生成问题视作判别器和生成器这两个网络的对抗和博弈。生成器努力生成新数据，判别器努力区分生成器生成的数据（一般记为“假”）和真实数据（一般记为“真”）。生成器尽量产生更真实的数据，而判别器尽量更完美地把真实数据与生成数据区分开来。由此，生成器和判别器形成对抗关系，彼此进步。在不断的迭代训练过程中，生成器生成的数据也就越来越逼近真实数据，即生成器学到的分布越来越接近真实数据代表的分布。在理想情况下，判别器无法区分生成的数据和真实的数据。
 
-设真实数据分布为$\ve{x}\sim \text{p}_{\text{data}}(\ve{x})$，噪音分布为$\ve{z}\sim \text{p}_{\text{z}}(\ve{z})$，$G$和$D$分别表示生成器和判别器。$\vv{\theta}_{g}$和$\vv{\theta}_{d}$分别表示生成器$G$和判别器$D$的训练参数。在GAN中，判别器被看做一个二类分类器，通常在器最后一层加上Sigmod激活函数，因而一般将交叉熵当做损失函数。判别器输出$D(\ve{x};\vv{\theta})$是一个数值，范围在$0$到$1$之间，表示样本来自于真实数据分布的可能性。运用极大极小优化理论，GAN的优化目标$V(D, G)$可写成：
+设真实数据分布为$\ve{x}\sim p_{{data}}(\ve{x})$，噪音分布为$\ve{z}\sim p_{{z}}(\ve{z})$，$G$和$D$分别表示生成器和判别器。$\vv{\theta}_{g}$和$\vv{\theta}_{d}$分别表示生成器$G$和判别器$D$的训练参数。在GAN中，判别器被看做一个二类分类器，通常在器最后一层加上Sigmod激活函数，因而一般将交叉熵当做损失函数。判别器输出$D(\ve{x};\vv{\theta})$是一个数值，范围在$0$到$1$之间，表示样本来自于真实数据分布的可能性。运用极大极小优化理论，GAN的优化目标$V(D, G)$可写成：
 \begin{eqnarray}\label{equ:gan_loss_func}
-\min _{G} \max _{D} V(D, G)=\mathbb{E}_{ \ve{x} \sim \text{p}_{\text {data }}(\ve{x})}[\log D(\ve{x};\vv{\theta})]+\mathbb{E}_{\ve{z} \sim \text{p}_{\ve{z}}(\ve{z})}[\log (1-D(G(\ve {z};\vv{\theta});\vv{\theta}))].
+\min _{G} \max _{D} V(D, G)=\mathbb{E}_{ \ve{x} \sim {p}_{ {data }}(\ve{x})}[\log D(\ve{x};\vv{\theta})]+\mathbb{E}_{\ve{z} \sim {p}_{{z}}(\ve{z})}[\log (1-D(G(\ve {z};\vv{\theta});\vv{\theta}))].
 \end{eqnarray}
 \noindent 其中，$G(\ve {z};\vv{\theta})$表示生成器生成的数据样本。根据GAN的思想，通常先更新判别器，使判别器尽可能将来自真实数据分布的样本和来自生成器生成的数据分布的样本区分开来。随后更新生成器，使生成器生成的样本尽可能接近来自真实数据分布的样本，使得判别器无法区分样本来自真实数据分布还是生成器生成的数据分布。在实际训练时，一般采用判别器和生成器先后交替训练的策略：
 
@@ -130,13 +129,13 @@ L(\ve{x},\ve{z};\vv{\theta})=\log D\left(\ve{x};\vv{\theta}\right)+\log \left(1-
 	\end{equation}
 %Kullback-Leibler散度~\cite{Kullback1951ONIA}或者Jensen-Shannon散度~\cite{Kantor2001FoundationsOS}
 
-\noindent 以上朴素GAN中生成器和判别器均是多层感知机。在实际训练过程中存在参数量过大、训练困难、损失函数不具备可解释性、模式崩塌、容易出现梯度消失等问题，这些问题经常导致训练GAN失败。鉴于以上情况，各种改进模型相继提出，Alec等人~\cite{radford2015unsupervised}成功将CNN和GAN结合起来，提出了DCGAN，用CNN代替生成器和判别器中的多层感知机，使得训练GAN更加容易，生成图像的分辨率和质量也更高。针对训练过程中存在的梯度消失和模式崩塌问题，Martin等人~\cite{arjovsky2017wasserstein}提出了WGAN，使用Wasserstein-1距离代替素朴GAN~\cite{goodfellow2014generative}中使用的Kullback-Leibler散度\footnote{https://en.wikipedia.org/wiki/Kullback\%E2\%80\%93Leibler\_divergence}或者Jensen-Shannon散度\footnote{https://en.wikipedia.org/wiki/Jensen\%E2\%80\%93Shannon\_divergence}，并且采用权值截断（Weight Clipping）满足利普希茨连续条件\footnote{https://en.wikipedia.org/wiki/Lipschitz\_continuity}（Lipschitz Continuity），但这也会造成权值趋向两个截断阈值，导致GAN不容易收敛。为了更好满足利普希茨连续条件，Ishaan等人~\cite{gulrajani2017improved}采用梯度惩罚项（Gradient Penalty），提出了WGAN-GP。WGAN-GP可以有效避免GAN训练过程中的梯度消失问题，其训练过程也比较稳定，网络收敛得也较快。此外，Wasserstein-1距离还对训练过程有指示作用，Wasserstein-1距离越接近0，表示WGAN-GP训练得越好。基于以上诸多优势，本文网络模型中的GAN采用WGAN-GP。与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此判别器最后一层也不再有Sigmoid激活函数。设$\ve{y}\sim \text{p}_\text{g}(\ve{y})$表示给定噪音分布$\ve{z}\sim \text{p}_{\text{z}}(\ve{z})$时生成器所代表的数据分布。再加上梯度惩罚项，WGAN-GP的优化目标$L(\ve{x},\hat{\ve{x}},\ve{y};\vv{\theta})$可写作：
+\noindent 以上朴素GAN中生成器和判别器均是多层感知机。在实际训练过程中存在参数量过大、训练困难、损失函数不具备可解释性、模式崩塌、容易出现梯度消失等问题，这些问题经常导致训练GAN失败。鉴于以上情况，各种改进模型相继提出，Alec等人~\cite{radford2015unsupervised}成功将CNN和GAN结合起来，提出了DCGAN，用CNN代替生成器和判别器中的多层感知机，使得训练GAN更加容易，生成图像的分辨率和质量也更高。针对训练过程中存在的梯度消失和模式崩塌问题，Martin等人~\cite{arjovsky2017wasserstein}提出了WGAN，使用Wasserstein-1距离代替素朴GAN~\cite{goodfellow2014generative}中使用的Kullback-Leibler散度\footnote{https://en.wikipedia.org/wiki/Kullback\%E2\%80\%93Leibler\_divergence}或者Jensen-Shannon散度\footnote{https://en.wikipedia.org/wiki/Jensen\%E2\%80\%93Shannon\_divergence}，并且采用权值截断（Weight Clipping）满足利普希茨连续条件\footnote{https://en.wikipedia.org/wiki/Lipschitz\_continuity}（Lipschitz Continuity），但这也会造成权值趋向两个截断阈值，导致GAN不容易收敛。为了更好满足利普希茨连续条件，Ishaan等人~\cite{gulrajani2017improved}采用梯度惩罚项（Gradient Penalty），提出了WGAN-GP。WGAN-GP可以有效避免GAN训练过程中的梯度消失问题，其训练过程也比较稳定，网络收敛得也较快。此外，Wasserstein-1距离还对训练过程有指示作用，Wasserstein-1距离越接近0，表示WGAN-GP训练得越好。基于以上诸多优势，本文网络模型中的GAN采用WGAN-GP。与朴素GAN~\cite{goodfellow2014generative}不同的是，在WGAN-GP中，判别器不再被看作二分类器，而是近似去拟合Wasserstein-1距离，属于回归任务，因此判别器最后一层也不再有Sigmoid激活函数。设$\ve{y}\sim {p}_{g}(\ve{y})$表示给定噪音分布$\ve{z}\sim {p}_{{z}}(\ve{z})$时生成器所代表的数据分布。再加上梯度惩罚项，WGAN-GP的优化目标$L(\ve{x},\hat{\ve{x}},\ve{y};\vv{\theta})$可写作：
 \begin{equation}\label{wgan_gp_loss_func}
   \begin{aligned}
-	L(\ve{x},\hat{\ve{x}},\ve{y};\vv{\theta})=&\mathbb{E}_{\ve{y} \sim \text{p}_{\text{g}}}[D(\ve{y};\vv{\theta})]-\mathbb{E}_{\ve{x} \sim \text{p}_{\text{data}}}[D(\ve{x};\vv{\theta})] +\lambda \mathbb{E}_{\hat{\ve{x}} \sim \text{p}_{\hat{\ve{x}}}}\left[\left(\left\|\nabla_{\hat{\ve{x}}}D(\hat{\ve{x}};\vv{\theta})\right\|_{2}-1\right)^{2}\right].
+	L(\ve{x},\hat{\ve{x}},\ve{y};\vv{\theta})=&\mathbb{E}_{\ve{y} \sim {p}_{{g}}}[D(\ve{y};\vv{\theta})]-\mathbb{E}_{\ve{x} \sim {p}_{{data}}}[D(\ve{x};\vv{\theta})] \\ &+\lambda \mathbb{E}_{\hat{\ve{x}} \sim {p}_{\hat{{x}}}}\left[\left(\left\|\nabla_{\hat{\ve{x}}}D(\hat{\ve{x}};\vv{\theta})\right\|_{2}-1\right)^{2}\right].
   \end{aligned}
 \end{equation}
-其中，$\lambda$为梯度惩罚项的权重，注意此处分布$\text{p}_{\hat{\ve{x}}}$不是对整个样本空间采样，而只对分布$\text{p}_{\text{data}}$和分布$\text{p}_{\text{g}}$之间的空间采样。与朴素GAN的损失函数相比,判别器的损失函数不再取$\log$，这是因为WGAN-GP损失函数中不再使用Kullback-Leibler散度或者Jensen-Shannon散度。在训练WGAN-GP时，判别器和生成器同样先后交替训练：
+其中，$\lambda$为梯度惩罚项的权重，注意此处分布${p}_{\hat{{x}}}$不是对整个样本空间采样，而只对分布${p}_{{data}}$和分布${p}_{{g}}$之间的空间采样。与朴素GAN的损失函数相比,判别器的损失函数不再取$\log$，这是因为WGAN-GP损失函数中不再使用Kullback-Leibler散度或者Jensen-Shannon散度。在训练WGAN-GP时，判别器和生成器同样先后交替训练：
 
 1）固定生成器，更新判别器。这等效于最小化损失函数$L(\ve{x},\ve{z};\vv{\theta})$：
 \begin{gather}
@@ -279,7 +278,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 其中，$\mathcal{L}$是计算输入特定层前后的特征图$\ve{A}(\ve{x}_0)$和$\ve{A}(\ve{x})$的损失函数，$\lambda(\ve{x})$是正则项，$c$是调节损失函数和正则项的超参数。为了让重建图像更像自然图像，$\lambda(\ve{x})$可取L2-范数、全变差范数~\cite{rudin1992nonlinear}等。与激活最大化方法~\cite{simonyan2013deep}相同的是，网络逆转方法也是通过重建输入图像来查看网络层对那些像素或者图像模式更为敏感，但是网络逆转方法可应用到网络任意层，而不限于网络第一层，因而泛化性更强。
 %其中，全变差范数可让重建的图像更为平滑。
 
-如果将这些CNN的可视化方法用于定位疾病标记物，可通过可视化图像区域，将CNN分类器在预测图像类别时重点关注的区域看作是疾病标记物。其中，扰动方法~\cite{zintgraf2017visualizing}对每个可能的局部区域进行遮挡或遮罩，并检查分类器输出的变化，输出的下降量越大，说明在预测图像类时的重要性越高。相比之下，特征激活方法则是在特定卷积层输出的特征映射中，根据激活区域来定位重要的局部区域，如流行的类激活映射(CAM~\cite{zhou2016learning})及其变体Grad-CAM~\cite{selvaraju2017grad}等。近年来，基于CAM的方法在医学图像分析中得到了广泛的应用，如胸部X射线图像~\cite{rajpurkar2017chexnet}中肺炎的检测、数字病理图像~\cite{zhang2017mdnet}中膀胱癌的预测、眼底图像中糖尿病视网膜病变异常区域定位~\cite{Gondaletal17}、胎盘超声影像中胎盘异常定位~\cite{Qi2017WeaklySL}、MRI图像~\cite{yang2018visual}中阿尔茨海默病的诊断等。与CAM和Grad-CAM同样作为一种可视化方法，特征图方法~\cite{simonyan2013deep}利用CNN中的梯度信息计算输入图像中的像素点对图像分类结果的重要性分数。在医学影像处理领域中，该方法可用于解决多通道脑部MRI图像中的肿瘤检测~\cite{banerjee2016novel}、脑部MRI图像中的肿瘤体积检测~\cite{mitra2017volumetric}、皮肤镜图像中的异常分割~\cite{jahanifar2018supervised}等诸多问题。
+如果将这些CNN的可视化方法用于定位疾病标记物，可通过可视化图像区域，将CNN分类器在预测图像类别时重点关注的区域看作是疾病标记物。其中，扰动方法~\cite{zintgraf2017visualizing}对每个可能的局部区域进行遮挡或遮罩，并检查分类器输出的变化，输出的下降量越大，说明在预测图像类时的重要性越高。相比之下，特征激活方法则是在特定卷积层输出的特征映射中，根据激活区域来定位重要的局部区域，如流行的类激活映射(CAM~\cite{zhou2016learning})及其变体Grad-CAM~\cite{selvaraju2017grad}等。近年来，基于CAM的方法在医学图像分析中得到了广泛的应用，如胸部X射线图像~\cite{rajpurkar2017chexnet}中肺炎的检测、数字病理图像~\cite{zhang2017mdnet}中膀胱癌的预测、眼底图像中糖尿病性视网膜病变异常区域定位~\cite{Gondaletal17}、胎盘超声影像中胎盘异常定位~\cite{Qi2017WeaklySL}、MRI图像~\cite{yang2018visual}中阿尔茨海默病的诊断等。与CAM和Grad-CAM同样作为一种可视化方法，特征图方法~\cite{simonyan2013deep}利用CNN中的梯度信息计算输入图像中的像素点对图像分类结果的重要性分数。在医学影像处理领域中，该方法可用于解决多通道脑部MRI图像中的肿瘤检测~\cite{banerjee2016novel}、脑部MRI图像中的肿瘤体积检测~\cite{mitra2017volumetric}、皮肤镜图像中的异常分割~\cite{jahanifar2018supervised}等诸多问题。
 
 \subsection{弱监督目标定位}
 弱监督目标定位任务是在提供图像级标签的情况下，给出对应类别物体的相关区域。Oquab等人~\cite{Oquab2015IsOL}率先使用CNN描述并解决弱监督目标定位问题，随后一系列运用CNN解决弱监督目标定位问题的方法被提出。在弱监督条件下，解决目标定位任务最常见的思路是利用CNN分类器产生有关于目标位置的监督信号。目标位置的监督信号可以来自于网络本身，还可以由其他方法产生。前者可以理解为一种自监督方法~\cite{2015Hwang}，后者可以利用CAM或者Grad-CAM产生目标的位置信息~\cite{Kim_2017_ICCV, Krishna2018}。另外一种思路与CNN可视化中遮挡实验类似，设计多个网络进行对抗性擦除~\cite{WeiFLCZY17, ZhangWF0H18}，并采用递归方式生成定位结果，直到分类CNN训练失败。还可以引入注意力机制，让CNN提取的特征更加稀疏，只关注与图像类别相关的区域。
@@ -343,7 +342,7 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 \subsection{接收者操作特征曲线}\label{subsec:roc_curve}
 接收者操作特征曲线或者ROC曲线\footnote{https://en.wikipedia.org/wiki/Receiver\_operating\_characteristic}是一个可以说明二元分类器系统的鉴别阈值变化时的诊断能力的图形。通过绘制各种阈值设置下的真阳率（True Positive Rate，缩写为TPR）与假阳率（False Positive Rate，缩写为FPR）来创建ROC曲线。真阳率在机器学习中也称为灵敏度（Sensitivity），表示模型正确预测的正例个数占所有真实正例的比例。假阳率也称为假警报的概率，也可计算为（1-特异性（Specificity）），表示模型预测的假正例（实际为负例）个数占所有真实负例的比例。ROC曲线是以TPR作为衰减的函数。换句话说，ROC曲线的横轴是FPR或者（1-Specificity），纵轴是TPR或者Sensitivity。下面给出TPR、FPR、Sensitivity和Specificity的数学定义。
 
-考虑两类预测问题（二分类），其中标签被标记为正例或负例，以是否是患有视网膜糖尿病病变为例，我们将患病看作是正例（Positive），将没有患病看作是负例（Negative）。根据分类器给出的预测标签与实际标签是否一致，我们通常有如下定义：
+考虑两类预测问题（二分类），其中标签被标记为正例或负例，以是否是患有糖尿病性视网膜病变为例，我们将患病看作是正例（Positive），将没有患病看作是负例（Negative）。根据分类器给出的预测标签与实际标签是否一致，我们通常有如下定义：
 
 1）真阳（True Positive，缩写为TP）:被分类器判定为正例，实际上也是正例。
 
@@ -379,9 +378,9 @@ CNN的可视化问题自Zeiler等人~\cite{zeiler2014visualizing}提出以来，
 %\noindent 表\ref{tab:confusion_mateix}也叫混淆矩阵（Confusion Matrix）\footnote{https://en.wikipedia.org/wiki/Confusion\_matrix}。
 \vspace{-0.7cm}
 \begin{align}
-	&\mathrm{TPR}=\mathrm{Sensitivity}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}},\\
-	&\mathrm{FPR}=\frac{\mathrm{FP}}{\mathrm{FP}+\mathrm{TN}},\\
-	&\mathrm{Specificity}=\frac{\mathrm{TN}}{\mathrm{FP}+\mathrm{TN}}=1-\mathrm{FPR}.
+	&\mathrm{TPR}=\mathrm{Sensitivity}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}}\,\, ,\\
+	&\mathrm{FPR}=\frac{\mathrm{FP}}{\mathrm{FP}+\mathrm{TN}}\,\, ,\\
+	&\mathrm{Specificity}=\frac{\mathrm{TN}}{\mathrm{FP}+\mathrm{TN}}=1-\mathrm{FPR}\,\, .
 \end{align}
 设在二分类系统中，设$p(0\leq p \leq 1)$表示样本被分为正例的概率。给定$N$个样本，该分类系统给出的预测值为$\ve{x}=\{p_1,p_2,...,p_N
 \}$，设这些样本的真实标签为$\ve{y}=\{y_1,y_2,...,y_N\}$，其中$y_i \in \{0,1\},0\leq i \le N$。随后，可依次将二分类系统给出的预测值作为阈值$T(0\leq T \leq 1)$，当$p_i$大于或等于阈值时，我们认为它为正例，否则为负样本。对于多组不同的阈值，我们可以得到多组FPR和TPR，画出ROC曲线。
@@ -426,7 +425,7 @@ P-R曲线是一条以Precision为纵轴，Recall为横轴的曲线。其画法�
 	\end{tabular}
 \end{table}
 
-糖尿病视网膜病变是发达国家劳动年龄人口失明的主要原因。DR数据集\footnote{https://www.kaggle.com/c/diabetic-retinopathy-detection/data}是目前关于糖尿病视网膜病变的最大数据集，提供了在各种成像条件下拍摄的高分辨率视网膜图像。目前在Kaggle上开源数据中，训练集有35,127张样本，每张图像尺寸均大于$1000\times 1000$但大小不等，目前只有图像集标注。专业医师根据患者患病程度将每张图像标注为0至4共5类。标注0、1、2、3和4分别代表未患糖尿病视网膜病变、轻微糖尿病视网膜病变、中度糖尿病视网膜病变、严重糖尿病视网膜病变和增生性糖尿病视网膜病变。标注数字越大代表患病程度越严重。
+糖尿病性视网膜病变是发达国家劳动年龄人口失明的主要原因。DR数据集\footnote{https://www.kaggle.com/c/diabetic-retinopathy-detection/data}是目前关于糖尿病视网膜病变的最大数据集，提供了在各种成像条件下拍摄的高分辨率视网膜图像。目前在Kaggle上开源数据中，训练集有35,127张样本，每张图像尺寸均大于$1000\times 1000$但大小不等，目前只有图像集标注。专业医师根据患者患病程度将每张图像标注为0至4共5类。标注0、1、2、3和4分别代表未患糖尿病性视网膜病变、轻微糖尿病性视网膜病变、中度糖尿病性视网膜病变、严重糖尿病性视网膜病变和增生性糖尿病性视网膜病变。标注数字越大代表患病程度越严重。
 
 GON数据集\footnote{http://ai.baidu.com/broad/subordinate?dataset=gno}是关于青光眼眼底照片的数据集，共包含1,200张彩色眼底照片。并平均分为训练集、验证集和测试集。其中，训练集图像由德国蔡司眼底照相机拍摄，尺寸大小为$2124\times 2056$，验证集和测试集图像由佳能眼底照相机拍摄，尺寸大小为$1634\times 1634 $。所有图像均是图像集标注，标记为青光眼/非青光眼，均以后极为中心，伴有黄斑和视盘。
 
@@ -436,7 +435,7 @@ AMD数据集\footnote{http://ai.baidu.com/broad/subordinate?dataset=amd}是关�
 
 ODIR数据集\footnote{https://odir2019.grand-challenge.org/dataset/}是一个结构化的眼科数据库，其中包括5,000名患有年龄的患者，双眼的彩色眼底照片和医生的诊断关键词。注意只有3,500名患者（7,000张样本）数据作为训练集，并且有图像级标签。该数据集是上工医疗技术有限公司从中国不同医院/医疗中心收集的“真实”患者信息。专业医师将患者分为8个标签，包括正常，糖尿病，青光眼，白内障，年龄相关性黄斑变性，高血压，近视和其他疾病/异常。由于存在部分病人同时患有多种疾病，因而部分图像有多个标签。
 
-IDRiD\footnote{https://idrid.grand-challenge.org/Data/}眼底图像是由印度一家眼科诊所的视网膜专家收集的。数据集共包括516张样本，均提供了典型糖尿病视网膜病变病变和正常视网膜结构的专家标记。数据集所有图像都集中在黄斑附近。图像分辨率为$4288\times 2848$像素，存储为jpg文件格式。此外，它还根据国际临床相关性标准，为数据库中的每张图像提供关于糖尿病视网膜病变的疾病严重程度和糖尿病黄斑水肿的信息。与DR数据集一样，它一共将图像分为5类。与DR数据集不同的是，IDRiD数据集有81张患病彩色眼袋图像有精确像素级标注，如微动脉瘤、软渗出物、硬渗出物和出血。
+IDRiD\footnote{https://idrid.grand-challenge.org/Data/}眼底图像是由印度一家眼科诊所的视网膜专家收集的。数据集共包括516张样本，均提供了典型糖尿病性视网膜病变和正常视网膜结构的专家标记。数据集所有图像都集中在黄斑附近。图像分辨率为$4288\times 2848$像素，存储为jpg文件格式。此外，它还根据国际临床相关性标准，为数据库中的每张图像提供关于糖尿病性视网膜病变的疾病严重程度和糖尿病黄斑水肿的信息。与DR数据集一样，它一共将图像分为5类。与DR数据集不同的是，IDRiD数据集有81张患病彩色眼袋图像有精确像素级标注，如微动脉瘤、软渗出物、硬渗出物和出血。
 
 眼底病变往往病变区域较大小不一，疾病标记物数量很难确定，分布也较分散。眼底部分病变区域与背景容易混淆。眼底图像通常也较为精细，各种细节纹理比较丰富，不同疾病的病变区域位置和大小也不尽相同。
 %比如，糖尿病视网膜病变的病变区域在视网膜上，患病区域相对较小，而GON的病变区域往往在视盘附近，患病区域相对较大。

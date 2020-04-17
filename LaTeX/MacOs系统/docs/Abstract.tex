@@ -9,9 +9,18 @@
 	
 2）本文提出了一种交替训练卷积神经网络分类器和生成对抗网络的策略，卷积神经网络分类器尽量定位并去除疾病标记物，生成对抗网络进一步彻底去除疾病标记物。
 	
-3）本文不仅将本文提出的方法处理二类问题（一类正常和一类异常），还将其推广到处理多类问题（一类正常和多类异常）。与当下流行的卷积神经网络可视化方法相比，即使在疾病标记物分布广泛、尺寸大小各异的情况下，本文提出的方法也能精确定位疾病标记物，表现出了目前最佳的性能。
+3）本文不仅使用本文提出的方法处理二类问题（一类正常和一类异常），还将其推广到处理多类问题（一类正常和多类异常）。与流行的卷积神经网络可视化方法相比，即使在疾病标记物分布广泛、尺寸大小各异的情况下，本文提出的方法也能精确定位疾病标记物，表现出了目前最佳的性能。
 
-本文提出的方法为检测各种疾病现有或者潜在新的生物标志物提供了一种新的方法，这有助于医生更高效地诊断疾病、提供治疗方案。
+本文提出的方法为检测各种疾病现有或者潜在新的疾病标记物提供了一种新的方法。精确定位和分割各种疾病现有或者潜在的疾病标记物有助于医生作出更准确的疾病诊断，为最终的精准医疗提供一种有效的工具。
+
+%本文提出的方法为检测各种疾病现有或者潜在新的疾病标记物提供了一种新的方法。人工智能系统精确定位和分割各种疾病现有或者潜在的疾病标记物，这不仅能帮助医生发现潜在新的疾病特征，还能为医生提供病变区域的定量指标。
+
+%医生可以更高效地诊断疾病、提供治疗方案。
+
+%医生提高疾病诊断能力、快速提供治疗方案。
+
+%本文提出的方法为检测各种疾病现有或者潜在新的生物标志物提供了一种新的方法，这有助于医生更高效地诊断疾病、提供治疗方案。
+
 %疾病标记物可用于处理疾病筛查、疾病诊断、疾病分级等临床问题。精确定位疾病标记物是发现现有或者潜在新型疾病标记物的必不可少的步骤。
 
 %定位现有或者潜在疾病标记物为发现更多疾病标记物提供了技术基础。
@@ -23,13 +32,15 @@
 \eabstract{
 Visual biomarkers in medical images are important indicators for radiologists to investigate the risks, categories, and status of particular diseases. Therefore, automatic localization and segmentation of existing or potentially novel biomarkers from various medical images would be a key step for intelligent diagnosis and treatment of diseases. It is relatively easy for human experts to roughly locate biomarkers in medical images, but it is challenging, if not impossible, for humans experts to precisely localize biomarkers particularly when they are irregularly scattered. As a result, it is highly desirable to precisely localize biomarkers only based on weak annotations. Only using image-level annotations, we propose a new framework by combining convolutional neural networks (CNN) and generative adversarial networks (GAN) to localize biomarkers. The main contributions of this paper are as follows:
 
-1) We novelly combine a CNN and a GAN, where the encoder-decoder and discriminator form GAN together. And the CNN classifier and the discriminator in the GAN can effectively help the encoder-decoder in the GAN to remove biomarkers. Biomarkers in abnormal images can then be easily localized by subtracting the output of the encoder-decoder from its original input.
+1) We novelly combine CNN and GAN, where encoder-decoder and discriminator form GAN together. The CNN classifier and the discriminator in the GAN can effectively help the encoder-decoder in the GAN to remove biomarkers. Biomarkers in abnormal images can then be easily localized by subtracting the output of the encoder-decoder from its original input.
 
-2) We propose a strategy of training CNN classifier and GAN alternately. CNN classifier precisely locates and removes biomarkers as much as possible, and GAN further completely removes biomarkers.
+2) We propose a strategy of training CNN classifier and GAN alternately. The CNN classifier precisely locates and removes biomarkers as much as possible, and the GAN further completely removes biomarkers.
 
-3) We not only apply our proposed method to deal with two-classes problem (one normal class and one abnormal class), but also extend it to deal with multiple-classes problem (one normal class and multiple abnormal classes). Compared with the currently popular methods of visualizing CNN, our proposed method shows state-of-the-art performance in precisely localizing biomarkers even if biomarkers are irregularly scattered and are of various sizes in images.
+3) We not only apply our proposed approach in two-class problems (one normal class and one abnormal class), but also extend it to multiclass problems (one normal class and multiply abnormal classes). Compared with popular approaches of visualizing CNN, our proposed approach shows state-of-the-art performance in precisely localizing biomarkers even if biomarkers are irregularly scattered and are of various sizes in images.
 
-Biomarkers can be used to deal with many clinical problems such as disease screening, disease diagnosis, and disease rating. The technology of localizing biomarkers provides the basis for the discovery of more potential biomarkers.
+Our proposed approach provides a new way to detect potentially novel biomarkers for various diseases. Precise localization and segmentation of existing or potentially novel biomarkers can assist human experts to make more accurate disease diagnosis and provides an effective tool for the ultimate precision medicine.
+ 
+%Biomarkers can be used to deal with many clinical problems such as disease screening, disease diagnosis, and disease rating. The technology of localizing biomarkers provides the basis for the discovery of more potential biomarkers.
 }
 % 英文文关键词（关键词之间用逗号隔开，最后一个关键词不打标点符号。）
 \ekeywords{ Weakly-Supervised Biomarkers Localization, Encoder-Decoder, GAN}
