@@ -30,7 +30,7 @@
 \end{table}
 \vspace{-0.7cm}
 \subsection{实验设置}\label{sec:multi_classes_experiment_setting}
-与上一章中二类问题所采用的实验设置相比，超参数$\lambda_{1}$和$\lambda_{2}$的取值分别为$4.0$和$20.0$，每次迭代选取$30$张图像。优化器、学习率、梯度惩罚项权重、模型在数据集上的训练轮数、训练集和测试集设置、预处理、是否采用数据增广等设置均与上一章相同。
+与上一章中二类问题所采用的实验设置相比，超参数$\lambda_{1}$和$\lambda_{2}$的取值分别为$4.0$和$20.0$，每次迭代选取$30$张图像。优化器、学习率、梯度惩罚项权重、模型在数据集上的训练轮数、训练集和验证集设置、预处理、是否采用数据增广等设置均与上一章相同。
 
 训练GAN时通常每次只会送入一类正常图像和一类异常图像。而多类问题中有多个异常类，因此在处理多类问题时，一种处理方式是引入多个GAN，每个GAN都进行一类正常和一类异常的对抗学习，但是这种方式会大大增加训练模型时的复杂程度。为了避免额外引入GAN，我们将所有异常类看做一个整体，同时取样时保证所有异常图像的数量和正常图像数量相等。对于CNN分类器，我们直接将原来的二分类扩展到多分类，增加CNN分类器最后一个全连接层的输出维度，同时用多类交叉熵取代二类交叉熵损失函数。除此之外，本文提出模型的其他结构均与上一章相同。本章中编码器-解码器也是在数据集上先进行预训练。
 %在判别器方面，由于多类模拟皮肤病病变数据集中的图像背景相对比较简单，高分辨率的浅层特征也有较好的语义性。因此，在处理二类问题的判别器网络结构基础上（网络结构参见图\ref{subfig:discrimintor_architecture}，我们将用第二个下采样卷积层到最后一层的跨层连接替换最后一个下采样卷积层到最后一层的跨层连接，让浅层特征更多的参与到最后一层全连接层的特征融合中。
@@ -69,7 +69,7 @@
 \end{figure}
 
 %为了从定量角度分析定位结果，本文根据多类模拟皮肤病病变数据集中第一类异常图像的像素级标注，绘制了相应P-R曲线（图\ref{fig:multi_simulate_pr_curve_image_net}）。同理，本文也绘制了第二类异常图像和第三类异常图像对应P-R曲线（图\ref{fig:multi_simulate_pr_curve_skin}和图\ref{fig:multi_simulate_pr_curve_circle}）。
-如图\ref{fig:multi_simulate_pr_curve_image_net}所示，相比于其他两条曲线，绿色P-R曲线在其他三条曲线的上方，其AUC分数也最大（AUC=$0.236$），这说明了本文提出的方法相比于CAM和Grad-CAM能够更好地定位第一类异常图像中的疾病标记物。根据图\ref{fig:multi_simulate_pr_curve_skin}和图\ref{fig:multi_simulate_pr_curve_circle}，我们也可以得出相同的结论，绿色曲线的AUC分数也都高于其他两条曲线，尤其是图\ref{fig:multi_simulate_pr_curve_skin}。两图中绿色P-R曲线的AUC分数分别为$0.962$和$0.805$，这远远大于图中其他两条P-R曲线，这说明相比于CAM和Grad-CAM，本文提出的方法在定位第二类异常和第三类异常对应的疾病标记物上同样有更好的性能。在表\ref{tab:multi_ds_auc_scores}中，本文提出的方法在三类异常图像上的平均AUC为$0.668$，远远高于CAM和Grad-CAM，这更直观地说明了上述结论。
+如图\ref{fig:multi_simulate_pr_curve_image_net}所示，相比于其他两条曲线，绿色P-R曲线在其他三条曲线的上方，其AUC分数也最大（AUC=$0.236$），这说明了本文提出的方法相比于CAM和Grad-CAM能够更好地定位第一类异常图像中的疾病标记物。根据图\ref{fig:multi_simulate_pr_curve_skin}和图\ref{fig:multi_simulate_pr_curve_circle}，我们也可以得出相同的结论，绿色曲线的AUC分数也都高于其他两条曲线，图\ref{fig:multi_simulate_pr_curve_skin}和图\ref{fig:multi_simulate_pr_curve_circle}中绿色P-R曲线的AUC分数分别为$0.962$和$0.805$，这远远大于图中其他两条P-R曲线的AUC分数，这说明相比于CAM和Grad-CAM，本文提出的方法在定位第二类异常和第三类异常对应的疾病标记物任务上同样有更好的性能。在表\ref{tab:multi_ds_auc_scores}中，本文提出的方法在三类异常图像上的平均AUC为$0.668$，远远高于CAM和Grad-CAM，这更直观地说明了上述结论。
 
 总之，以上实验结果说明了，即使疾病标记物在异常图像中分布广泛、形状各异，本文提出的方法相比于CAM和Grad-CAM仍然能够更好地定位疾病标记物。
 \begin{table}[!htbp]
@@ -78,7 +78,7 @@
 	\label{tab:multi_ds_auc_scores}
 	\begin{tabular}{c|c|c|c|c}
 		\toprule[2pt]
-		& CAM & Grad-CAM-1 & Grad-CAM-2 & 本文提出的方法 \\
+		方法 & CAM & Grad-CAM-1 & Grad-CAM-2 & 本文提出的方法 \\
 		\midrule[2pt]
 %		第一类异常&$0.098$ & $0.224$ &  $0.098$ & $\textbf{0.236}$ \\ \hline
 %		第二类异常&  $0.108$ &$0.186$ & $0.109$ & $\textbf{0.962}$ \\ \hline
@@ -89,19 +89,19 @@
 \end{table}
 \vspace{-0.7cm}
 \section{对于经过编码器-解码器的多类模拟皮肤病病变图像的定量分析}
-在本节中，本文同样将设置一组实验从间接角度证明本文提出的模型能够较好去除异常图像中的疾病标记物或者异常区域。与\ref{sec:indirect_quantitative_evaluation}小节中的设计思想相同，在理想情况下，如果一种方法能够完全定位并去除疾病标记物，则去除疾病标记物之后的图像不再包含疾病标记物，则这些图像将很难与正常图像分开。根据以上前提假设，我们将多类模拟皮肤病病变数据集按照$80\%$和$20\%$的比例将其分为训练集和测试集（下文简称为“原始四类数据集”），随后用训练集训练一个ResNet-18四分类器。接着，我们将原始多类数据集中的每一张图像作为输入送入编码器-解码器，并将输出收集起来，这样我们得到一个新的数据集（下文简称为“‘正常’四类数据集”）。最后，我们用上述ResNet-18对“正常”多类数据集中的每一张图像进行分类。在评价标准方法，与\ref{sec:indirect_quantitative_evaluation}小节不同的是，我们不选定Recall和Specificity作为评价标准，这是因为多类问题中异常图像作为输入经过编码器-解码器之后的输出可能会向其他异常类转变而二类问题中异常图像作为输入经过编码器-解码器之后的输出只能向正常图像转变。因此，对于正常图像，我们希望编码器-解码器的输出中尽量少的图像被ResNet-18判别为异常；而对于异常图像，我们希望编码器-解码器的输出中尽量多的图像被ResNet-18判别为异常。因此，编码器-解码器对于正常图像输入的保持能力可定义为：
-
+在本节中，本文同样将设置一组实验从间接角度证明本文提出的模型能够较好去除异常图像中的疾病标记物。与\ref{sec:indirect_quantitative_evaluation}小节中的设计思想相同，在理想情况下，如果一种方法能够完全去除疾病标记物，则去除疾病标记物之后的图像将不再包含疾病标记物，则这些图像很难与正常图像分开。根据以上前提假设，我们将多类模拟皮肤病病变数据集按照$80\%$和$20\%$的比例分为训练集和验证集（下文简称为“原始四类数据集”），随后用训练集训练一个ResNet-18四分类器。接着，我们将原始多类数据集中的每一张图像作为输入送入编码器-解码器，并将输出收集起来，这样我们得到一个新的数据集（下文简称为“‘正常’四类数据集”）。最后，我们用上述ResNet-18对“正常”多类数据集中的每一张图像进行分类。与\ref{sec:indirect_quantitative_evaluation}小节不同的是，我们不选定Recall和Specificity作为评价标准，这是因为多类问题中异常图像作为输入经过编码器-解码器之后的输出可能会向其他异常类转变而二类问题中异常图像作为输入经过编码器-解码器之后的输出只能向正常图像转变。因此，编码器-解码器对于正常图像输入的保持能力可定义为：
+%对于正常图像，我们希望编码器-解码器的输出中尽量少的图像被ResNet-18判别为异常；而对于异常图像，我们希望编码器-解码器的输出中尽量多的图像被ResNet-18判别为异常。因此，
 \begin{equation}\label{equ:normal_imgs_kep_rate}
-\text{正常类的转化率}=\frac{\text{输出图像中被判定为异常的图像数量}}{\text{输入正常图像的数量}}.
+\text{正常类的转化率}=\frac{\text{输出正常图像中被判定为异常的图像数量}}{\text{输入正常图像的数量}}.
 \end{equation}
 
 \noindent 同理，编码器-解码器对于异常图像输入的转化能力可定义为：
 
 \begin{equation}\label{equ:lesion_imgs_converted_rate}
-\text{异常类的转化率}=\frac{\text{输出图像中被判定为正常的图像数量}}{\text{输入异常图像的数量}}.
+\text{异常类的转化率}=\frac{\text{输出异常图像中被判定为正常的图像数量}}{\text{输入异常图像的数量}}.
 \end{equation}
 
-\noindent 显然，正常类的转化率越低而异常类的转化率越高表示模型定位并去除疾病标记物的能力越强。实验结果如表\ref{tab:quantitative_simulated_skin}所示，前两列表示在原始四类数据集上的实验结果，后两列表示“正常”四类数据集上的实验结果。
+\noindent 显然，正常类的转化率越低而异常类的转化率越高表示模型定位并去除疾病标记物的能力越强。基于以上设置得到的实验结果如表\ref{tab:quantitative_simulated_skin}所示，前两列表示在原始四类数据集上的实验结果，后两列表示“正常”四类数据集上的实验结果。
 
 \begin{table}[h!]
 	\centering
@@ -120,7 +120,7 @@
 	\end{tabular}
 \end{table}
 
-我们可以从表\ref{tab:quantitative_simulated_skin}中前两列看出，对于原始四类数据集，无论是正常类还是三个异常类，训练集和测试集上分类正确率均达到了$98\%$，这表明ResNet-18四类分类器可以很好学习到疾病标记物的相关特征。而在该表的后两列中，我们可以发现，对于“正常”四类数据集中的三个异常类，异常图像的转化率都比较高，尤其是第二类异常，训练集和测试集上的转化率分别达到了$97.6\%$和$98.1\%$，以上结果可表明编码器-解码器对于异常图像输入有较好的转化能力，可以很好的定位并去除疾病标记物。相比之下，正常类的转化率要低得多，在训练集和测试集上的转化率分别为$9.40\%$和$9.70\%$，这可以说明编码器-解码器对于正常图像输入有较好的保持能力。
+我们可以从表\ref{tab:quantitative_simulated_skin}中前两列看出，对于原始四类数据集，无论是正常类还是三个异常类，训练集和验证集上分类正确率均达到了$98\%$以上，这表明ResNet-18四类分类器可以很好学习到疾病标记物的相关特征。而在该表的后两列中，我们可以发现，对于“正常”四类数据集中的三个异常类，异常图像的转化率都比较高，尤其是第二类异常，训练集和验证集上的转化率分别达到了$97.6\%$和$98.1\%$，以上结果可表明编码器-解码器对于异常图像输入有较好的转化能力，可以很好的定位并去除疾病标记物。相比之下，正常类的转化率要低得多，在训练集和验证集上的转化率分别为$9.40\%$和$9.70\%$，这可以说明编码器-解码器对于正常图像输入有较好的保持能力。
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.9\textwidth]{figure/simulated_skin_score_distribution.pdf}
@@ -128,13 +128,15 @@
 	\label{fig:simulated_skin_hist_freq}
 \end{figure}
 
-以上实验从额外训练的ResNet分类器间接说明了本文提出的模型在定位并去除疾病标记物方面具有较强能力。在本小节中，我们还将“正常”四类数据集中的正常图像和异常图像均送入判别器，从而从判别器角度再次验证上述结论，判别器输出分数的频率分布直方图如图\ref{fig:simulated_skin_hist_freq}所示，图中黄色柱子表示判别器真图像输入端的输出分数，蓝色柱子表示判别器假图像输入端的输出分数。从图\ref{fig:simulated_skin_hist_freq}中我们可以发现根据判别器两端输出分数所绘制的频率直方图中有较大重叠面积。根据以上频率直方图，我们计算得到判别器两端输出分数的平均数分别为$1.3 $和$1.2$。而初始参数下，我们计算得到判别器两端输出的平均分数分别为$2.5$和$-0.5$，这说明在训练结束后，判别器输出两端输入图像的相似性得到了极大提升（平均分数差距：$3.0\rightarrow 0.1$），进一步说明判别器很难分辨输入图像的真/假，从而证明编码器-解码器的异常图像输出已经十分接近正常图像输出，由此我们可以推断出编码器-解码器已经很好的定位并去除了异常图像中的疾病标记物。
+以上实验从额外训练的ResNet分类器间接说明了本文提出的模型能很好地去除疾病标记物。在本小节中，我们还将多类模拟皮肤病病变数据集中的正常图像（以下简称“真图像”）和多类模拟皮肤病病变数据集中的异常图像经过编码器-解码器的输出图像（以下简称“假图像”）送入判别器，判别器输出分数的频率分布直方图如图\ref{fig:simulated_skin_hist_freq}所示，图中黄色柱子表示判别器对真图像的输出分数，蓝色柱子表示判别器对假图像的输出分数。从图\ref{fig:simulated_skin_hist_freq}中我们可以发现蓝色柱子和黄色柱子有较大重叠面积。我们计算得到判别器对真图像和假图像的平均输出分数分别为$1.3 $和$1.2$。而在初始参数下，两者分别为$2.5$和$-0.5$，这说明在训练结束后，真图像和假图像的相似性得到了极大提升（平均分数差距显著缩小：$3.0\rightarrow 0.1$），异常图像经过编码器-解码器的输出图像已经十分接近正常图像，由此可以推断出编码器-解码器已经很好地去除了异常图像中的疾病标记物。
 
-总之，通过对经过编码器-解码器的多类模拟皮肤病病变图像的定量分析，本小节从额外训练的分类器角度和判别器角度间接说明了本文提出的方法能够比较好地去除原始数据集中的疾病标记物。
+总之，通过对经过编码器-解码器的多类模拟皮肤病病变图像的定量分析，本小节从额外训练的分类器角度和本文提出的模型本身的判别器角度间接说明了本文提出的方法能够比较好地去除原始数据集中的疾病标记物。
 \section{不同超参数下的实验结果分析}\label{sec:multi_classes_hyper_paras}
 在本小节中，本文继续探究在不同不同超参数$\lambda_{1}$和$\lambda_{2}$组合下，本文提出的模型在疾病标记物定位任务上的性能表现，以评估本文提出的模型的鲁棒性。在学习率、优化器、迭代次数、模型结构等设置均保持不变的情况下，除了默认超参数组合外（$\lambda_{1}=4.0,\lambda_{2}=20.0$），我们还选取了另外$6$组不同超参数。在多类模拟皮肤病病变数据集上完成了相关实验后，分别根据第一类异常、第二类异常和第三类异常图像所绘制的P-R曲线分别如图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}、图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}所示。为了更直观地比较不同超参数下的模型性能，我们将以上P-R曲线的平均AUC分数列在表\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}中。
 
-从图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}可以看出，绿色P-R曲线明显在其他曲线上方，这说明本文提出的模型（以下简称“模型”）在默认参数（$\lambda_{1}=4,\lambda_{2}=20$）下，定位第一类异常和第二类异常对应的疾病标记物的性能最佳。相反，在图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}中，黄色P-R曲线（$\lambda_{1}=10,\lambda_{2}=20$）的AUC（AUC=$0.823$）最大（AUC为$0.823$），这是因为第三类异常对应的疾病标记物相比第一类异常和第二类异常在图像中的更多、分布的范围也更广，因而CNN分类器权重较大更有利于模型更全面地定位到第三类异常对应的疾病标记物。从平均AUC分数来看（见表\ref{tab:simulated_skin_diff_parameters}），模型在默认参数下平均AUC分数最高（AUC=$0.668$，表中第一列）。相比于默认参数（绿色P-R曲线），当超参数$\lambda_{1}$偏小甚至取$0$时，在图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}中，深红色P-R曲线（$\lambda_{1}=1$）和粉红色P-R曲线（$\lambda_{1}=0$）的AUC分数均较低，图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}中深红色P-R曲线的AUC最低（AUC=$0.135$）。这说明，一旦CNN分类器在模型中占的权重（$\lambda_{1}$）较小，模型定位疾病标记物的性能会有所下降，在极端情况（$\lambda_{1}=0$）下，CNN分类器没有发挥任何作用，其AUC为$0.149$。当超参数$\lambda_{2}$偏小时，L1损失函数所占权重较小，模型对图像修改的约束将会减弱，模型在去除疾病标记物的同时也会不可避免地修改正常区域，比如青色P-R曲线（$\lambda_{2}=10$）和黑色P-R曲线（$\lambda_2=0$），图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}、图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}中这两条P-R曲线的AUC分数都较低，尤其是图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}中青色P-R曲线，其AUC最低（AUC=$0.084$）。反之，当超参数$\lambda_{2}$偏大时，比如蓝色P-R曲线（$\lambda_{2}=50$），通过图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}、图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}，我们均可以发现蓝色P-R曲线被绿色P-R曲线包围，更为直观的是看表\ref{tab:simulated_skin_diff_parameters}中的平均AUC分数，两者分别为$0.668$和$0.628$，这是因为当L1损失权重过大时限制了判别器网络对图像的修改，最终导致模型定位性能下降。根据表\ref{tab:simulated_skin_diff_parameters}，我们可以发现第$2$列（$\lambda_{1}=4,\lambda_{2}=20$）、第$4$列（$\lambda_{1}=10,\lambda_{2}=20$）和$6$列（$\lambda_{1}=4,\lambda_{2}=50$）的平均AUC较为接近，分别为$0.668$、$0.659$、$0.628$，可说明模型的超参数适用范围较广。综上，这些都表明本文提出的方法对超参数具有较好鲁棒性，超参数在极端情况下，本文提出的方法的定位性能有所下降，这也符合我们的预期。
+从图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}可以看出，绿色P-R曲线明显在其他曲线上方，这说明本文提出的模型在默认参数（$\lambda_{1}=4,\lambda_{2}=20$）下，定位第一类异常和第二类异常对应的疾病标记物的性能最佳。相反，在图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}中，黄色P-R曲线（$\lambda_{1}=10,\lambda_{2}=20$）的AUC最大（AUC为$0.823$），这是因为第三类异常对应的疾病标记物相比第一类异常和第二类异常在图像中的数量更多、分布的范围也更广，因而交叉熵损失函数权重较大更有利于本文提出的模型更全面地定位到第三类异常对应的疾病标记物。从平均AUC分数来看（见表\ref{tab:simulated_skin_diff_parameters}），本文提出的模型在默认参数下平均AUC分数最高（AUC=$0.668$，表中第一列）。相比于默认参数（绿色P-R曲线），当超参数$\lambda_{1}$偏小甚至取$0$时，在图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}中，深红色P-R曲线（$\lambda_{1}=1$）和粉红色P-R曲线（$\lambda_{1}=0$）的AUC分数均较低，尤其是图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}中深红色P-R曲线的AUC最低（AUC=$0.135$）。这说明，一旦交叉熵损失函数在本文提出的模型中所占的权重（$\lambda_{1}$）较小，本文提出的模型定位疾病标记物的性能也会有所下降，在极端情况（$\lambda_{1}=0$）下，CNN分类器没有发挥任何作用，其AUC为$0.149$。当超参数$\lambda_{2}$偏小时，L1损失函数在本文提出的模型中所占权重较小，本文提出的模型对编码器-解码器的约束将会减弱，本文提出的模型在去除疾病标记物的同时也会不可避免地修改正常区域，比如青色P-R曲线（$\lambda_{2}=10$）和黑色P-R曲线（$\lambda_2=0$），在图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}、图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}中这两条P-R曲线的AUC分数都较低，尤其是图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}中青色P-R曲线，其AUC最低（AUC=$0.084$）。反之，当超参数$\lambda_{2}$偏大时，比如蓝色P-R曲线（$\lambda_{2}=50$），通过图\ref{fig:multi_simulate_pr_curve_image_net_hyper_paras}、图\ref{fig:multi_simulate_pr_curve_skin_hyper_paras}和图\ref{fig:multi_simulate_pr_curve_circle_hyper_paras}，我们均可以发现蓝色P-R曲线被绿色P-R曲线包围，更为直观的是看表\ref{tab:simulated_skin_diff_parameters}中的平均AUC分数，两者分别为$0.668$和$0.628$，这是因为当L1损失函数权重过大时限制了编码器-解码器对图像的修改，最终导致本文提出的模型定位异常图像中的疾病标记物的性能下降。根据表\ref{tab:simulated_skin_diff_parameters}，我们可以发现第$2$列（$\lambda_{1}=4,\lambda_{2}=20$）、第$4$列（$\lambda_{1}=10,\lambda_{2}=20$）和$6$列（$\lambda_{1}=4,\lambda_{2}=50$）的平均AUC较为接近，分别为$0.668$、$0.659$、$0.628$，这可说明模型的超参数适用范围较广。
+
+综上，这些都表明本文提出的方法对超参数具有较好鲁棒性，超参数在极端情况下，本文提出的方法的定位性能有所下降，这也符合我们的预期。
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{figure/pr_curve_multi_skin_hyper_paras/IMAGE_NET_pr_curve.png}
@@ -189,5 +191,5 @@
 %	}
 \end{table}
 \section{本章小结}
-本章主要将本文提出的方法由二类问题推广到多类问题，在此过程中，本文对原始二类模型进行了相关改进，比如，将二类交叉熵损失函数替换成多类交叉熵损失函数、将所有异常类看成判别器的假图像输入端等，以最小的代价实现二类问题到多类问题的扩展，并在多类模拟皮肤病病变数据集上进行了相关实验评估，与CAM和Grad-CAM相比，分别从定性分析（热图）和定量分析（P-R曲线及其AUC）两个角度直接说明本文提出的模型能够更准确地定位到疾病标记物的位置，具有更加优异的性能。除此之外，本文还分别从额外训练的CNN分类器的角度和判别器的角度再次间接地证明了上述结论。最后，为了说明本文提出的方法的超参数鲁棒性，本文还对不同超参数$\lambda_{1}$和$\lambda_{2}$组合进行了测试。到此，本文所有实验内容叙述完毕。在接下来一章中，我们将对本文工作进行总结，并对将来的研究方向进行展望。
+本章主要将本文提出的方法由二类问题推广到多类问题，在此过程中，本文对原始二类模型进行了相关改进，比如，将二类交叉熵损失函数替换成多类交叉熵损失函数、将所有异常类看成判别器的假图像输入端等，以最小的代价实现二类问题到多类问题的扩展，并在多类模拟皮肤病病变数据集上进行了相关实验评估，与CAM和Grad-CAM相比，分别从定性分析（热图）和定量分析（P-R曲线及其AUC）两个角度直接说明本文提出的模型能够更准确地定位到疾病标记物的位置，本文提出的模型具有更加优异的性能。本文还分别从额外训练的CNN分类器的角度和本文提出的模型本身的判别器的角度再次间接地证明了上述结论。最后，为了说明本文提出的方法的超参数鲁棒性，本文还对不同超参数$\lambda_{1}$和$\lambda_{2}$组合进行了测试。到此，本文所有实验内容叙述完毕。在接下来一章中，我们将对本文工作进行总结，并对将来的研究方向进行展望。
 
