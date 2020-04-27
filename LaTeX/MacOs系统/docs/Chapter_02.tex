@@ -36,7 +36,7 @@ CNN最初是为了避免传统神经网络（多层感知机）在处理图像�
 		\includegraphics[width=1.0\textwidth]{figure/popular_networks_densenet}
 		\caption{DenseNet~\cite{huang2017densely}}
 	\end{subfigure}
-	\caption[三种经典CNN]{三种经典CNN（图片均来自于对应论文~\cite{krizhevsky2012imagenet, he2016deep, huang2017densely}）。} 
+	\caption[三种经典CNN模型]{三种经典CNN模型（图片均来自于对应论文~\cite{krizhevsky2012imagenet, he2016deep, huang2017densely}）。子图\ref{subfig:resnet_block}为残差单元，ResNet网络实际上由多个残差单元堆叠组成。} 
 	\label{mulfig:popular_networks}
 \end{figure}
 
@@ -150,7 +150,7 @@ L(\ve{x},\ve{z};\vv{\theta})=\log D\left(\ve{x};\vv{\theta}\right)+\log \left(1-
 \end{equation}
 \noindent 到此，生成对抗网络的基本理论介绍结束。下一节介绍可定位疾病标记物的相关方法。
 \section{疾病标记物定位方法}\label{sec:related_work}
-随着计算机技术在医学影像领域的广泛应用，目前已有可用于疾病标记物定位的方法提出，主要有多示例学习（Multiple Instance Learning，缩写为MIL）、CNN可视化和弱监督目标定位。本小节将选取这三种思路中的部分经典方法进行详细介绍，重点突出这些方法处理疾病标记物定位任务的优势和劣势，力求读者对这些方法有全面而又清晰的认识。
+随着计算机技术在医学影像领域的广泛应用，目前已有可用于疾病标记物定位的相关方法提出，主要有多示例学习（Multiple Instance Learning，缩写为MIL）、CNN可视化方法和弱监督目标定位。本小节将详细介绍这三种思路中的部分经典方法，重点突出这些方法处理疾病标记物定位任务时的优势和劣势。
 \subsection{多示例学习}
 MIL是由Maron等人~\cite{maron1998framework}提出，是一种与监督学习、半监督学习和非监督学习有所不同的不确切监督，也可用于处理弱监督问题。在处理图像数据时，MIL方法可通过训练一个二分类器，不仅完成对图像数据的分类任务，还能粗略定位图像数据中的的显著性区域，这在诸如没有细粒度标记训练数据的感兴趣区域定位的任务中特别有用。
 
@@ -186,9 +186,9 @@ CNN在图像分类、语音识别、自然语言处理等大规模任务中的�
 	\label{tab:four_visulization_types}
 \end{table}
 %除此之外，还能通过t-SNE方法~\cite{maaten2008visualizing}对图像的特征向量进行降维操作，以在低维空间中查看数据的宏观分布。除此之外，还能对图像的特征向量进行降维操作，以在低维空间中查看数据的宏观分布。
-CNN的可视化问题自提出以来，有很多研究者提出了解决方法。最简便也是最直接的方法是利用PyTorch\footnote{https://pytorch.org/}、TensorFlow\footnote{https://www.tensorflow.org/}等工具直接观察其网络结构可视化图，查看卷积核大小、输入和输出特征图尺寸、卷积层参数等相关信息。另一种可视化技术是获取大型数据集，通过网络输入图像，并跟踪哪些图像最大程度地激活了某些神经元。然后，我们可以将图像可视化，以了解神经元在其感受野中正在寻找什么，Girshick等人~\cite{girshick2014rich}提出了这样一种可视化技术，用于精确的对象检测和语义分割。因为ReLU神经元本身不一定具有任何语义，所以这种方法只有输入特征图沿着与过滤器权重相对应的轴方向的可视化结果。Zeiler等人~\cite{zeiler2014visualizing}提出的方法可以更为直接的了解到神经元真正感兴趣的区域或者物体，通过依次遮挡图像每一部分来绘制感兴趣类别的概率与遮挡物位置的关系图。以上可视化方法主要关注浅层特征，对CNN工作机制的解释能力有限。随着CNN的快速发展和实现，可视化已被扩展到解释CNN的整体工作机制，解释粒度也越来越细化。表\ref{tab:typical_visualization_methods}回顾了三类有代表性的可视化方法。
+CNN的可视化问题自提出以来，有很多研究者提出了解决方法。最简便也是最直接的方法是利用PyTorch\footnote{https://pytorch.org/}、TensorFlow\footnote{https://www.tensorflow.org/}等工具直接观察其网络结构可视化图，查看卷积核大小、卷积层输入和输出尺寸、卷积层参数等相关信息。另一种可视化技术是获取大型数据集，通过网络输入图像，并跟踪哪些图像最大程度地激活了某些神经元。然后，我们可以将图像可视化，以了解神经元在其感受野中正在寻找什么，Girshick等人~\cite{girshick2014rich}提出了这样一种可视化技术，用于精确的对象检测和语义分割。因为ReLU神经元本身不一定具有任何语义，所以这种方法只有输入特征图沿着与过滤器权重相对应的轴方向的可视化结果。Zeiler等人~\cite{zeiler2014visualizing}提出的方法可以更为直接的了解到神经元真正感兴趣的区域或者物体，通过依次遮挡图像每一部分来绘制感兴趣类别的概率与遮挡物位置的关系图。以上可视化方法主要关注浅层特征，对CNN工作机制的解释能力有限。随着CNN的快速发展和实现，可视化已被扩展到解释CNN的整体工作机制，解释粒度也越来越细化。表\ref{tab:typical_visualization_methods}回顾了三类有代表性的可视化方法。
 \subsubsection*{激活最大化方法}
-激活最大化（Activation Maximization）是一种通过合成特定输入图像，从而最大化在任意层中的特定神经元激活的方法。最初是由Erhan等人~\cite{erhan2009visualizing}提出的，被用于深度置信网络~\cite{hinton2006fast}高层神经元的可视化。随后，Simonyan等人~\cite{simonyan2013deep}将其扩展，用于解释CNN。以多分类问题为例，设$\ve{s}_{c}(\ve{x})(0\leq \ve{s}_{c}(\ve{x}) \leq 1)$表示为输入图像$\ve{x}$被CNN分到类别$c$的分数，使用L-2范数作为正则化项，则激活最大化方法用于解释CNN可形式化为：
+激活最大化（Activation Maximization）是一种通过合成特定输入图像，从而最大化在任意层中的特定神经元激活的方法。最初是由Erhan等人~\cite{erhan2009visualizing}提出的，被用于深度置信网络~\cite{hinton2006fast}高层神经元的可视化。随后，Simonyan等人~\cite{simonyan2013deep}将其扩展，用于解释CNN。以多分类问题为例，设$\ve{s}_{c}(\ve{x})(0\leq \ve{s}_{c}(\ve{x}) \leq 1)$表示为输入图像$\ve{x}$被CNN分到类别$c$的分数，使用L-2范数作为正则化项，则激活最大化方法用于解释CNN的目的在于重建类别$c$对应的原型图$\ve{x^*}$，使得$\ve{s}_c$最大，激活最大化方法可形式化为：
 %设输入图像为$\ve{x}$，模式图像为$\ve{x}^*$，可形式化表示为：
 %\begin{equation*}
 %x^{*}=\underset{x}{\operatorname{argmax}}\left(a_{i, %l}(\theta, x)-\lambda(x)\right).
@@ -196,10 +196,9 @@ CNN的可视化问题自提出以来，有很多研究者提出了解决方法�
 %其中，$\theta$表示网络参数，
 %$S_{c}(x)(0\leq S_{c}(x) \leq 1)$是经过Softmax激活函数得到的类别分数，
 \begin{equation}
-\arg \max _{\ve{x}}( {\ve{s}}_{c}(\ve{x})-\lambda\|\ve{x}\|_{2}^{2}).
+\ve{x}^*=\underset{\ve{x}}{\operatorname{arg\,max}}( {\ve{s}}_{c}(\ve{x})-\lambda\|\ve{x}\|_{2}^{2}).
 \end{equation}
-注意，正则项有多种选择，L-2范数通常会将图像平滑。高斯模糊也是常见的正则项，通常会抑制图像中的高频信息。此类方法通常都会固定网络参数，只是根据反向传播算法不断更新输入图像$\ve{x}$，从而合成具有特定模式的输入图像，还能得到类别$c$的原型图。
-
+注意，正则项有多种选择，L-2范数通常会将图像平滑。高斯模糊也是常见的正则项，通常会抑制图像中的高频信息。此类方法通常都会固定网络参数，只是根据反向传播算法不断更新输入图像$\ve{x}$，从而合成具有特定模式的输入图像，得到类别$c$的原型图$\ve{x}^*$。
 %\subsubsection{反卷积网络}
 %\begin{figure}[h]
 %	\centering
@@ -208,7 +207,6 @@ CNN的可视化问题自提出以来，有很多研究者提出了解决方法�
 %	\label{fig:deconvnet_architecture}
 %\end{figure}
 %激活最大化方法从最大化特定神经元的激活来解释CNN。反卷积网络（DeconvNet）~\cite{zeiler2014visualizing, zeiler2010deconvolutional, zeiler2011adaptive}从输入图像的角度解释了CNN。它从输入图像中找到激活卷积层中特定神经元的选择性模式。通过将低维神经元的特征图逐层映射回原始图像尺寸来重建图像。这个投影这个过程由反卷积网络实现，这种网络包含反卷积层、反池化层、反ReLU激活函数等逆运算。基于DeconvNet的可视化并不仅仅是分析神经元的兴趣，而是展示了一种直接的特征分析方法。DeconvNet模型结构图如图\ref{fig:deconvnet_architecture}所示，可以发现，DeconvNet是CNN网络的逆过程，CNN中存在的操作在DeconvNet中均有对应逆操作。DeconvNet将图片特征从特征空间转化到像素空间，以发现是哪些像素激活了特定的特征，达到分析解释CNN的目的。另外，用DeconvNet还有可用于可视化一个已经训练好的网络模型，无须没有学习训练的优点。所以DeconvNet使用起来比较简单。
-
 \subsubsection*{基于梯度的可视化方法}
 梯度是CNN中非常重要的概念，CNN在前向传播阶段计算损失。回传的过程，实质上是梯度的计算和根据梯度更新训练参数的过程。不难理解，流过某个神经元的梯度越大，则代表前向传播时该神经元激活值越大，说明该神经元越重要。基于梯度的网络可视化方法就是充分利用CNN中流动的梯度，从梯度角度来解释每一个神经元在网络中所起到的作用，相对上述激活最大化方法，基于梯度的方法可得到更为精细的可视化结果。另外，CNN每一层中的每个神经元均有梯度，因而基于梯度的方法还更为灵活，可以实现位于任意层的任意神经元的可视化。在本小节，我们将介绍三种基于梯度的可视化方法：反卷积网络~\cite{zeiler2010deconvolutional}、Guided-Backpropagation~\cite{springenberg2014striving}和Grad-CAM~\cite{selvaraju2017grad}。
 
@@ -254,7 +252,7 @@ CNN的可视化问题自提出以来，有很多研究者提出了解决方法�
 \begin{equation}\label{equ:grad_cam_heatmap_compute}
 \ve{M}_{c}(x, y)=\sum_{k} \ve{I}_{k}^{c} \ve{A}^{k}_{ij}.
 \end{equation}
-在梯度回传阶段，梯度可以回传到任意层，任何结构的CNN都会有梯度，故Grad-CAM可可视化任何结构的CNN中的任意层，可以认为Grad-CAM是CAM的泛化。如果要定位图像中的疾病标记物，可将类激活图上采样到原图尺寸大小。注意梯度可以回传到网络浅层（特征图尺寸相对较大），此时上采样到原图时倍数相对较小，所以Grad-CAM相较于CAM可通过可视化浅层特征来得到更加准确的定位结果。
+在梯度回传阶段，梯度可以回传到任何结构的CNN的任意层，故Grad-CAM可可视化任何结构的CNN中的任意层，可以认为Grad-CAM是CAM的泛化。因为疾病标记物是特定疾病在图像中的视觉特征，所以可将类激活图中的判别性区域看作疾病标记物。注意梯度可回传到网络浅层（特征图尺寸相对较大），此时上采样到原图时倍数相对较小，所以Grad-CAM相较于CAM可通过可视化浅层特征来得到更加准确的定位结果。
 %\begin{figure}[h!] % image examples & compare
 %	\begin{subfigure}{0.45\textwidth}
 %		\centering
@@ -274,7 +272,7 @@ CNN的可视化问题自提出以来，有很多研究者提出了解决方法�
 \subsubsection*{网络逆转}
 网络逆转方法会根据任意层中所有神经元的特征图重建图像，从而揭示该图层中保留了哪些图像信息，也是从网络层角度来解释CNN。网络逆转方法最先用于传统计算机视觉领域，如方向梯度直方图~\cite{dalal2005histograms}（Histogram of Oriented Gradients）。随着CNN的提出与发展，其变体方法~\cite{mahendran2015understanding, mahendran2016visualizing, dosovitskiy2016inverting}开始用于解释CNN。不同的是，Mahendran等人~\cite{mahendran2015understanding, mahendran2016visualizing}使用梯度下降方法从每一层重建图像，而Dosovitskiy等人~\cite{dosovitskiy2016inverting}通过训练专用的向上卷积神经网络（UpconvNet）来重建图像。前者更易于实现，因为它不需要训练额外的专用网络。后者可以通过额外的专用网络可视化更高层的更多现有信息，但是计算成本显著提高。总而言之，这两种算法的主要目标都是从网络层特征图的特定激活中重建原始输入图像。由于基于正则项的网络逆转方法实现相对容易，在此进行更深入的介绍。设给定原始图像$\ve{x}_0$和输入图像$\ve{x}$，基于正则项的网络逆转方法的目标在于重建最优输入图像$\ve{x}^*$，使得损失函数最小，形式化表达为：
 \begin{equation}
-\ve{x}^{*}=\underset{\ve{x}}{\operatorname{argmin}}\left(c \cdot \mathcal{L}\left(\ve{A}(\ve{x}), \ve{A}\left(\ve{x}_{0}\right)\right)+\lambda(\ve{x})\right).
+\ve{x}^{*}=\underset{\ve{x}}{\operatorname{arg\, min}}\left(c \cdot \mathcal{L}\left(\ve{A}(\ve{x}), \ve{A}\left(\ve{x}_{0}\right)\right)+\lambda(\ve{x})\right).
 \end{equation}
 其中，$\mathcal{L}$是计算输入特定层前后的特征图$\ve{A}(\ve{x}_0)$和$\ve{A}(\ve{x})$的损失函数，$\lambda(\ve{x})$是正则项，$c$是调节损失函数和正则项的超参数。为了让重建图像更像自然图像，$\lambda(\ve{x})$可取L2-范数、全变差范数~\cite{rudin1992nonlinear}等。与激活最大化方法~\cite{simonyan2013deep}相同的是，网络逆转方法也是通过重建输入图像来查看网络层对那些像素或者图像模式更为敏感，但是网络逆转方法可应用到网络任意层，而不限于网络第一层，因而泛化性更强。
 %其中，全变差范数可让重建的图像更为平滑。
@@ -303,7 +301,7 @@ CNN的可视化问题自提出以来，有很多研究者提出了解决方法�
 与自迁移学习不同，另外一种思路中位置信息的监督信号来自于其他方法，Kim等人~\cite{Kim_2017_ICCV}提出了一种两阶段训练的方法，第一阶段训练CNN分类器，第二阶段固定第一阶段中的CNN分类器，使用预训练CNN生成的与特定类相关的CAM热图作为抑制掩码，然后将该抑制掩码添加到中间特征图来训练第二个CNN，抑制掩码丢掉了第一阶段中认为的最具有判别性的区域，这会强制第二阶段中CNN分类器去学习除第一阶段外的判别性区域或者模式，最终可通过整合两阶段的结果来更加精确定位到目标物的位置，其网络结构如图\ref{fig:cam_based_weakly_supervised_localization}所示。另外，如果再增加额外训练阶段，可得到更加精细的定位效果。Singh等人~\cite{Krishna2018}同样使用了CAM，与Kim等人等人不同的是，他们通过隐藏输入图像中的部分区域（比如，矩形区域）来迫使网络学习专注于对象的多个相关部分，而不是最相关的部分，还可以将噪声（块）注入到输入图像来进一步加强数据增强，学习到更强大、更鲁邦的目标定位网络。
 
 \subsubsection*{对抗性擦除与注意力机制}
-对抗性擦除最初由Wei等人~\cite{WeiFLCZY17}提出，通过对抗性擦除，分类网络首先为特定图像类别标签挖掘最具判别性的区域。然后从图像中删除已发现的判别性区域，并且对分类网络进行了重新训练，以发现一个新的目标区域以尽量保证不会降低分类性能。他们采用递归方式、多次重复这种对抗性擦除过程，直到分类网络训练失败（可将分类网络训练失败定义为对分类网络的可视化结果性能较差或者分类网络分类准确率等评价指标低于某一阈值），再依次将擦除的区域合并为一个完整的前景定位蒙版，其网络模型如图\ref{subfig:adversarial_erasing}所示。由于上述对抗性擦除擦除方法中设置了三个CNN分类器，并且不是端到端训练方式，这需要分多阶段逐步训练CNN，这会造成网络训练时间较长、效率也不够高。Zhang等人~\cite{ZhangWF0H18}提出了上述对抗性擦除的改进版本，将这些独立的CNN集成到单个网络中，只需要设置两个CNN分类器，并进行端到端的训练，不仅缩短了网络训练周期，还取得了更为优异的定位性能，其网络结构如图\ref{subfig:improved_adversarial_learning}所示。
+对抗性擦除最初由Wei等人~\cite{WeiFLCZY17}提出，通过对抗性擦除，分类网络首先为特定图像类别标签挖掘最具判别性的区域。然后从图像中删除已发现的判别性区域，并且对分类网络进行了重新训练，以发现一个新的目标区域以尽量保证不会降低分类性能。他们采用递归方式、多次重复这种对抗性擦除过程，直到分类网络训练失败（可将分类网络训练失败定义为对分类网络的可视化结果性能较差或者分类网络分类准确率等评价指标低于某一阈值），再依次将擦除的区域合并为一个完整的前景定位蒙版，其网络模型如图\ref{subfig:adversarial_erasing}所示。由于上述对抗性擦除擦除方法中设置了三个CNN分类器，并且不是端到端训练方式，这需要分多阶段逐步训练CNN，这会造成网络训练时间较长、效率也不够高等缺陷。Zhang等人~\cite{ZhangWF0H18}提出了上述对抗性擦除网络的改进版本，将这些独立的CNN集成到单个网络中，只需要设置两个CNN分类器，并进行端到端的训练，不仅缩短了网络训练周期，还取得了更为优异的定位性能，其网络结构如图\ref{subfig:improved_adversarial_learning}所示。
 
 \begin{figure}[h!]
 	\centering
@@ -317,7 +315,7 @@ CNN的可视化问题自提出以来，有很多研究者提出了解决方法�
 	\begin{subfigure}{0.57\textwidth}
 		\centering
 		\includegraphics[width=1.0\textwidth]{figure/improved_adversarial_learning}
-		\caption{改进版本的对抗性擦除网络~\cite{ZhangWF0H18}}
+		\caption{端到端的对抗性擦除网络~\cite{ZhangWF0H18}}
 		\label{subfig:improved_adversarial_learning}
 	\end{subfigure}
 	\caption[两种对抗性擦除网络]{两种对抗性擦除网络（图片均来自于对应原文~\cite{WeiFLCZY17,ZhangWF0H18}）。}
@@ -334,7 +332,6 @@ CNN的可视化问题自提出以来，有很多研究者提出了解决方法�
 
 近些年来，计算机视觉领域提出的弱监督目标定位方法也被广泛用于定位医学影像中的异常区域。比如，Wang等人~\cite{WangPLLBS17}利用预训练模型产生监督信号辅助定位胸部X射线图像中胸腔疾病病灶，Zhuang等人~\cite{zhuang2019care}利用CAM产生异常区域的监督信号来辅助定位皮肤镜图像中黑色素瘤异常区域和X射线图像中肺炎异常区域。Gonz{\'a}lez-Gonzalo等人~\cite{GonzlezGonzalo2018ImprovingWL}采用循环递归擦除方式不断屏蔽眼底图像中的某些区域来发现判别性区域来定位眼底图像中糖尿病性视网膜病变异常区域，Jim{\'e}nez-S{\'a}nchez等人~\cite{JimnezSnchez2018WeaklySupervisedLA}整合了自迁移学习和CAM定位X射线图像中股骨近端骨折区域，Tang等人~\cite{Tang2018AttentionGuidedCL}直接引入注意力机制来定位X射线图像中胸腔异常区域。Xiao等人~\cite{chen2019cascade}同时添加两个注意力模块来分别关注图像空间信息和通道信息，不仅提高了肝脏异常诊断性能，还较好定位了肝脏病灶区域。
 
-%\subsection{本节小结}\label{subsec:related_work_summary}
 以上内容介绍了与疾病标记物定位任务相关的解决方案，包括MIL、CNN的可视化和弱监督目标定位，其中也不乏优秀精巧的方法，例如CAM和Grad-CAM，但是这些方法的共同劣势在于无法实现像素级的精确定位。一方面，这些方法最初并不是专门为解决疾病标记物定位任务而设计；另一方面，当这些方法被运用到在弱监督条件下疾病标记物定位任务上时，其背后实现原理决定了其无法实现精确的像素级定位，而只能定位到疾病标记物所在的区域或者所聚集的超像素。对于MIL中存在的取块操作，无论其取块尺寸大小，所得图像块都无法避免地包含正常区域。因此MIL方法无法精确定位到疾病标记物。CNN可视化方法中，扰动方法和遮挡方法与MIL一样均需要从图像中取块；激活最大化方法和网络逆转方法只能得到图像的最具判别性的图像特征或者模式；对于基于梯度的方法（比如Grad-CAM），由于在连续卷积作用下特征图通常会不断缩小，因此为了定位到疾病标记物，往往需要将卷积输出响应上采样到输入图像尺寸大小。不难想象，采样倍数越大，疾病标记物的定位越粗糙。如果将疾病标记物也看做是目标物体，那么弱监督目标定位任务的目标是用候选矩形框框出目标物体的位置，该任务目标要求本身就比本文目标低，另外以上弱监督目标定位方法往往需要是通过中间层与目标物体相关的判别性区域来计算目标物体在原图中位置，这个计算过程也会涉及到上采样操作，因而弱监督目标定位方法也无法精确定位疾病标记物。
 
 综上所述，包括MIL、CNN的可视化和弱监督目标定位在内的系列方法都只能粗略定位疾病标记物，精确定位疾病标记物仍是一个有待解决的问题。在弱监督条件下，一种精确定位疾病标记物的新方法亟待提出，这也是本文所有工作的根本出发点。
@@ -354,30 +351,6 @@ CNN的可视化问题自提出以来，有很多研究者提出了解决方法�
 4）假阴（False Negative，缩写为FN）：被分类器判定为负例，但实际上是正例。
 
 \noindent 由此，我们可进一步定义TPR、FPR等概念：
-%\begin{itemize}
-%	\item 真阳（True Positive，缩写为TP）:被分类器判定为正样本，实际上也是正样本。
-%	\item 假阳（False Positive，缩写为FP）：被分类器判定为正样本，但实际上是负样本。
-%	\item 真阴（True Negative，缩写为TN）：被分类器判定为负样本，实际上也是负样本。
-%	\item 假阴（False Negative，缩写为FN）：被分类器判定为负样本，但实际上是正样本。
-%\end{itemize}
-%可用表\ref{tab:confusion_mateix}表示以上关系：
-%\begin{table}[h]
-%	\centering
-%	\caption{TP、TN、FP和FN概念定义。}
-%	\label{tab:confusion_mateix}
-%	\begin{tabular}{c|c|c|c}
-%		\toprule[2pt]
-%		&                   & \multicolumn{2}{c}{True condition}     \\ 
-%				\midrule[2pt]
-%		&  & Condition Positive & Condition Negative \\ \hline
-%		\multirow{2}{*}{Predicted} & Predicted Positive & TP  & FP \\ \cline{2-4} 
-%		& Predicted Negative & FN & TN  \\ 
-%		\bottomrule[2pt]
-%	\end{tabular}
-%\end{table}
-
-%\noindent 表\ref{tab:confusion_mateix}也叫混淆矩阵（Confusion Matrix）\footnote{https://en.wikipedia.org/wiki/Confusion\_matrix}。
-\vspace{-0.7cm}
 \begin{align}
 	&\mathrm{TPR}=\mathrm{Sensitivity}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}}\,\, ,\\
 	&\mathrm{FPR}=\frac{\mathrm{FP}}{\mathrm{FP}+\mathrm{TN}}\,\, ,\\
@@ -393,8 +366,6 @@ CNN的可视化问题自提出以来，有很多研究者提出了解决方法�
 	&\mathrm{Precision}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FP}}\, \, ,\\
 	&\mathrm{Recall}=\frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}}\, \, .
 \end{align}
-
-%以挑选“好”西瓜为例，极端情况下，可以认为所有西瓜都是“好”瓜，则所有“好”瓜都能选出来，不难想象，此时Precision=0，Recall=1;反之，认为所有西瓜都不是“好”瓜，则所有“好”瓜都不能选出来，不难想象，此时Recall=0，Precision$\to 1$。故P-R曲线能反应模型平衡准确率和检出率的能力。
 
 P-R曲线是一条以Precision为纵轴，Recall为横轴的曲线。其画法与ROC曲线非常相似，均需要取一组阈值。与ROC曲线的画法不同的是，P-R曲线需要计算Precision和Recall。在ROC曲线中，TPR（纵轴）随着FPR（横轴）的增大而增大，即ROC曲线呈现一种单调增加趋势。而在P-R曲线中，Precision（纵轴）随着Recall（横轴）的增大而减小，即P-R曲线呈现一种单调减小趋势。这种差异主要是Precision和Recall之间的“矛盾”关系造成的。同样，直观上来看，如果一条P-R曲线在另外一条P-R曲线上方，说明前者代表的模型性能优于后者；P-R曲线的AUC定义也与ROC曲线一致，AUC数值越大，模型性能越优。
 
@@ -436,8 +407,7 @@ ODIR数据集\footnote{https://odir2019.grand-challenge.org/dataset/}是一个�
 
 IDRiD\footnote{https://idrid.grand-challenge.org/Data/}眼底图像是由印度一家眼科诊所的视网膜专家收集的。数据集共包括$516$张样本，均提供了典型糖尿病性视网膜病变和正常视网膜结构的专家标记。数据集所有图像都集中在黄斑附近。图像分辨率为$4288\times 2848$像素，存储为jpg文件格式。此外，它还根据国际临床相关性标准，为数据库中的每张图像提供了关于糖尿病性视网膜病变的疾病严重程度和糖尿病黄斑水肿的信息。与DR数据集一样，它一共将图像分为$5$类。与DR数据集不同的是，IDRiD数据集有$81$张患病彩色眼袋图像有精确像素级标注，比如，微动脉瘤、软渗出物、硬渗出物和出血。
 
-眼底病变往往病变区域较大小不一，疾病标记物数量很难确定，分布也较分散。眼底部分病变区域与背景容易混淆。眼底图像通常也较为精细，各种细节纹理比较丰富，不同疾病的病变区域位置和大小也不尽相同。
-%比如，糖尿病视网膜病变的病变区域在视网膜上，患病区域相对较小，而GON的病变区域往往在视盘附近，患病区域相对较大。
+眼底病变图像中通常包含丰富的纹理细节，不同疾病的疾病标记物的视觉特征不尽相同，比如，糖尿病性视网膜病变的疾病标记物广泛分布在视网膜上，疾病标记物的数量众多但单个面积相对较小、不易察觉，而青光眼病变的疾病标记物往往集中分布在视盘附近，疾病标记物的数量很少（多数只有一个）但单个面对相对较大。
 
 \subsection{黑色素瘤皮肤病病变数据集}\label{subsec:original_dermatoscope_ds_intro}
 黑色素瘤是多种皮肤癌中最致命的一种。黑色素瘤是发生在皮肤表面的色素性病变，可以通过医生的视觉检查早期发现。黑色素瘤也适用于自动检测与图像分析。皮肤镜检查是一种皮肤成像方法，与无辅助的视觉检查相比，已证明可改善皮肤癌的诊断。在这里，我们介绍三个图像质量较高，可用于疾病标记物定位的黑色素瘤病变皮肤镜数据集。数据集名称、图像数量等基本信息如表~\ref{tab:skin_datasets_info}所示。

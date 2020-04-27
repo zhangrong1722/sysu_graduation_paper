@@ -3,29 +3,15 @@
 % 摘要内容应概括地反映出本论文的主要内容，主要说明本论文的研究目的、内容、方法、成果和结论。要突出本论文的创造性成果或新见解，不要与引言相 混淆。语言力求精练、准确，以 300—500 字为宜。
 % 关键词是供检索用的主题词条，应采用能覆盖论文主要内容的通用技术词条(参照相应的技术术语 标准)。按词条的外延层次排列（外延大的排在前面）。
 \cabstract{
-医学影像中的视觉疾病标记物是医生评估特定疾病的风险、类别和状态的重要指标。对各种医学图像中现有或潜在新型生物标记进行自动定位和分割，是智能诊断和疾病治疗的关键步骤。对于医生，在医学影像中标出疾病标记物的大概位置相对容易，但是标出疾病标记物的精确位置是极具挑战性的甚至是不可能的，尤其在疾病标记物分布广泛的情况下。仅仅依靠图像级标注来定位疾病标记物更具可行性。本文只使用图像级标注，提出一种组合卷积神经网络分类器和生成对抗网络的新方法定位疾病标记物，本文主要贡献如下：
+医学影像中的视觉疾病标记物是医生评估特定疾病的风险、类别和状态的重要指标。对各种医学图像中现有或潜在新型疾病标记物进行自动定位和分割，是智能诊断和疾病治疗的关键步骤。对于医生，在医学影像中标出疾病标记物的大概位置相对容易，但是标出疾病标记物的精确位置是极具挑战性的甚至是不可能的，尤其在疾病标记物分布广泛的情况下。仅仅依靠图像级标注来定位疾病标记物更具可行性。本文只使用图像级标注，提出一种组合卷积神经网络分类器和生成对抗网络的新方法定位疾病标记物，本文主要贡献如下：
 	
 1）本文极具创造性地组合了卷积神经网络分类器和生成对抗网络，其中生成对抗网络由编码器-解码器和判别器组成。生成对抗网络中的判别器和卷积神经网络分类器有效帮助生成对抗网络中的编码器-解码器去除异常图像中的疾病标记物。生成器输出减去输入就可以获得疾病标记物的准确位置。
 	
 2）本文提出了一种交替训练卷积神经网络分类器和生成对抗网络的策略，卷积神经网络分类器尽量定位并去除疾病标记物，生成对抗网络进一步彻底去除疾病标记物。
 	
-3）本文不仅使用本文提出的方法处理二类问题（一类正常和一类异常），还将其推广到处理多类问题（一类正常和多类异常）。与流行的卷积神经网络可视化方法相比，即使在疾病标记物分布广泛、尺寸大小各异的情况下，本文提出的方法也能精确定位疾病标记物，表现出了目前最佳的性能。
+3）本文不仅使用本文提出的方法处理二类问题（一类正常和一类异常），还将其推广到处理多类问题（一类正常和多类异常）。与当前流行的卷积神经网络可视化方法相比，即使在疾病标记物分布广泛、尺寸大小各异的情况下，本文提出的方法也能精确定位疾病标记物，表现出了目前最佳的性能。
 
 本文提出的方法为检测各种疾病现有或者潜在新的疾病标记物提供了一种新的方法。精确定位和分割各种疾病现有或者潜在的疾病标记物有助于医生作出更准确的疾病诊断，为最终的精准医疗提供一种有效的工具。
-
-%本文提出的方法为检测各种疾病现有或者潜在新的疾病标记物提供了一种新的方法。人工智能系统精确定位和分割各种疾病现有或者潜在的疾病标记物，这不仅能帮助医生发现潜在新的疾病特征，还能为医生提供病变区域的定量指标。
-
-%医生可以更高效地诊断疾病、提供治疗方案。
-
-%医生提高疾病诊断能力、快速提供治疗方案。
-
-%本文提出的方法为检测各种疾病现有或者潜在新的生物标志物提供了一种新的方法，这有助于医生更高效地诊断疾病、提供治疗方案。
-
-%疾病标记物可用于处理疾病筛查、疾病诊断、疾病分级等临床问题。精确定位疾病标记物是发现现有或者潜在新型疾病标记物的必不可少的步骤。
-
-%定位现有或者潜在疾病标记物为发现更多疾病标记物提供了技术基础。
-
-%，还能辅助专业医师诊断疾病。
 }
 % 中文关键词(每个关键词之间用“;”分开,最后一个关键词不打标点符号。)
 \ckeywords{弱监督疾病标记物定位；编码器-解码器；生成对抗网络 }
@@ -36,11 +22,9 @@ Visual biomarkers in medical images are important indicators for radiologists to
 
 2) We propose a strategy of training CNN classifier and GAN alternately. The CNN classifier precisely locates and removes biomarkers as much as possible, and the GAN further completely removes biomarkers.
 
-3) We not only apply our proposed approach in two-class problems (one normal class and one abnormal class), but also extend it to multiclass problems (one normal class and multiply abnormal classes). Compared with popular approaches of visualizing CNN, our proposed approach shows state-of-the-art performance in precisely localizing biomarkers even if biomarkers are irregularly scattered and are of various sizes in images.
+3) We not only apply our proposed approach in two-class problems (one normal class and one abnormal class), but also extend it to multiclass problems (one normal class and multiply abnormal classes). Compared with currently popular approaches of visualizing CNN, our proposed approach shows state-of-the-art performance in precisely localizing biomarkers even if biomarkers are irregularly scattered and are of various sizes in images.
 
 Our proposed approach provides a new way to detect potentially novel biomarkers for various diseases. Precise localization and segmentation of existing or potentially novel biomarkers can assist human experts to make more accurate disease diagnosis and provides an effective tool for the ultimate precision medicine.
- 
-%Biomarkers can be used to deal with many clinical problems such as disease screening, disease diagnosis, and disease rating. The technology of localizing biomarkers provides the basis for the discovery of more potential biomarkers.
 }
 % 英文文关键词（关键词之间用逗号隔开，最后一个关键词不打标点符号。）
 \ekeywords{ Weakly-Supervised Biomarkers Localization, Encoder-Decoder, GAN}

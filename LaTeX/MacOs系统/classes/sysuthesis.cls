@@ -139,9 +139,9 @@
 
 % 目录设定，使用tocloft宏包
 \setcounter{secnumdepth}{3} % depth of toc, 2
-%\setcounter{tocdepth}{1} %显示二级目录
+\setcounter{tocdepth}{1} %显示二级目录
 % 如果要在目录中显示子章节请换用下面这行(目录中显示到x.y.z章)，如果不用这行默认显示到x.y章。
-\setcounter{tocdepth}{2}  %显示三级目录
+%\setcounter{tocdepth}{2}  %显示三级目录
 
 % 目录标题：小二号黑体加粗
 \renewcommand{\cfttoctitlefont}{\hfill\zihao{-2}\heiti\bfseries}
