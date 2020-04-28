@@ -45,37 +45,7 @@ CNN最初是为了避免传统神经网络（多层感知机）在处理图像�
 CNN可以很好避免多层感知机存在的问题，首先用CNN处理图像时直接用矩阵来表示图像数据，无须将其转化为一维向量，因此卷积操作可以很好地捕捉图像的空间信息和上下文信息。除此之外，卷积操作还具有平移不变性，CNN中权值共享机制可以大大降低参数量。随着图形处理器（Graphics Processing Unit，缩写为GPU）的广泛应用和快速迭代，计算机的算力也快速提升，运用反向传播算法~\cite{hecht1992theory}，CNN的大规模部署与训练变得切实可行。因此，自从Hinton等人~\cite{krizhevsky2012imagenet}利用两块GPU成功训练AlexNet后，很多优秀网络结构相继被提出，比如，VGG~\cite{simonyan2014very}，ResNet~\cite{he2016deep, he2016identity}和DenseNet~\cite{huang2017densely}。CNN除了在分类问题上表现出出色性能外，还在自然语言处理~\cite{dos2014deep, mou2016Convolutional}、无人驾驶~\cite{lee2017deep}等领域表现不凡，越来越受到研究者们的青睐。
 
 三种经典的CNN的模型结构如图~\ref{mulfig:popular_networks}所示。图中从左到右，三种网络结构依次为AlexNet~\cite{krizhevsky2012imagenet}、ResNet残差单元（ResNet实际上是由多个残差单元堆叠组成）~\cite{he2016deep, he2016identity}和DenseNet~\cite{huang2017densely}。可以看出，CNN都是由一系列卷积操作组成的，在卷积操作之后再接上激活函数以增强非线性表达能力。为了减少参数量，CNN除了引入权值共享机制外，还引入了池化操作，使得输入图像尺寸随着深度不断增加而减小，与此同时池化操作还起到过滤无关信息的的作用。为了增强CNN的非线性表达能力，可在CNN中添加激活函数。最后，再接上全连接层对提取到的特征进行分类（视不同任务而改变）。在此过程中，CNN实际上充当特征提取器的角色。那么我们可以这样理解CNN：CNN是一种层次化结构，单纯卷积操作提取的是图像的局部信息，随着一系列卷积操作的堆叠，CNN的感受野越来越大，比如两个3$\times$3的卷积核堆叠相当于一个5$\times$5卷积核的感受野，CNN便能提取到图像的全局信息。激活函数可增强CNN的非线性表达能力。随着深度增加，为了减少参数量，可添加池化层使输入卷积层的尺寸变小。采用这种层次化结构，CNN可逐步提取到输入图像与特定任务相关的高层语义特征。在损失函数（比如交叉熵）的监督指导下，运用梯度反向传播算法计算梯度更新网络参数，CNN便能被训练成一个良好的特征提取器。
-
-%以上便是CNN的一般结构和工作原理，由于ResNet-18在本文提出的方法充当重要角色，下面将详细介绍ResNet模型。随着VGG-19~\cite{simonyan2014very}的出现，一个CNN的深度越深，学出来的效果是否越好的问题摆在了研究者们的面前。由于CNN的深度越深，原本就存在的过拟合和梯度消失问题变得越严重。何凯明等人便设计了一种在深度远大于VGG-19，效果也由于VGG-19的网络模型。设$\mathcal{H}(x)$是CNN拟合的函数，$x$表示网络输入。如果假设多个非线性层可以渐近逼近复杂函数并且假设输入和输出尺寸相同，那么就可以假设它们可以渐近逼近残差函数$\mathcal{F}(x)$，即$\mathcal{F}(x)=\mathcal{H}(x)− x$。因此，ResNet没有让网络直接拟合$\mathcal{H}(x)$，而是明确地让这些层近似为残差函数$\mathcal{F}(x)=\mathcal{H}(x)-x$。 因此，原始函数变为$\mathcal{F}(x)+x$。尽管两种形式都应能够渐近地逼近所需的功能（如假设），但是近似拟合残差函数要容易得多。另外，为了表示加号，残差单元中通常加入跳接操作。
-
-%设$\boldsymbol{X}_l$表示第$l$个残差单元的输入，$\boldsymbol{W}_{l}=\{\boldsymbol{W}_{l,k}|_{1\leq k \leq K}\}$表示第$l$个残差单元的权重，$K$表示残差单元个数。则相邻的残差单元输入$\boldsymbol{X}_{l+1}$可以表示为：
-%\begin{gather*}
-%	\boldsymbol{Y}_{l}=\boldsymbol{X}_l + \mathcal{F}(\boldsymbol{X}_l, \boldsymbol{W}_l), \\
-%	\boldsymbol{X}_{l+1}=f(\boldsymbol{Y}_{l}).
-%\end{gather*}
-%其中$f$表示激活函数，$\mathcal{F}(\boldsymbol{X}_l, \boldsymbol{W}_l)$表示残差单元中的卷积操作。如果$f$表示恒等变换，则$\boldsymbol{X}_{l+1}=\boldsymbol{Y}_{l}$，有：
-%\begin{equation*}
-%	\boldsymbol{X}_{l+1}=\boldsymbol{X}_l + \mathcal{F}(\boldsymbol{X}_l, \boldsymbol{W}_l).
-%\end{equation*}
-%对于任意第$L(L\ge l)$个残差单元，其输入$\boldsymbol{X}_{L}$，可写为：
-%\begin{equation}\label{equ:residual_block_compute}
-%\boldsymbol{X}_{L}=\boldsymbol{X}_l + \sum_{i=l}^{L-1}\mathcal{F}(\boldsymbol{X}_i, \boldsymbol{W}_i).
-%\end{equation}
-%设损失函数为$\boldsymbol{\varepsilon}$，根据等式\ref{equ:residual_block_compute}和反向梯度传播算法的链式求导法有：
-%\begin{equation}\label{residual_block_gradient}
-%\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_l}=\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}\frac{\partial \boldsymbol{X}_L}{\partial \boldsymbol{X}_l}=\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}(1+\frac{\partial}{\partial \boldsymbol{X}_l}\sum_{i=l}^{L-1}\mathcal{F}(\boldsymbol{X}_i,\boldsymbol{W}_i)).
-%\end{equation}
-%等式\ref{residual_block_gradient}表明，梯度$\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_l}$由$\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}$和$\frac{\partial \boldsymbol{\varepsilon}}{\partial \boldsymbol{X}_L}\frac{\partial}{\partial \boldsymbol{X}_l}\sum_{i=l}^{L-1}\mathcal{F}(\boldsymbol{X}_i,\boldsymbol{W}_i)$两项组成。第一项在可直接传播信息而与任意残差单元无关。而第二项保证信息直接回传到上一个残差单元。由于第一项的存在，等式\ref{residual_block_gradient}还能保证每一层梯度不容易消失，即使在残差单元权重很小的情况下。ResNet具有优异性能，深度达到上千层仍不会发生梯度消失现象。
-
 \subsection{编码器-解码器}
-
-%\begin{figure}[h]
-%	\centering
-%	\includegraphics[width=1.0\textwidth]{figure/popular_encoder_decoder}
-%	\caption{三种经典的编码器-解码器模型结构。从左到右依次为编码器-解码器~\cite{hinton2006reducing}、全CNN~\cite{long2015fully}和U-Net~\cite{ronneberger2015u}（图片均来自于原文）。} 
-%	\label{fig:popular_encoder_decoder}
-%\end{figure}
-
 \begin{figure}[h!] % image examples & compare
 	\centering
 	\begin{subfigure}{0.22\textwidth}
@@ -90,7 +60,7 @@ CNN可以很好避免多层感知机存在的问题，首先用CNN处理图像�
 		\caption{U-Net~\cite{ronneberger2015u}}
 		\label{subfig:popular_encoder_decoder_unet}
 	\end{subfigure}
-	\caption[两种经典的编码器-解码器模型]{两种经典的编码器-解码器模型（图片均来自于对应论文~\cite{hinton2006reducing, ronneberger2015u}）。} 
+	\caption[两种经典编码器-解码器模型]{两种经典编码器-解码器模型（图片均来自于对应论文~\cite{hinton2006reducing, ronneberger2015u}）。} 
 	\label{mulfig:popular_encoder_decoder}
 \end{figure}
 
@@ -104,14 +74,10 @@ CNN可以很好避免多层感知机存在的问题，首先用CNN处理图像�
 
 本文使用到了U-Net~\cite{ronneberger2015u}，故在此专门再介绍U-Net。除了以上特点之外，U-Net中还存在从编码器直接到解码器的跨层连接，这些跨层连接使网络可以将上下文信息传播到更高分辨率的层，使得特征融合更加充分。在网络可视化图上（见图\ref{subfig:popular_encoder_decoder_unet}），编码器和解码器相互对称，形成一个U型结构，这也是U-Net名称的由来。U-Net中只含有卷积层，不含任何全连接层，最后视不同任务而接上不同激活函数。U-Net启发了后续诸多优秀网络模型~\cite{zhou2018unet++, oktay2018attention, alom2019recurrent}，
 被广泛用于语义分割任务~\cite{cciccek20163d,dong2017automatic,li2018h}。
-
-%被广泛用于语义分割任务~\cite{cciccek20163d, han2018framing, dong2017automatic, sevastopolsky2017optic, zhang2018ct}
-%在医学影像领域更是大放异彩（比如图像重构~\cite{bhadra2020medical}、异常检测~\cite{Kohl2017AdversarialNF}、图像去噪~\cite{Yang2018LowDoseCI}和图像分割~\cite{Han2018SpineGANSS}）。
-%对抗生成网络（Generative Adversarial Networks，缩写为GAN）最初于2014年由Goodfellow等人~\cite{goodfellow2014generative}提出，就越来越受到学术界和工业界的重视。而随着GAN在理论与模型上的高速发展，GAN不仅在计算机视觉~\cite{zhu2017unpaired}、自然语言处理~\cite{qin2018dsgan}、人机交互~\cite{qiao2018emotional}等领域有着越来越深入的应用，还在医学影像领域大放异彩（比如图像重构~\cite{bhadra2020medical}、异常检测~\cite{Kohl2017AdversarialNF}、图像去噪~\cite{Yang2018LowDoseCI}和图像分割~\cite{Han2018SpineGANSS}）。
 \subsection{生成对抗网络}\label{subsec:gan_introduction}
 生成对抗网络（Generative Adversarial Networks，缩写为GAN）最初于2014年由Goodfellow等人~\cite{goodfellow2014generative}提出，就受到学术界和工业界的重视。随着GAN在理论与模型上的高速发展，GAN不仅在计算机视觉~\cite{zhu2017unpaired}领域有着越来越深入的应用，还在医学影像领域大放异彩（比如，图像重构~\cite{bhadra2020medical}、异常检测~\cite{Kohl2017AdversarialNF}、图像去噪~\cite{Yang2018LowDoseCI}和图像分割~\cite{Han2018SpineGANSS}）。GAN是生成式模型，由生成器和判别器组成，受博弈论中的零和博弈启发，GAN将生成问题视作判别器和生成器这两个网络的对抗和博弈。生成器努力生成新数据，判别器努力区分生成器生成的数据（一般记为“假”）和真实数据（一般记为“真”）。生成器尽量产生更真实的数据，而判别器尽量更完美地把真实数据与生成数据区分开来。由此，生成器和判别器形成对抗关系，彼此进步。在不断的迭代训练过程中，生成器生成的数据也就越来越逼近真实数据，即生成器学到的分布越来越接近真实数据代表的分布。在理想情况下，判别器无法区分生成器生成的数据和真实的数据。
 
-设真实数据分布为$\ve{x}\sim p_{{data}}(\ve{x})$，噪音分布为$\ve{z}\sim p_{{z}}(\ve{z})$，$G$和$D$分别表示生成器和判别器。$\vv{\theta}_{g}$和$\vv{\theta}_{d}$分别表示生成器$G$和判别器$D$的训练参数。在GAN中，判别器被看做一个二类分类器，通常在器最后一层加上Sigmod激活函数，因而一般将交叉熵当做损失函数。判别器输出$D(\ve{x};\vv{\theta})$是一个数值，范围在$0$到$1$之间，表示样本来自于真实数据分布的可能性。运用最小最大优化理论，GAN的优化目标$V(D, G)$可写成：
+设真实数据分布为$\ve{x}\sim p_{{data}}(\ve{x})$，噪音分布为$\ve{z}\sim p_{{z}}(\ve{z})$，$G$和$D$分别表示生成器和判别器。$\vv{\theta}_{g}$和$\vv{\theta}_{d}$分别表示生成器$G$和判别器$D$的训练参数。在GAN中，判别器被看做一个二类分类器，通常在器最后一层加上Sigmod激活函数，因而一般将交叉熵当做损失函数。判别器输出$D(\ve{x};\vv{\theta})$是一个数值，范围在0到1之间，表示样本来自于真实数据分布的可能性。运用最小最大优化理论，GAN的优化目标$V(D, G)$可写成：
 \begin{eqnarray}\label{equ:gan_loss_func}
 \min _{G} \max _{D} V(D, G)=\mathbb{E}_{ \ve{x} \sim {p}_{ {data }}(\ve{x})}[\log D(\ve{x};\vv{\theta})]+\mathbb{E}_{\ve{z} \sim {p}_{{z}}(\ve{z})}[\log (1-D(G(\ve {z};\vv{\theta});\vv{\theta}))].
 \end{eqnarray}
@@ -162,13 +128,12 @@ y=\left\{\begin{array}{ll}
 \end{array}\right.
 \end{equation}
 %https://link.springer.com/content/pdf/10.1007%2F978-3-319-07998-1_65.pdf
-其中，$+1$和$-1$分别表示正包和负包。对于图像问题，根据MIL思想，将单张图像看作一个示例包，再对单张图像进行分块操作得到许多小方块，再将这些小方块看作一个个示例。多示例学习的目的是，通过对具有分类标签的多示例包的学习，建立多示例分类器，并将该分类器应用于未知多示例包的预测。MIL的目标是找到正包的原型，换句话说，找出所有正包的共同点。随后，在示例空间中，找出最能表现原型的示例。MIL也在医学图像处理领域得到广泛应用，可解决医学影像领域中的诸多问题，比如，眼底图像中的玻璃疣定位~\cite{lu2015effective}、X射线图像中肺结核诊断与病灶区域定位~\cite{melendez2014novel}、皮肤镜图像中蓝白结构结构定位~\cite{madooei2018learning}、病理图像中前列腺癌诊断与病灶区域定位~\cite{campanella2018terabyte}，眼底图像中的视网膜神经纤维分割~\cite{manivannan2017subcategory}和数字病理图像中的癌症诊断~\cite{kandemir2014empowering}。
+其中，$+$1和$-$1分别表示正包和负包。对于图像问题，根据MIL思想，将单张图像看作一个示例包，再对单张图像进行分块操作得到许多小方块，再将这些小方块看作一个个示例。多示例学习的目的是，通过对具有分类标签的多示例包的学习，建立多示例分类器，并将该分类器应用于未知多示例包的预测。MIL的目标是找到正包的原型，换句话说，找出所有正包的共同点。随后，在示例空间中，找出最能表现原型的示例。MIL也在医学图像处理领域得到广泛应用，可解决医学影像领域中的诸多问题，比如，眼底图像中的玻璃疣定位~\cite{lu2015effective}、X射线图像中肺结核诊断与病灶区域定位~\cite{melendez2014novel}、皮肤镜图像中蓝白结构结构定位~\cite{madooei2018learning}、病理图像中前列腺癌诊断与病灶区域定位~\cite{campanella2018terabyte}，眼底图像中的视网膜神经纤维分割~\cite{manivannan2017subcategory}和数字病理图像中的癌症诊断~\cite{kandemir2014empowering}。
 
 但是这种方法存在诸多缺点，首先对单张图像进行分块不易操作，分块尺寸过大时，示例中很可能会包括较多正常区域，导致精确度不够；反之，当分块尺寸过小时，会产生过多示例，这将大大增大后续训练的计算复杂度和计算量。因此，MIL方法只适合用于粗略定位图像中的目标物（例如，疾病标记物）。此外，当处理多类问题时，示例包就会出现多标签，使得问题的复杂度大大增加，造成分析的难度太大。因此，与其在算法和应用上的繁荣发展相反，近些年来，这种思路少有人问津。
-%~\cite{gondra2014object, wu2015deep,Maron1998MultipleInstanceLF}也非常少。
 
 \subsection{卷积神经网络的可视化}\label{subsec:visulization_methods}
-CNN在图像分类、语音识别、自然语言处理等大规模任务中的取得了相当大的成就，使其成为先进的人工智能系统中最受欢迎的工具。尽管只能将成功的部分原因归功于这种网络的训练过程中算法的进步，但是学习过程和所学内容的内在性仍然很模糊，即CNN一直是个“黑匣子”，我们始终不知道其内部运行机制，更无法得知其作出判断的背后依据。然而，CNN所做决定的依据很多时候与所做决定同样重要，比如，在医学领域，如果医生看不到人工智能系统给出诊断方法，医生也就无法接受人工智能系统所给提出的对患者的治疗方案。因此，我们需要有一种方式了解导致CNN失败或成功的原因。如果我们无法解释模型的工作原理，我们也就无法信任模型的给出的结果与判断。更重要的是，较差的网络可解释性极大地阻碍了对各个网络层的鲁棒性评估，进一步优化网络结构，以及对不同应用的网络适应性和可移植性，这也是CNN的可视化需要回答的直接动力和实际意义。
+CNN在图像分类、语音识别、自然语言处理等大规模任务中的取得了相当大的成就，使其成为先进的人工智能系统中最受欢迎的工具。尽管只能将成功的部分原因归功于这种网络的训练过程中算法的进步，但是学习过程和所学内容的内在性仍然很模糊，即CNN一直是个“黑匣子”，我们始终不知道其内部运行机制，更无法得知其作出判断的背后依据。然而，CNN所做决定的依据很多时候与所做决定同样重要，比如，在医学领域，如果医生看不到人工智能系统给出诊断方法，医生也就无法接受人工智能系统所给提出的对患者的治疗方案。因此，我们需要有一种方式了解导致CNN失败或成功的原因。如果我们无法解释模型的工作原理，我们也就无法信任模型的给出的结果与判断。更重要的是，较差的网络可解释性极大地阻碍了对各个网络层的鲁棒性评估，进一步优化网络结构，以及对不同应用的网络适应性和可移植性，这也是CNN的可视化需要回答的直接动力和实际意义。CNN的可视化问题自提出以来，有很多研究者提出了解决方法。最简便也是最直接的方法是利用PyTorch\footnote{https://pytorch.org/}、TensorFlow\footnote{https://www.tensorflow.org/}等工具直接观察其网络结构可视化图，查看卷积核大小、卷积层输入和输出尺寸、卷积层参数等相关信息。另一种可视化技术是获取大型数据集，通过网络输入图像，并跟踪哪些图像最大程度地激活了某些神经元。然后，我们可以将图像可视化，以了解神经元在其感受野中正在寻找什么，Girshick等人~\cite{girshick2014rich}提出了这样一种可视化技术，用于精确的对象检测和语义分割。因为ReLU神经元本身不一定具有任何语义，所以这种方法只有输入特征图沿着与过滤器权重相对应的轴方向的可视化结果。Zeiler等人~\cite{zeiler2014visualizing}提出的方法可以更为直接的了解到神经元真正感兴趣的区域或者物体，通过依次遮挡图像每一部分来绘制感兴趣类别的概率与遮挡物位置的关系图。以上可视化方法主要关注浅层特征，对CNN工作机制的解释能力有限。随着CNN的快速发展和实现，可视化已被扩展到解释CNN的整体工作机制，解释粒度也越来越细化。表\ref{tab:typical_visualization_methods}回顾了三类有代表性的可视化方法。
 \begin{table}[h]
 	% reference: https://arxiv.org/pdf/1804.11191.pdf
 	\centering
@@ -185,16 +150,8 @@ CNN在图像分类、语音识别、自然语言处理等大规模任务中的�
 	\end{tabular}
 	\label{tab:four_visulization_types}
 \end{table}
-%除此之外，还能通过t-SNE方法~\cite{maaten2008visualizing}对图像的特征向量进行降维操作，以在低维空间中查看数据的宏观分布。除此之外，还能对图像的特征向量进行降维操作，以在低维空间中查看数据的宏观分布。
-CNN的可视化问题自提出以来，有很多研究者提出了解决方法。最简便也是最直接的方法是利用PyTorch\footnote{https://pytorch.org/}、TensorFlow\footnote{https://www.tensorflow.org/}等工具直接观察其网络结构可视化图，查看卷积核大小、卷积层输入和输出尺寸、卷积层参数等相关信息。另一种可视化技术是获取大型数据集，通过网络输入图像，并跟踪哪些图像最大程度地激活了某些神经元。然后，我们可以将图像可视化，以了解神经元在其感受野中正在寻找什么，Girshick等人~\cite{girshick2014rich}提出了这样一种可视化技术，用于精确的对象检测和语义分割。因为ReLU神经元本身不一定具有任何语义，所以这种方法只有输入特征图沿着与过滤器权重相对应的轴方向的可视化结果。Zeiler等人~\cite{zeiler2014visualizing}提出的方法可以更为直接的了解到神经元真正感兴趣的区域或者物体，通过依次遮挡图像每一部分来绘制感兴趣类别的概率与遮挡物位置的关系图。以上可视化方法主要关注浅层特征，对CNN工作机制的解释能力有限。随着CNN的快速发展和实现，可视化已被扩展到解释CNN的整体工作机制，解释粒度也越来越细化。表\ref{tab:typical_visualization_methods}回顾了三类有代表性的可视化方法。
 \subsubsection*{激活最大化方法}
 激活最大化（Activation Maximization）是一种通过合成特定输入图像，从而最大化在任意层中的特定神经元激活的方法。最初是由Erhan等人~\cite{erhan2009visualizing}提出的，被用于深度置信网络~\cite{hinton2006fast}高层神经元的可视化。随后，Simonyan等人~\cite{simonyan2013deep}将其扩展，用于解释CNN。以多分类问题为例，设$\ve{s}_{c}(\ve{x})(0\leq \ve{s}_{c}(\ve{x}) \leq 1)$表示为输入图像$\ve{x}$被CNN分到类别$c$的分数，使用L-2范数作为正则化项，则激活最大化方法用于解释CNN的目的在于重建类别$c$对应的原型图$\ve{x^*}$，使得$\ve{s}_c$最大，激活最大化方法可形式化为：
-%设输入图像为$\ve{x}$，模式图像为$\ve{x}^*$，可形式化表示为：
-%\begin{equation*}
-%x^{*}=\underset{x}{\operatorname{argmax}}\left(a_{i, %l}(\theta, x)-\lambda(x)\right).
-%\end{equation*}
-%其中，$\theta$表示网络参数，
-%$S_{c}(x)(0\leq S_{c}(x) \leq 1)$是经过Softmax激活函数得到的类别分数，
 \begin{equation}
 \ve{x}^*=\underset{\ve{x}}{\operatorname{arg\,max}}( {\ve{s}}_{c}(\ve{x})-\lambda\|\ve{x}\|_{2}^{2}).
 \end{equation}
@@ -210,7 +167,7 @@ CNN的可视化问题自提出以来，有很多研究者提出了解决方法�
 \subsubsection*{基于梯度的可视化方法}
 梯度是CNN中非常重要的概念，CNN在前向传播阶段计算损失。回传的过程，实质上是梯度的计算和根据梯度更新训练参数的过程。不难理解，流过某个神经元的梯度越大，则代表前向传播时该神经元激活值越大，说明该神经元越重要。基于梯度的网络可视化方法就是充分利用CNN中流动的梯度，从梯度角度来解释每一个神经元在网络中所起到的作用，相对上述激活最大化方法，基于梯度的方法可得到更为精细的可视化结果。另外，CNN每一层中的每个神经元均有梯度，因而基于梯度的方法还更为灵活，可以实现位于任意层的任意神经元的可视化。在本小节，我们将介绍三种基于梯度的可视化方法：反卷积网络~\cite{zeiler2010deconvolutional}、Guided-Backpropagation~\cite{springenberg2014striving}和Grad-CAM~\cite{selvaraju2017grad}。
 
-反卷积网络引入了卷积操作的逆运算反卷积。反卷积将特征空间映射回像素空间，来揭示什么样的输入模式能够产生特定的输出特征，但是这种方法也会额外引入物体以外的噪声。为了避免这一问题，对于ReLU反向传播，与一般梯度回传法则不同的是，Guided-Backpropagation组合了反卷积网络~\cite{zeiler2010deconvolutional}和一般梯度回传中ReLU函数梯度计算法则。此外，Guided-Backpropagation还用带步长的卷积层（如步长为2，卷积核为$3\times 3$的卷积层也可达到输入尺寸减半的效果）代替池化操作，使得Guided-Backpropagation不仅可以得到更为精细、细节更为丰富的可视化结果，还能可视化高层的特征（在这种情况下，反卷积网络可视化经常会失效）。
+反卷积网络引入了卷积操作的逆运算反卷积。反卷积将特征空间映射回像素空间，来揭示什么样的输入模式能够产生特定的输出特征，但是这种方法也会额外引入物体以外的噪声。为了避免这一问题，对于ReLU反向传播，与一般梯度回传法则不同的是，Guided-Backpropagation组合了反卷积网络~\cite{zeiler2010deconvolutional}和一般梯度回传中ReLU函数梯度计算法则。此外，Guided-Backpropagation还用带步长的卷积层（如步长为2，卷积核为3$\times $3的卷积层也可达到输入尺寸减半的效果）代替池化操作，使得Guided-Backpropagation不仅可以得到更为精细、细节更为丰富的可视化结果，还能可视化高层的特征（在这种情况下，反卷积网络可视化经常会失效）。
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=1.0\textwidth]{figure/cam_arichitecture}
@@ -283,7 +240,7 @@ CNN的可视化问题自提出以来，有很多研究者提出了解决方法�
 弱监督目标定位任务是在提供图像级标签的情况下，给出对应类别物体的相关区域。Oquab等人~\cite{Oquab2015IsOL}率先使用CNN描述并解决弱监督目标定位问题，随后一系列运用CNN解决弱监督目标定位问题的方法被提出。在弱监督条件下，解决目标定位任务最常见的思路是利用CNN分类器产生有关于目标位置的监督信号。目标位置的监督信号可以来自于网络本身，还可以由其他方法产生。前者可以理解为一种自监督方法~\cite{2015Hwang}，后者可以利用CAM或者Grad-CAM产生目标的位置信息~\cite{Kim_2017_ICCV, Krishna2018}。另外一种思路与CNN可视化中遮挡实验类似，设计多个网络进行对抗性擦除~\cite{WeiFLCZY17, ZhangWF0H18}，并采用递归方式生成定位结果，直到分类CNN训练失败。还可以引入注意力机制，让CNN提取的特征更加稀疏，只关注与图像类别相关的区域。
 
 \subsubsection*{生成目标位置的监督信号}
-当CNN分类器能够准确地对输入图像分类时，也就能表明CNN分类器已经能够很好学到各个类别图像中具有判别性的特征或者模式，此时便可以利用CNN分类器产生与类别标签相关的目标物体位置信息，从而产生有关目标物体位置的监督信号。Sangheum等人~\cite{2015Hwang}用CNN分类器完成分类任务的同时，用自身CNN分类器产生目标物体的位置信息作为监督信号，借鉴多任务学习思想，同时完成了分类任务和目标定位任务，提出了自迁移学习方法。如图\ref{fig:self_transfer_learning}所示，自迁移学习的损失函数由分类损失和定位损失组成，两者之间设置超参数来平衡权重。在训练的开始阶段，分类网络的损失函数所占权重起着主导作用，因为对于定位器的成功训练，网络权值的初始值是非常重要的，定位器位置信息的监督信号由分类器和定位器共享的CNN特征提取器产生，没有训练良好的特征提取器，就无法产生具有判别性的类别相关区域充当监督信号。随着分类器的性能不断提升，CNN特征提取器产生的监督信号也就越来越可靠，此时需要增加定位损失函数的权重。注意，定位器的监督信号是来自CNN特征提取器本身的，这也是此方法被称作自迁移学习的原因。
+当CNN分类器能够准确地对输入图像分类时，也就能表明CNN分类器已经能够很好地学到各个类别图像中具有判别性的特征或者模式，此时便可以利用CNN分类器产生与类别标签相关的目标物体的位置信息，此信息显然可作为监督信号。Sangheum等人~\cite{2015Hwang}提出了自迁移学习方法，在分类网络完成分类任务后，将自身分类网络产生的激活图作为目标物体位置的监督信号，再借鉴多任务学习思想，将分类网络网络产生的监督信息作为定位网络的监督信息。如图\ref{fig:self_transfer_learning}所示，自迁移学习的损失函数由分类损失和定位损失组成，两者之间设置超参数来平衡权重。在训练的开始阶段，分类网络的损失函数所占权重起着主导作用，因为对于定位器的成功训练，网络权值的初始值是非常重要的，定位器位置信息的监督信号由分类器和定位器共享的CNN特征提取器产生，没有训练良好的特征提取器，就无法产生具有判别性的类别相关区域充当监督信号。随着分类器的性能不断提升，CNN特征提取器产生的监督信号也就越来越可靠，此时需要增加定位损失函数的权重。注意，定位器的监督信号是来自CNN特征提取器本身的，这也是此方法被称作自迁移学习的原因。
 
 \begin{figure}[h]
 	\centering
@@ -332,13 +289,13 @@ CNN的可视化问题自提出以来，有很多研究者提出了解决方法�
 
 近些年来，计算机视觉领域提出的弱监督目标定位方法也被广泛用于定位医学影像中的异常区域。比如，Wang等人~\cite{WangPLLBS17}利用预训练模型产生监督信号辅助定位胸部X射线图像中胸腔疾病病灶，Zhuang等人~\cite{zhuang2019care}利用CAM产生异常区域的监督信号来辅助定位皮肤镜图像中黑色素瘤异常区域和X射线图像中肺炎异常区域。Gonz{\'a}lez-Gonzalo等人~\cite{GonzlezGonzalo2018ImprovingWL}采用循环递归擦除方式不断屏蔽眼底图像中的某些区域来发现判别性区域来定位眼底图像中糖尿病性视网膜病变异常区域，Jim{\'e}nez-S{\'a}nchez等人~\cite{JimnezSnchez2018WeaklySupervisedLA}整合了自迁移学习和CAM定位X射线图像中股骨近端骨折区域，Tang等人~\cite{Tang2018AttentionGuidedCL}直接引入注意力机制来定位X射线图像中胸腔异常区域。Xiao等人~\cite{chen2019cascade}同时添加两个注意力模块来分别关注图像空间信息和通道信息，不仅提高了肝脏异常诊断性能，还较好定位了肝脏病灶区域。
 
-以上内容介绍了与疾病标记物定位任务相关的解决方案，包括MIL、CNN的可视化和弱监督目标定位，其中也不乏优秀精巧的方法，例如CAM和Grad-CAM，但是这些方法的共同劣势在于无法实现像素级的精确定位。一方面，这些方法最初并不是专门为解决疾病标记物定位任务而设计；另一方面，当这些方法被运用到在弱监督条件下疾病标记物定位任务上时，其背后实现原理决定了其无法实现精确的像素级定位，而只能定位到疾病标记物所在的区域或者所聚集的超像素。对于MIL中存在的取块操作，无论其取块尺寸大小，所得图像块都无法避免地包含正常区域。因此MIL方法无法精确定位到疾病标记物。CNN可视化方法中，扰动方法和遮挡方法与MIL一样均需要从图像中取块；激活最大化方法和网络逆转方法只能得到图像的最具判别性的图像特征或者模式；对于基于梯度的方法（比如Grad-CAM），由于在连续卷积作用下特征图通常会不断缩小，因此为了定位到疾病标记物，往往需要将卷积输出响应上采样到输入图像尺寸大小。不难想象，采样倍数越大，疾病标记物的定位越粗糙。如果将疾病标记物也看做是目标物体，那么弱监督目标定位任务的目标是用候选矩形框框出目标物体的位置，该任务目标要求本身就比本文目标低，另外以上弱监督目标定位方法往往需要是通过中间层与目标物体相关的判别性区域来计算目标物体在原图中位置，这个计算过程也会涉及到上采样操作，因而弱监督目标定位方法也无法精确定位疾病标记物。
+以上内容介绍了与疾病标记物定位任务相关的解决方案，包括MIL、CNN的可视化和弱监督目标定位，其中也不乏优秀精巧的方法，例如CAM和Grad-CAM，但是这些方法的共同劣势在于无法实现像素级的精确定位。一方面，这些方法最初并不是专门为解决疾病标记物定位任务而设计；另一方面，当这些方法被运用到在弱监督条件下疾病标记物定位任务上时，其背后实现原理决定了其无法实现精确的像素级定位，而只能定位到疾病标记物所在的区域或者所聚集的超像素。对于MIL中存在的取块操作，无论其取块尺寸大小，所得图像块都无法避免地包含正常区域。因此MIL方法无法精确定位到疾病标记物。CNN可视化方法中，扰动方法和遮挡方法与MIL一样均需要从图像中取块；激活最大化方法和网络逆转方法只能得到图像的最具判别性的图像特征或者模式；对于基于梯度的方法（比如Grad-CAM），由于在连续卷积作用下特征图通常会不断缩小，因此为了定位到疾病标记物，往往需要将卷积输出响应上采样到输入图像尺寸大小。不难想象，采样倍数越大，疾病标记物的定位越粗糙。而弱监督目标定位方法往往是通过特征图中与目标物体相关的判别性区域来推断原图中目标物体的位置，比如，自迁移学习方法和引入注意力机制的弱监督目标定位方法，这个计算过程也会涉及到上采样操作，或者在网络中直接使用CNN可视化方法产生目标物体的位置，比如，利用CAM产生抑制掩码的弱监督目标定位方法和对抗性擦除方法。因此，弱监督目标定位方法也无法精确定位疾病标记物。
 
 综上所述，包括MIL、CNN的可视化和弱监督目标定位在内的系列方法都只能粗略定位疾病标记物，精确定位疾病标记物仍是一个有待解决的问题。在弱监督条件下，一种精确定位疾病标记物的新方法亟待提出，这也是本文所有工作的根本出发点。
 \section{评价标准}\label{sec:evaluation_metrics}
 本文衡量实验结果分为定性分析和定量分析，前者主要比较各种方法得到的定位热图，后者主要把精确率-召回率曲线（Precision-Recall Curve，缩写为P-R Curve）和接收者操作特征曲线（Receiver Operating Characteristic Curve，缩写为ROC Curve）以及对应曲线下的面积（Area Under Curve，缩写为AUC）看作评价标准。
 \subsection{接收者操作特征曲线}\label{subsec:roc_curve}
-接收者操作特征曲线或者ROC曲线\footnote{https://en.wikipedia.org/wiki/Receiver\_operating\_characteristic}是一个可以说明二元分类器系统的鉴别阈值变化时的诊断能力的图形。通过绘制各种阈值设置下的真阳率（True Positive Rate，缩写为TPR）与假阳率（False Positive Rate，缩写为FPR）来创建ROC曲线。真阳率在机器学习中也称为灵敏度（Sensitivity），表示模型正确预测的正例个数占所有真实正例的比例。假阳率也称为假警报的概率，也可计算为（1-特异性（Specificity）），表示模型预测的假正例（实际为负例）个数占所有真实负例的比例。ROC曲线是以TPR作为衰减的函数。换句话说，ROC曲线的横轴是FPR或者（1-Specificity），纵轴是TPR或者Sensitivity。下面给出TPR、FPR、Sensitivity和Specificity的数学定义。
+接收者操作特征曲线或者ROC曲线\footnote{https://en.wikipedia.org/wiki/Receiver\_operating\_characteristic}是一个可以说明二元分类器系统的鉴别阈值变化时的诊断能力的图形。通过绘制各种阈值设置下的真阳率（True Positive Rate，缩写为TPR）与假阳率（False Positive Rate，缩写为FPR）来创建ROC曲线。真阳率在机器学习中也称为灵敏度（Sensitivity），表示模型正确预测的正例个数占所有真实正例的比例。假阳率也称为假警报的概率，也可以用1减去特异性（Specificity），表示模型预测的假正例（实际为负例）个数占所有真实负例的比例。ROC曲线是以TPR作为衰减的函数。换句话说，ROC曲线的横轴是FPR或者（1-Specificity），纵轴是TPR或者Sensitivity。下面给出TPR、FPR、Sensitivity和Specificity的数学定义。
 
 考虑两类预测问题（二分类），其中标签被标记为正例或负例，以是否是患有糖尿病性视网膜病变为例，我们将患病看作是正例（Positive），将没有患病看作是负例（Negative）。根据分类器给出的预测标签与实际标签是否一致，我们通常有如下定义：
 

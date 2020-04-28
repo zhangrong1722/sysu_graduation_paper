@@ -22,10 +22,10 @@
 	\begin{subfigure}{0.45\textwidth}
 		\centering
 		\includegraphics[width=1.5\textwidth]{figure/face_de_occulusion.png}
-		\caption{GAN去除人脸中的遮挡物~\cite{yuan2019face}。}
+		\caption{GAN去除人脸图像中的遮挡物~\cite{yuan2019face}。}
 		\label{subfig:face_de_occulusion}
 	\end{subfigure}
-	\caption[GAN去除图像中遮挡物示例]{GAN去除图像中遮挡物示例（图片均来自于对应原文~\cite{qian2018attentive,yuan2019face}）。}
+	\caption[GAN去除图像中的遮挡物示例]{GAN去除图像中的遮挡物示例（图片均来自于对应原文~\cite{qian2018attentive,yuan2019face}）。}
 	\label{mul_fig:gan_auto_encoder_example}
 \end{figure}
 \section{模型结构介绍}\label{sec:model_architecture_intro}
@@ -49,7 +49,7 @@
 \subsection{编码器-解码器}\label{subsec:encoder_decoder_model}
 编码器-解码器在GAN中充当生成器的角色，编码器-解码器的训练结果决定了本文提出的方法的疾病标记物定位性能。本文决定在U-Net的基础上进行微调得到本文使用的编码器-解码器，将U-Net迁移到本任务上来。原因主要有以下三点：
 
-1）近些年来，U-Net在医学影像分析领域的应用越来越广泛，无论是在处理医学分割任务上~\cite{oktay2018attention, dong2017automatic, zhang2018ct}，还是在把U-Net当做生成器与其他判别器来组成生成对抗网络~\cite{Han2018SpineGANSS}上，U-Net都表现不俗、性能出色。
+1）近些年来，U-Net在医学影像分析领域的应用越来越广泛，无论是在处理医学分割任务上~\cite{oktay2018attention, dong2017automatic}，还是在把U-Net当做生成器与其他判别器来组成生成对抗网络~\cite{Han2018SpineGANSS}上，U-Net都表现不俗、性能出色。
 
 2）在疾病标记物的精确定位任务中，只需要极少像素强度发生改变，而其他绝大部分像素都需要较好地重建出来，而U-Net的跨层结构能够很好地将编码阶段的特征融合到解码阶段，有利于图像尤其是具有丰富细节纹理的图像的重建。
 
@@ -70,7 +70,7 @@
 \end{figure}
 \vspace{-0.7cm}
 \subsection{CNN分类器}\label{subsec:cnn_classifier_model}
-CNN分类器主要考虑的问题是如何选择一个较为优秀的分类网络，最终本文CNN分类器选择ResNet~\cite{he2016deep}。一方面，ResNet系列网络具有良好的特性。加上编码器-解码器深度也较深，采用ResNet网络有利用避免梯度消失。另一方面，ResNet网络相对于VGG~\cite{simonyan2014very}等网络，参数量较少，计算开销较小。而相对于DenseNet~\cite{huang2017densely}、Inception~\cite{Szegedy2015RethinkingTI}等网络，ResNet模型结构较为简单，易于理解。本文CNN分类器的模型结构如图\ref{subfig:classifier_architecture}所示，可以发现，CNN分类器与原始ResNet-18相比没有作出较大改变，大部分卷积层（除跨层外）之后都会接上BatchNormalization层~\cite{ioffe2015batch}和ReLU激活函数，只是用$3\times 3$卷积层代替了原始$7\times 7$卷积层。这是因为原始ResNet-18的输入图像尺寸大小为$224\times 224$，而本文CNN分类器的输入图像尺寸大小为$128\times 128$。对于ResNet-18中的跨层连接，如果输入维度和输出维度相同，则直接相加（图\ref{subfig:classifier_architecture}中橘黄色折线）；如果输入维度和输出维度不一样，本文使用卷积核大小为$1\times 1$、步长为$2$的卷积层将特征图尺寸减半（\ref{subfig:classifier_architecture}中蓝色折线），同时将通道数加倍。为了在跨层中保持尽量避免梯度消失问题和提高训练速度，本文同样在$1\times 1$卷积层后接上BatchNormalization层。最后经过全局均值池化层的特征图送入输出维度为$1$的全连接层（处理二分类问题）。
+CNN分类器主要考虑的问题是如何选择一个较为优秀的分类网络，最终本文CNN分类器选择ResNet网络~\cite{he2016deep}。一方面，ResNet系列网络具有良好的特性。加上编码器-解码器深度也较深，采用ResNet网络有利用避免梯度消失。另一方面，ResNet网络相对于VGG~\cite{simonyan2014very}等网络，参数量较少，计算开销较小。而相对于DenseNet~\cite{huang2017densely}、Inception~\cite{Szegedy2015RethinkingTI}等网络，ResNet模型结构较为简单，易于理解。本文CNN分类器的模型结构如图\ref{subfig:classifier_architecture}所示，可以发现，CNN分类器与原始ResNet-18相比没有作出较大改变，大部分卷积层（除跨层外）之后都会接上BatchNormalization层~\cite{ioffe2015batch}和ReLU激活函数，只是用$3\times 3$卷积层代替了原始$7\times 7$卷积层。这是因为原始ResNet-18的输入图像尺寸大小为$224\times 224$，而本文CNN分类器的输入图像尺寸大小为$128\times 128$。对于ResNet-18中的跨层连接，如果输入维度和输出维度相同，则直接相加（图\ref{subfig:classifier_architecture}中橘黄色折线）；如果输入维度和输出维度不一样，本文使用卷积核大小为$1\times 1$、步长为$2$的卷积层将特征图尺寸减半（\ref{subfig:classifier_architecture}中蓝色折线），同时将通道数加倍。为了在跨层中保持尽量避免梯度消失问题和提高训练速度，本文同样在$1\times 1$卷积层后接上BatchNormalization层。最后经过全局均值池化层的特征图送入输出维度为$1$的全连接层（处理二分类问题）。
 \begin{figure}[h!]
 	\centering
 	\begin{subfigure}{0.3\textwidth}
@@ -86,7 +86,7 @@ CNN分类器主要考虑的问题是如何选择一个较为优秀的分类网�
 		\caption{本文判别器。}
 		\label{subfig:discrimintor_architecture}
 	\end{subfigure}
-	\caption[本文CNN分类器和判别器网络结构图]{本文CNN分类器和判别器网络结构图。CNN分类器网络和判别器网络的输入图像尺寸大小均为$128\times 128$。子图\ref{subfig:classifier_architecture}中的蓝色折线表示可将输入尺寸大小减半、通道数加倍的跨层连接，子图\ref{subfig:discrimintor_architecture}和子图\ref{subfig:classifier_architecture}中的橘黄色折线表示恒等跨层连接。}
+	\caption[本文CNN分类器和判别器]{本文CNN分类器和判别器。CNN分类器网络和判别器网络的输入图像尺寸大小均为$128\times 128$。子图\ref{subfig:classifier_architecture}中的蓝色折线表示可将输入尺寸大小减半、通道数加倍的跨层连接，子图\ref{subfig:discrimintor_architecture}和子图\ref{subfig:classifier_architecture}中的橘黄色折线表示恒等跨层连接。}
 	\label{mul_fig:classifier_and_discrimintor_architecture}
 \end{figure}
 \subsection{判别器}\label{subsec:discrimintor_model}
