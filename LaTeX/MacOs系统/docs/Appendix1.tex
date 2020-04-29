@@ -1,14 +1,14 @@
 \chapter{ROC曲线补充说明}\label{chapter:append1}
-如图\ref{fig:roc_cam_grad_cam_our_diabetic_retinopathy}所示，CAM、Grad-CAM和本文提出的模型根据$40$张糖尿病性视网膜病变图像绘制的ROC曲线。根据ROC曲线及其AUC，与CAM、Grad-CAM相比，本文提出的模型定位疾病标记物的性能表现最佳（AUC最高为$0.922$）。
+如图\ref{fig:roc_cam_grad_cam_our_diabetic_retinopathy}所示，CAM、Grad-CAM和本文提出的模型根据40张糖尿病性视网膜病变图像绘制的ROC曲线。根据ROC曲线及其AUC，与CAM、Grad-CAM相比，本文提出的模型定位疾病标记物的性能表现最佳（AUC最高为0.922）。
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{figure/ROC_cam_grad_cam_our_diabetic_retinopathy.pdf}
-	\caption[在$40$张糖尿病性视网膜病变图像上ROC曲线对比]{在 $40$ 张糖尿病性视网膜病变图像上ROC曲线对比。}
+	\caption[在40张糖尿病性视网膜病变图像上ROC曲线对比]{在 40张糖尿病性视网膜病变图像上ROC曲线对比。}
 	\label{fig:roc_cam_grad_cam_our_diabetic_retinopathy}
 \end{figure}
 
 
-如图\ref{fig:roc_cam_grad_cam_our_simulated_skin_datasets}所示，CAM、Grad-CAM和本文提出的模型根据二类模拟皮肤病病变数据集绘制的ROC曲线。ROC曲线是根据该数据集中所有具有像素级标注的图像绘制。根据ROC曲线及其AUC，与CAM、Grad-CAM相比，本文提出的模型定位疾病标记物的性能表现最佳（AUC最高为$0.933$）。
+如图\ref{fig:roc_cam_grad_cam_our_simulated_skin_datasets}所示，CAM、Grad-CAM和本文提出的模型根据二类模拟皮肤病病变数据集绘制的ROC曲线。ROC曲线是根据该数据集中所有具有像素级标注的图像绘制。根据ROC曲线及其AUC，与CAM、Grad-CAM相比，本文提出的模型定位疾病标记物的性能表现最佳（AUC最高为0.933）。
 
 \begin{figure}[H]
 	\centering
@@ -17,11 +17,11 @@
 	\label{fig:roc_cam_grad_cam_our_simulated_skin_datasets}
 \end{figure}
 
-如图\ref{fig:roc_u_d_u_c_u_d_c_components}所示，G-D模型、G-C模型和G-D-C模型根据二类糖尿病性视网膜病变数据集中的部分标注图像绘制的ROC曲线。G-D-C模型是本文提出的完整模型，G-D模型和G-C模型分别表示移去G-D-C模型中的CNN分类器和判别器得到的子模型。ROC曲线及其AUC表明，与G-D模型和G-C模型相比，G-D-C模型定位疾病标记物的性能表现最佳（AUC最高为$0.922$）。
+如图\ref{fig:roc_u_d_u_c_u_d_c_components}所示，G-D模型、G-C模型和G-D-C模型根据二类糖尿病性视网膜病变数据集中的部分标注图像绘制的ROC曲线。G-D-C模型是本文提出的完整模型，G-D模型和G-C模型分别表示移去G-D-C模型中的CNN分类器和判别器得到的子模型。ROC曲线及其AUC表明，与G-D模型和G-C模型相比，G-D-C模型定位疾病标记物的性能表现最佳（AUC最高为0.922）。
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\textwidth]{figure/ROC_u_d_u_c_u_d_c_components.pdf}
-	\caption[G-D-C模型、G-C模型和G-D模型ROC曲线对比]{在$40$张糖尿病性视网膜病变图像上，G-D-C模型、G-C模型和G-D模型ROC曲线对比。}
+	\caption[G-D-C模型、G-C模型和G-D模型ROC曲线对比]{在40张糖尿病性视网膜病变图像上，G-D-C模型、G-C模型和G-D模型ROC曲线对比。}
 	\label{fig:roc_u_d_u_c_u_d_c_components}
 \end{figure}
 \endinput
