@@ -19,7 +19,7 @@
 	\label{tab:multi_ds_pixel_freqs}
 	\begin{tabular}{c|c|c|c}
 		\toprule[2pt]
-		数据集名称 & 正常像素数量 & 异常像素数量 & 比例 \\
+		 & 正常像素数量 & 异常像素数量 & 比例 \\
 		\midrule[2pt]
 		第一类异常&  21,222,487 & 240,553 & $\simeq$ 88:1 \\ \hline
 		第二类异常&  17,129,210 & 90,374 & $\simeq$ 190:1 \\ \hline
@@ -119,7 +119,7 @@
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.9\textwidth]{figure/simulated_skin_score_distribution.pdf}
-	\caption[根据判别器输出分数绘制的频率分布直方图]{根据判别器输出分数绘制的频率分布直方图。多类模拟皮肤病变数据集中的正常图像（真图像）和该数据集中的异常图像经过编码器-解码器的输出图像（假图像）作为判别器输入。}
+	\caption[根据判别器输出分数绘制的频率分布直方图]{根据判别器输出分数绘制的频率分布直方图。多类模拟皮肤病病变数据集中的正常图像（真图像）和该数据集中的异常图像经过编码器-解码器的输出图像（假图像）作为判别器输入。}
 	\label{fig:simulated_skin_hist_freq}
 \end{figure}
 
@@ -154,7 +154,7 @@
 
 \begin{table}[H]
 	\centering
-	\caption[不同超参数组合下三类异常图像P-R曲线的平均AUC分数]{不同超参数组合下三类异常图像P-R曲线的平均AUC分数。}
+	\caption[不同超参数组合下三类异常图像上P-R曲线的平均AUC分数]{不同超参数组合下三类异常图像上P-R曲线的平均AUC分数。}
 	\label{tab:simulated_skin_diff_parameters}
 %	\resizebox{1.0\textwidth}{!}{
 		\begin{tabular}{c|c|c|c|c|c|c|c}
